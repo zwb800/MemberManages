@@ -123,12 +123,11 @@ import Charge from './Charge.vue'
 import Consume from './Consume.vue'
 import MemberInfo from './MemberInfo.vue'
 import NewMember from './NewMember.vue'
-// import { MongoClient } from 'mongodb'
+
 
 export default defineComponent({
   components: { NewMember, Consume,MemberInfo, Charge },
     data(){
- 
            return {
             
             text:'MemberList111',
@@ -137,8 +136,7 @@ export default defineComponent({
     },
 
     setup(){
-        // const mongoClient = new MongoClient('mongodb://localhost:27017')
-        // mongoClient.connect()
+        
         return {
             rows:[
                 {no:'80221',name:'张三',phone:'13345571234',amount:0}
