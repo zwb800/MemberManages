@@ -36,6 +36,7 @@
            v-model="paytype" :options="[
             {label:'微信',value:300},
             {label:'支付宝',value:500},
+            {label:'农信',value:800},
             {label:'现金',value:1000}
           ]"></q-btn-toggle>
           

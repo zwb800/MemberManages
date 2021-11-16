@@ -15,21 +15,27 @@
  *     doAThing: () => {}
  *   })
  */
+import { resolve } from 'dns'
 import { contextBridge } from 'electron'
 import { MongoClient } from 'mongodb'
-contextBridge.exposeInMainWorld('backend', {
-    connect:async ()=>{
+contextBridge.exposeInMainWorld('memberAPI', {
+    all:async ()=>{
         const mongoClient = new MongoClient('mongodb://localhost:27017')
         await mongoClient.connect()
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
         const cursor = members.find()
-        cursor.forEach(it=>{
-            
-        }).then(v=>{
+        const arr = new Array()
 
+        return new Promise(resolve=>{
+            cursor.forEach(it=>{
+                arr.push(it)
+            }).then(v=>{
+                resolve(arr)
+            }).finally(()=>{
+                mongoClient.close()
+            })
         })
-        
     }
 })
     

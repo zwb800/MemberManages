@@ -12,7 +12,7 @@
     rows-per-page-label="每页条数"
     row-key="no">
         <template v-slot:item="props">
-        <q-card>
+        <q-card class="q-mr-sm">
             <q-card-section class="q-pb-sm">
                 <div class="row">
                     <div class="col-md-auto text-bold q-pr-xs">{{props.row.name}} </div>
@@ -123,24 +123,22 @@ import Charge from './Charge.vue'
 import Consume from './Consume.vue'
 import MemberInfo from './MemberInfo.vue'
 import NewMember from './NewMember.vue'
+import './models'
 
 
 export default defineComponent({
   components: { NewMember, Consume,MemberInfo, Charge },
-    data(){
-           return {
-            
-            text:'MemberList111',
-            keyword:''
+     setup(){
+       
+        const members = ref([])
+        const getMembers =  async () =>{
+            members.value = await window.memberAPI.all()
         }
-    },
-
-    setup(){
         
         return {
-            rows:[
-                {no:'80221',name:'张三',phone:'13345571234',amount:0}
-            ],
+            rows:members,
+            getMembers, 
+            keyword:'',
             columns:[
                 {lable:'卡号',field:'no'},
                 {label:'姓名',field:'name'},
@@ -153,8 +151,11 @@ export default defineComponent({
             charge:ref(false),
         }
     },
+    async mounted(){
+        await this.getMembers()
+    }
    
-}) 
+})
 </script>
 
 <style>
