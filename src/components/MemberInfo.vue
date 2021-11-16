@@ -1,0 +1,55 @@
+<template>
+  <q-tabs v-model="tab"  
+    class="text-grey"
+    active-color="primary"
+    indicator-color="primary">
+    <q-tab name="info" label="详情"></q-tab>
+      <q-tab name="charge" label="充值"></q-tab>
+      <q-tab name="consume" label="划卡"></q-tab>
+  </q-tabs>
+  <q-tab-panels v-model="tab" style="min-height:320px">
+      <q-tab-panel name="info">
+        <member-info-bar></member-info-bar>
+      </q-tab-panel>
+      <q-tab-panel name="charge">
+          <q-table flat></q-table>
+      </q-tab-panel>
+      <q-tab-panel name="consume" class="q-pa-none">
+          <q-table :rows="consumeData.rows" :columns="consumeData.columns" flat></q-table>
+      </q-tab-panel>
+  </q-tab-panels>
+</template>
+
+<script>
+import MemberInfoBar from './MemberInfoBar.vue'
+export default {
+    components:{
+        MemberInfoBar
+    },
+    data(){
+        return {
+            tab:'info',
+            consumeData:{
+                rows:[
+                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
+                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
+                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
+                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
+                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
+                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
+                ],
+                columns:[
+                { label:'时间',field:'time',style:'width:100px'},
+                { label:'项目',field:'product'},
+                { label:'金额',field:'price'},
+
+            ]
+            }
+        }
+    }
+}
+</script>
+
+<style>
+
+</style>
