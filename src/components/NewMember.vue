@@ -30,14 +30,16 @@ import ChargeForm from './ChargeForm.vue'
 import {defineComponent} from 'vue'
 export default defineComponent({
     components:{ ChargeForm},
-    
+    emits:{
+      added:null
+    },
     data(){
         return {
             name:'',
             phone:'',
         }
     },
-    setup(){
+    setup(props, context){
       const member = {
           name:'',
           no:0,
@@ -48,6 +50,7 @@ export default defineComponent({
         const add = async ()=>{
           const memberValue = member
           const insertedId = await window.memberAPI.add(memberValue)
+          context.emit.call(null,'added')
           console.log(insertedId)
         }
       return {
