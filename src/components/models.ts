@@ -27,4 +27,5 @@ declare global {
   interface Window{
     memberAPI:MemberAPI
   }
+ 
 }

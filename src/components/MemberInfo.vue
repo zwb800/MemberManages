@@ -1,5 +1,5 @@
 <template>
-<q-dialog v-model="value" persistent>
+<q-dialog persistent>
     <q-card class="full-width">
         <q-bar class="bg-info text-white">
           <div>会员详情</div>

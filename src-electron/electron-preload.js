@@ -27,7 +27,9 @@ contextBridge.exposeInMainWorld('memberAPI', {
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
         
-        const cursor = members.find({$or:[{name:{$regex:keyword}},{phone:{$regex:keyword}}]})
+        const cursor = members.find({$or:[{name:{$regex:keyword}},{phone:{$regex:keyword}}]},{
+            sort:{no:-1}
+        })
         return new Promise(resolve=>{
             cursor.toArray().then((v)=>{
                 resolve(v)
@@ -49,8 +51,11 @@ contextBridge.exposeInMainWorld('memberAPI', {
         projection:{
             no:1
         }})
-
-        member.no = maxNo.no+1
+        
+        if(maxNo)
+            member.no = maxNo.no+1
+        else
+            member.no = 80000
         
         const result = await members.insertOne(member)
         const insertedId = result.insertedId

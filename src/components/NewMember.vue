@@ -1,4 +1,5 @@
-<template><q-dialog v-model="value" persistent>
+<template>
+<q-dialog ref="dialog" persistent>
     <q-card style="min-width:600px">
         <q-bar class="bg-secondary text-white">
           <div>开卡</div>
@@ -9,8 +10,10 @@
         <q-card-section class="">
       
           <div class="row q-mt-none">
-            <q-input class="col" label="姓名" v-model="member.name"></q-input>
-            <q-input class="col q-ml-md" label="手机号" v-model="member.phone"></q-input>
+            <q-input class="col" label="姓名" v-model="member.name"
+             :rules="[ val => val && val.length > 0 || '请填写姓名'] "></q-input>
+            <q-input class="col q-ml-md" label="手机号" v-model="member.phone"
+            :rules="[ val => val && val.length >0 || '请输入手机号'] "></q-input>
           </div>
       
       <charge-form></charge-form>
@@ -27,33 +30,37 @@
 
 <script lang='ts'>
 import ChargeForm from './ChargeForm.vue'
-import {defineComponent} from 'vue'
+import {defineComponent,ref,toRaw } from 'vue'
+import { QDialog } from 'quasar'
+import {Member} from './models'
 export default defineComponent({
     components:{ ChargeForm},
-    emits:{
-      added:null
-    },
-    data(){
-        return {
-            name:'',
-            phone:'',
-        }
-    },
+    emits:[
+      'added',
+      // 'update:modelValue'
+    ],
+   
     setup(props, context){
-      const member = {
-          name:'',
-          no:0,
-          balance:0,
-          newCardTime:new Date()
-        }
+      
+      const member = ref<Member>({
+        name:'',
+        no:0,
+        balance:0,
+        newCardTime:new Date()
+      })
+      
+      
+      const add =  async()=>{
+        const insertedId = await window.memberAPI.add(toRaw(member.value))
+        // context.emit.call(false,'update:modelValue')
+        dialog.value?.hide()
+        context.emit.call(null,'added')
+        console.log(insertedId)
+      }
+      const dialog = ref<QDialog>()
 
-        const add = async ()=>{
-          const memberValue = member
-          const insertedId = await window.memberAPI.add(memberValue)
-          context.emit.call(null,'added')
-          console.log(insertedId)
-        }
       return {
+        dialog,
         member,
         add
       }

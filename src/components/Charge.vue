@@ -1,5 +1,5 @@
 <template>
-<q-dialog v-model="charge" persistent>
+<q-dialog persistent>
     <q-card style="min-width:600px">
         <q-bar class="bg-secondary text-white">
           <div>充值</div>
