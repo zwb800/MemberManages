@@ -1,4 +1,12 @@
 <template>
+<q-dialog v-model="value" persistent>
+    <q-card class="full-width">
+        <q-bar class="bg-info text-white">
+          <div>会员详情</div>
+          <q-space />
+          <q-btn dense flat icon="close" v-close-popup></q-btn>
+        </q-bar>
+        <q-card-section class="q-pb-none q-pt-none">
   <q-tabs v-model="tab"  
     class="text-grey"
     active-color="primary"
@@ -18,6 +26,14 @@
           <q-table :rows="consumeData.rows" :columns="consumeData.columns" flat></q-table>
       </q-tab-panel>
   </q-tab-panels>
+  </q-card-section>
+        <q-separator></q-separator>
+        <q-card-actions align="right">
+            <q-btn label="划卡" color="primary"></q-btn>
+              <q-btn label="充值" color="secondary" ></q-btn>
+        </q-card-actions>
+    </q-card>
+</q-dialog>
 </template>
 
 <script>

@@ -15,27 +15,48 @@
  *     doAThing: () => {}
  *   })
  */
-import { resolve } from 'dns'
+import { debug } from 'console'
 import { contextBridge } from 'electron'
 import { MongoClient } from 'mongodb'
+
+const mongoClient = new MongoClient('mongodb://localhost:27017')
+
 contextBridge.exposeInMainWorld('memberAPI', {
-    all:async ()=>{
-        const mongoClient = new MongoClient('mongodb://localhost:27017')
+    all:async (keyword)=>{
         await mongoClient.connect()
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
-        const cursor = members.find()
-        const arr = new Array()
-
+        
+        const cursor = members.find({$or:[{name:{$regex:keyword}},{phone:{$regex:keyword}}]})
         return new Promise(resolve=>{
-            cursor.forEach(it=>{
-                arr.push(it)
-            }).then(v=>{
-                resolve(arr)
+            cursor.toArray().then((v)=>{
+                resolve(v)
             }).finally(()=>{
                 mongoClient.close()
             })
         })
+        
+    },
+    add:async (member)=>{
+        await mongoClient.connect()
+        const db = mongoClient.db('MemberManages')
+        const members = db.collection('Member')
+
+        const maxNo = await members.findOne({},{
+        sort:{
+            no:-1
+        },
+        projection:{
+            no:1
+        }})
+
+        member.no = maxNo.no+1
+        
+        const result = await members.insertOne(member)
+        const insertedId = result.insertedId
+        mongoClient.close()
+        return insertedId
+        
     }
 })
     

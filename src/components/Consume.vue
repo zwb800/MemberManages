@@ -1,18 +1,13 @@
 <template>
+<q-dialog v-model="value" persistent>
+    <q-card class="" style="">
+        <q-bar class="bg-primary text-white">
+          <div>划卡</div>
+          <q-space />
+          <q-btn dense flat icon="close" v-close-popup></q-btn>
+        </q-bar>
+        <q-card-section class="">
 <div class="q-gutter-md">
-         <!-- <q-card flat bordered>
-            <q-card-section>
-                <div class="row q-gutter-sm">
-                    <p class="q-mb-none">张三</p>
-                    <p class="q-mb-none">80110</p>
-                    <p class="q-mb-none">余额:￥300</p>
-                    <p class="q-mb-none">头疗:58次</p>
-                    <p class="q-mb-none">姜疗:10次</p>
-                    <p class="q-mb-none">冰疗:0次</p>
-
-                </div>
-            </q-card-section>
-        </q-card> -->
         <member-info-bar></member-info-bar>
         
         <p class="q-mb-none q-mt-none">消费项目</p>
@@ -44,13 +39,35 @@
         </div>
         <employee-options></employee-options>
         </div>
+        </q-card-section>
+        <q-separator></q-separator>
+        <q-card-actions align="right">
+            <q-btn label="保存" type="submit" color="primary"></q-btn>
+              <q-btn label="重置" type="reset"></q-btn>
+        </q-card-actions>
+    </q-card>
+</q-dialog>
 </template>
 
-<script>
+<script lang="ts">
 import EmployeeOptions from './EmployeeOptions.vue'
 import MemberInfoBar from './MemberInfoBar.vue'
-export default {
+import {defineComponent} from 'vue'
+export default defineComponent( {
   components: { EmployeeOptions,MemberInfoBar },
+  props:{
+        modelValue:Boolean
+    },
+    computed:{
+        value:{
+            get(){
+                return this.modelValue
+            },
+            set(value:boolean){
+                this.$emit('update:modelValue',value)
+            }
+        }
+    },
     data(){
         return {
             selected:[],
@@ -69,7 +86,7 @@ export default {
             ]
         }
     }
-}
+})
 </script>
 
 <style>
