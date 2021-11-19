@@ -39,7 +39,7 @@
 
 <script>
 import MemberInfoBar from './MemberInfoBar.vue'
-import { defineComponent } from 'vue'
+import { defineComponent,toRaw } from 'vue'
 export default defineComponent({
     components:{
         MemberInfoBar
@@ -48,7 +48,7 @@ export default defineComponent({
    
     methods:{
         show(){
-            console.log(memberId)
+            console.log(toRaw(this.memberId))
         }
     },
     data(){
