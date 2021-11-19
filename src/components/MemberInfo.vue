@@ -1,5 +1,5 @@
 <template>
-<q-dialog persistent>
+<q-dialog ref="dialog" @show="show" persistent>
     <q-card class="full-width">
         <q-bar class="bg-info text-white">
           <div>会员详情</div>
@@ -29,6 +29,7 @@
   </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
+            
             <q-btn label="划卡" color="primary"></q-btn>
               <q-btn label="充值" color="secondary" ></q-btn>
         </q-card-actions>
@@ -38,9 +39,17 @@
 
 <script>
 import MemberInfoBar from './MemberInfoBar.vue'
-export default {
+import { defineComponent } from 'vue'
+export default defineComponent({
     components:{
         MemberInfoBar
+    },
+    props:['memberId'],
+   
+    methods:{
+        show(){
+            console.log(memberId)
+        }
     },
     data(){
         return {
@@ -63,7 +72,7 @@ export default {
             }
         }
     }
-}
+})
 </script>
 
 <style>

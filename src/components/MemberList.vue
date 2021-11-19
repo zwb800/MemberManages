@@ -28,7 +28,7 @@
             <q-card-actions>
                 <q-btn size="sm" color="primary" @click="consume = true">划卡</q-btn>
                 <q-btn size="sm" color="secondary" @click="charge = true">充值</q-btn>
-                <q-btn size="sm" color="info" @click="memberinfo = true">详情</q-btn>
+                <q-btn size="sm" color="info" @click="memberId = props.row._id;memberinfo = true">详情</q-btn>
             </q-card-actions>
         </q-card>    
         </template>
@@ -38,7 +38,7 @@
 </div>
 <new-member v-model="newmember" @added="getMembers"></new-member>
 <consume v-model="consume"></consume>
-<member-info v-model="memberinfo"></member-info>
+<member-info v-model="memberinfo" :memberId="memberId"></member-info>
 <charge v-model="charge"></charge>
 </template>
 
@@ -72,6 +72,7 @@ export default defineComponent({
         onMounted(getMembers)
         watch(keyword,getMembers)
         return {
+            memberId:'',
             rows:members,
             getMembers, 
             keyword,

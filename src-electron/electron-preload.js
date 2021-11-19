@@ -18,6 +18,7 @@
 import { debug } from 'console'
 import { contextBridge } from 'electron'
 import { MongoClient } from 'mongodb'
+import { ObjectId } from 'bson'
 
 const mongoClient = new MongoClient('mongodb://localhost:27017')
 
@@ -39,7 +40,7 @@ contextBridge.exposeInMainWorld('memberAPI', {
         })
         
     },
-    add:async (member)=>{
+    add:async (member,items)=>{
         await mongoClient.connect()
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
@@ -58,7 +59,17 @@ contextBridge.exposeInMainWorld('memberAPI', {
             member.no = 80000
         
         const result = await members.insertOne(member)
+        const chargeItem = db.collection('ChargeItem')
+        
         const insertedId = result.insertedId
+        
+        for (const it of items) {
+            const cR = await chargeItem.insertOne({
+                memberId:insertedId,itemId:ObjectId.createFromHexString('000000000000000000000000')})
+            console.log(cR)
+        }
+        
+
         mongoClient.close()
         return insertedId
         

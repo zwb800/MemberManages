@@ -10,9 +10,9 @@
 <div class="q-gutter-md">
         <member-info-bar></member-info-bar>
         
-        <p class="q-mb-none q-mt-none">消费项目</p>
+        <p class="q-mt-none">消费项目</p>
         <div style="min-width:400px" class="q-mt-none">
-        <q-table
+        <!-- <q-table
         grid
         flat
         rows-per-page-options="0"
@@ -24,18 +24,28 @@
         :rows="rows" 
         :columns="columns">
         <template v-slot:item="props">
-            <q-card class="q-ma-sm" tag="label" v-bind:class="{'bg-primary text-white':props.selected}">
-                    <q-card-section horizontal class="text-center q-pa-sm">
+             <q-card class="q-ma-xs cursor-pointer" tag="label" v-bind:class="{'bg-primary text-white':props.selected}">
+                <q-card-section horizontal class="text-center q-pa-sm">
                     <p class="q-mb-none">{{props.row.name}}</p>
                     <p class="q-mb-none">￥{{props.row.price}}</p>
+                    <q-checkbox class="hidden" dense v-model="props.selected"/>
                 </q-card-section>
-                <q-separator />
-                <q-card-section class="text-center q-pa-xs">
-                    <q-checkbox dense v-model="props.selected"/>
-                    </q-card-section>
-            </q-card>
+            </q-card> 
+            
         </template>
-        </q-table>
+        </q-table> -->
+        <q-btn-group>
+        <template :key="row.name" v-for="row in rows">
+        <q-btn v-if='row.count>0'
+                color='primary' 
+                :label='row.name+" x "+row.count'
+                @click.left='row.count++'
+                 @click.right='row.count--'></q-btn>
+                <q-btn v-else
+                :label='row.name'
+                @click.left='row.count++'></q-btn>
+                </template>
+        </q-btn-group>
         </div>
         <employee-options></employee-options>
         </div>
@@ -72,13 +82,13 @@ export default defineComponent( {
         return {
             selected:[],
             rows:[
-                {name:'头疗',price:48},
-                {name:'眼疗',price:30},
-                {name:'姜疗',price:48},
-                {name:'冰疗',price:55},
-                {name:'发疗',price:98},
-                {name:'头皮养护',price:88},
-                {name:'面膜',price:30}
+                {name:'头疗',price:48,count:2},
+                {name:'眼疗',price:30,count:0},
+                {name:'姜疗',price:48,count:0},
+                {name:'冰疗',price:55,count:0},
+                {name:'发疗',price:98,count:0},
+                {name:'头皮养护',price:88,count:0},
+                {name:'面膜',price:30,count:0}
             ],
             columns:[
                 { label:'项目',field:'name'},

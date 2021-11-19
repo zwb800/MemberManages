@@ -1,4 +1,3 @@
-import {  ObjectId } from 'bson';
 
 export interface Todo {
   id: number;
@@ -11,7 +10,7 @@ export interface Meta {
 
 
 export interface Member {
-  // _id:ObjectId;
+  _id:Uint8Array|null;
   no: number;
   name: string;
   balance:number;
@@ -20,7 +19,7 @@ export interface Member {
 
 export interface MemberAPI{
   all:(keyword:string)=>Promise<Array<Member>>,
-  add:(member:Member)=>Promise<ObjectId>
+  add:(member:Member,chargeItems:Uint8Array[])=>Promise<Uint8Array>
 }
 
 declare global {
@@ -28,4 +27,9 @@ declare global {
     memberAPI:MemberAPI
   }
  
+}
+
+export interface ChargeItem{
+  _id:Uint8Array;
+
 }
