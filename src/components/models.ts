@@ -22,9 +22,20 @@ export interface MemberAPI{
   add:(member:Member,chargeItems:Uint8Array[])=>Promise<Uint8Array>
 }
 
+export interface PrepaidCard{
+  _id:Uint8Array;
+  price:number;
+  gift:number;
+}
+
+export interface CardAPI{
+  all:()=>Promise<Array<PrepaidCard>>
+}
+
 declare global {
   interface Window{
-    memberAPI:MemberAPI
+    memberAPI:MemberAPI;
+    cardAPI:CardAPI;
   }
  
 }

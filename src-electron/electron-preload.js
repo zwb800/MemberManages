@@ -22,6 +22,18 @@ import { ObjectId } from 'bson'
 
 const mongoClient = new MongoClient('mongodb://localhost:27017')
 
+contextBridge.exposeInMainWorld('cardAPI',{
+    all:async ()=>{
+        await mongoClient.connect()
+        const db = mongoClient.db('MemberManages')
+        const cards = await db.collection('PrepaidCard')
+        const cursor = cards.find()
+        const arr = await cursor.toArray()
+        mongoClient.close()
+        return arr
+    }
+})
+
 contextBridge.exposeInMainWorld('memberAPI', {
     all:async (keyword)=>{
         await mongoClient.connect()
@@ -31,13 +43,9 @@ contextBridge.exposeInMainWorld('memberAPI', {
         const cursor = members.find({$or:[{name:{$regex:keyword}},{phone:{$regex:keyword}}]},{
             sort:{no:-1}
         })
-        return new Promise(resolve=>{
-            cursor.toArray().then((v)=>{
-                resolve(v)
-            }).finally(()=>{
-                mongoClient.close()
-            })
-        })
+        const arr = await cursor.toArray()
+        mongoClient.close()
+        return arr
         
     },
     add:async (member,items)=>{
