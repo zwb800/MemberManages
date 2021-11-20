@@ -19,13 +19,18 @@ export interface Member {
 
 export interface MemberAPI{
   all:(keyword:string)=>Promise<Array<Member>>,
-  add:(member:Member,chargeItems:Uint8Array[])=>Promise<Uint8Array>
+  add:(member:Member,chargeItems:string[])=>Promise<Uint8Array>
 }
 
 export interface PrepaidCard{
-  _id:Uint8Array;
+  _id:string;
   price:number;
   gift:number;
+  head:number;
+  ice:number;
+  ginger:number;
+  hair:number;
+  label:string;
 }
 
 export interface CardAPI{

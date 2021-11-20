@@ -20,7 +20,7 @@
       </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
-          {{card}} {{card2}} {{card3}}
+          <span>{{text?'应付金额:':''}}</span><span class="text-negative text-bold">{{text}}</span>&nbsp;
             <q-btn label="提交" type="submit" color="primary"></q-btn>
               <q-btn label="重置" type="reset"></q-btn>
         </q-card-actions>
@@ -31,9 +31,9 @@
 
 <script lang='ts'>
 import ChargeForm from './ChargeForm.vue'
-import {defineComponent,ref,toRaw } from 'vue'
+import {defineComponent,ref,toRaw,watch } from 'vue'
 import { QDialog } from 'quasar'
-import {Member} from './models'
+import {Member, PrepaidCard} from './models'
 
 export default defineComponent({
     components:{ ChargeForm},
@@ -42,9 +42,9 @@ export default defineComponent({
     ],
    
     setup(props, context){
-      const card = ref(0)
-      const card2 = ref(0)
-      const card3 = ref(0)
+      const card = ref<PrepaidCard>()
+      const card2 = ref<PrepaidCard>()
+      const card3 = ref<PrepaidCard>()
       const paytype = ref(0)
       const member = ref<Member>({
         _id:null,
@@ -53,15 +53,49 @@ export default defineComponent({
         balance:0,
         newCardTime:new Date()
       })
-      
+
+      const text = ref('')
+      watch([card,card2,card3],()=>{
+        text.value = ''
+        if(card.value)
+          text.value += `+${card.value?.price}`
+        
+        
+        if(card2.value)
+        text.value += `+${card2.value?.price}`
+        if(card3.value)
+          text.value += `+${card3.value?.price}`
+
+        text.value = text.value.substring(1)
+
+        if(text.value.includes('+'))
+        {
+          const sum = parseInt(eval(text.value))
+          text.value += `=${sum}`
+        }
+       
+      })
+
       
       const add =  async()=>{
-        const chargeItems = new Array<Uint8Array>()
-        if(card.value>0)
-          chargeItems.push(new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0]))
+        const chargeItems = new Array<string>()
+        if(card.value)
+          chargeItems.push(toRaw(card.value._id))
+        if(card2.value)
+          chargeItems.push(toRaw(card2.value._id))
+        if(card3.value)
+          chargeItems.push(toRaw(card3.value._id))
 
         const insertedId = await window.memberAPI.add(toRaw(member.value),chargeItems)
-        
+        member.value = {
+        _id:null,
+        name:'',
+        no:0,
+        balance:0,
+        newCardTime:new Date()
+      }
+      paytype.value = 0
+      text.value = ''
         dialog.value?.hide()
         context.emit.call(null,'added')
         console.log(insertedId)
@@ -69,6 +103,7 @@ export default defineComponent({
       const dialog = ref<QDialog>()
 
       return {
+        text,
         dialog,
         member,
         add,

@@ -30,7 +30,19 @@ contextBridge.exposeInMainWorld('cardAPI',{
         const cursor = cards.find()
         const arr = await cursor.toArray()
         mongoClient.close()
-        return arr
+        return arr.map(it=>{
+            return {
+                _id:it._id.toString(),
+                price:it.price,
+                gift:it.gift,
+                head:it.head,
+                ice:it.ice,
+                hair:it.hair,
+                ginger:it.ginger,
+                label:it.label
+            }
+            
+        })
     }
 })
 
@@ -49,6 +61,7 @@ contextBridge.exposeInMainWorld('memberAPI', {
         
     },
     add:async (member,items)=>{
+        items = items.map(it=>{return ObjectId.createFromHexString(it)})
         await mongoClient.connect()
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
@@ -65,17 +78,27 @@ contextBridge.exposeInMainWorld('memberAPI', {
             member.no = maxNo.no+1
         else
             member.no = 80000
-        
+        member.balance = 0
+
+        const cards = await db.collection('PrepaidCard')
+        const prepaidcard = await cards.findOne(
+            { 
+                _id:{$in:items},
+                gift:{$exists:true}
+        },
+            {projection:{price:1,gift:1}})
+        if(prepaidcard)
+            member.balance = prepaidcard.price+prepaidcard.gift
+
+
         const result = await members.insertOne(member)
         const chargeItem = db.collection('ChargeItem')
         
         const insertedId = result.insertedId
-        
-        for (const it of items) {
-            const cR = await chargeItem.insertOne({
-                memberId:insertedId,itemId:ObjectId.createFromHexString('000000000000000000000000')})
-            console.log(cR)
-        }
+        const cR = await chargeItem.insertOne({
+            memberId:insertedId,
+            itemId:items})
+        console.log(cR)
         
 
         mongoClient.close()
