@@ -10,7 +10,7 @@ export interface Meta {
 
 
 export interface Member {
-  _id:Uint8Array|null;
+  _id:string;
   no: number;
   name: string;
   balance:number;
@@ -18,8 +18,9 @@ export interface Member {
 }
 
 export interface MemberAPI{
+  get:(id:string)=>Promise<Member>,
   all:(keyword:string)=>Promise<Array<Member>>,
-  add:(member:Member,chargeItems:string[])=>Promise<Uint8Array>
+  add:(member:Member,chargeItems:PrepaidCard[],employees:Employee[])=>Promise<Uint8Array>
 }
 
 export interface PrepaidCard{
@@ -41,6 +42,7 @@ declare global {
   interface Window{
     memberAPI:MemberAPI;
     cardAPI:CardAPI;
+    employeeAPI:EmployeeAPI;
   }
  
 }
@@ -48,4 +50,13 @@ declare global {
 export interface ChargeItem{
   _id:Uint8Array;
 
+}
+
+export interface Employee{
+  _id:string;
+  name:string;
+}
+
+export interface EmployeeAPI{
+  all:()=>Promise<Array<Employee>>;
 }

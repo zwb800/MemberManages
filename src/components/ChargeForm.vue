@@ -27,20 +27,20 @@
             {label:'现金',value:1000}
           ]"></q-btn-toggle>
           
-           <employee-options></employee-options>
+           <employee-options v-model="employeesC"></employee-options>
 </div>
 </template>
 
 <script lang='ts'>
 import EmployeeOptions from './EmployeeOptions.vue'
 import { defineComponent,ref,watch,onMounted } from 'vue'
-import { PrepaidCard } from './models'
+import { Employee, PrepaidCard } from './models'
 export default defineComponent({
     components:{
         EmployeeOptions,
     },
-    props:['card','card2','card3','pay'],
-    emits:['update:card','update:card2','update:card3','update:pay'],
+    props:['card','card2','card3','pay','employees'],
+    emits:['update:card','update:card2','update:card3','update:pay','update:employees'],
 
     setup(props,context){
       const cardtype1 = ref<PrepaidCard>(props.card)
@@ -69,7 +69,6 @@ export default defineComponent({
       var cardoptions3 = ref<{label:string,value:PrepaidCard}[]>([])
       onMounted(async ()=>{
         const cards = await window.cardAPI.all()
-        
         cardoptions.value = cards.filter((it)=>it.gift).map((c)=>{
             return {
               value : c,
@@ -89,6 +88,12 @@ export default defineComponent({
           })
  
       })
+
+      const employeesC = ref(Array<Employee>())
+
+      watch(employeesC,()=>{
+        context.emit('update:employees',employeesC.value)
+      })
       
       return {
         cardoptions,
@@ -97,7 +102,8 @@ export default defineComponent({
         cardtype1,
         cardtype2,
         cardtype3,
-        paytype
+        paytype,
+        employeesC
       }
     },
 })

@@ -16,7 +16,12 @@
             :rules="[ val => val && val.length >0 || '请输入手机号'] "></q-input>
           </div>
       
-      <charge-form v-model:card="card" v-model:card2="card2" v-model:card3="card3" v-model:pay="paytype"></charge-form>
+      <charge-form 
+      v-model:card="card" 
+      v-model:card2="card2" 
+      v-model:card3="card3" 
+      v-model:pay="paytype"
+      v-model:employees="employees"></charge-form>
       </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
@@ -33,7 +38,7 @@
 import ChargeForm from './ChargeForm.vue'
 import {defineComponent,ref,toRaw,watch } from 'vue'
 import { QDialog } from 'quasar'
-import {Member, PrepaidCard} from './models'
+import {Member, PrepaidCard,Employee} from './models'
 
 export default defineComponent({
     components:{ ChargeForm},
@@ -46,8 +51,9 @@ export default defineComponent({
       const card2 = ref<PrepaidCard>()
       const card3 = ref<PrepaidCard>()
       const paytype = ref(0)
+      const employees = ref(Array<Employee>())
       const member = ref<Member>({
-        _id:null,
+        _id:'',
         name:'',
         no:0,
         balance:0,
@@ -76,24 +82,30 @@ export default defineComponent({
        
       })
 
+ 
       
       const add =  async()=>{
-        const chargeItems = new Array<string>()
+        const chargeItems = new Array<PrepaidCard>()
         if(card.value)
-          chargeItems.push(toRaw(card.value._id))
+          chargeItems.push(toRaw(card.value))
         if(card2.value)
-          chargeItems.push(toRaw(card2.value._id))
+          chargeItems.push(toRaw(card2.value))
         if(card3.value)
-          chargeItems.push(toRaw(card3.value._id))
+          chargeItems.push(toRaw(card3.value))
 
-        const insertedId = await window.memberAPI.add(toRaw(member.value),chargeItems)
+        
+        const insertedId = await window.memberAPI.add(
+          toRaw(member.value),
+          chargeItems,
+          toRaw(employees.value))
         member.value = {
-        _id:null,
-        name:'',
-        no:0,
-        balance:0,
-        newCardTime:new Date()
-      }
+          _id:'',
+          name:'',
+          no:0,
+          balance:0,
+          newCardTime:new Date()
+        }
+
       paytype.value = 0
       text.value = ''
         dialog.value?.hide()
@@ -103,6 +115,7 @@ export default defineComponent({
       const dialog = ref<QDialog>()
 
       return {
+        employees,
         text,
         dialog,
         member,

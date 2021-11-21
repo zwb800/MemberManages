@@ -20,49 +20,65 @@ import { contextBridge } from 'electron'
 import { MongoClient } from 'mongodb'
 import { ObjectId } from 'bson'
 
-const mongoClient = new MongoClient('mongodb://localhost:27017')
+
+const connect = async()=>{
+    const mongoClient = new MongoClient('mongodb://localhost:27017')
+    await mongoClient.connect()
+    return mongoClient
+}
+
+contextBridge.exposeInMainWorld('employeeAPI',{
+    all:async()=>{
+        const mongoClient = await connect()
+        const db = mongoClient.db('MemberManages')
+        const employees = await db.collection('Employee')
+        const cursor = employees.find()
+        const arr = await cursor.toArray()
+        await mongoClient.close()
+        arr.forEach(v=>v._id = v._id.toString())
+        return arr
+}
+
+})
 
 contextBridge.exposeInMainWorld('cardAPI',{
     all:async ()=>{
-        await mongoClient.connect()
+        const mongoClient = await connect()
         const db = mongoClient.db('MemberManages')
         const cards = await db.collection('PrepaidCard')
         const cursor = cards.find()
         const arr = await cursor.toArray()
-        mongoClient.close()
-        return arr.map(it=>{
-            return {
-                _id:it._id.toString(),
-                price:it.price,
-                gift:it.gift,
-                head:it.head,
-                ice:it.ice,
-                hair:it.hair,
-                ginger:it.ginger,
-                label:it.label
-            }
-            
-        })
+        await mongoClient.close()
+        arr.forEach(v=>v._id = v._id.toString())
+        return arr
     }
 })
 
 contextBridge.exposeInMainWorld('memberAPI', {
+    get:async(id)=>{
+        const mongoClient = await connect()
+        const db = mongoClient.db('MemberManages')
+        const members = db.collection('Member')
+        return await members.findOne({_id:ObjectId.createFromHexString(id)}) 
+    },
     all:async (keyword)=>{
-        await mongoClient.connect()
+        const mongoClient = await connect()
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
         
         const cursor = members.find({$or:[{name:{$regex:keyword}},{phone:{$regex:keyword}}]},{
             sort:{no:-1}
         })
-        const arr = await cursor.toArray()
-        mongoClient.close()
+        const arr = await (await cursor.toArray())
+        arr.forEach(v=>v._id = v._id.toString())
+        await mongoClient.close()
         return arr
         
     },
-    add:async (member,items)=>{
-        items = items.map(it=>{return ObjectId.createFromHexString(it)})
-        await mongoClient.connect()
+    add:async (member,items,employees)=>{
+        items = items.map(it=>{return ObjectId.createFromHexString(it._id)})
+        employees = employees.map(it=>{return ObjectId.createFromHexString(it._id)})
+        const mongoClient = await connect()
         const db = mongoClient.db('MemberManages')
         const members = db.collection('Member')
 
@@ -78,30 +94,63 @@ contextBridge.exposeInMainWorld('memberAPI', {
             member.no = maxNo.no+1
         else
             member.no = 80000
+        member.head = 0
         member.balance = 0
+        member.hair = 0
+        member.ice = 0
+        member.ginger = 0
+        member.facemask = 0
+        member.eye = 0
 
         const cards = await db.collection('PrepaidCard')
-        const prepaidcard = await cards.findOne(
+        const cursorCards = await cards.find(
             { 
-                _id:{$in:items},
-                gift:{$exists:true}
-        },
-            {projection:{price:1,gift:1}})
-        if(prepaidcard)
-            member.balance = prepaidcard.price+prepaidcard.gift
-
-
+                _id:{$in:items}
+        })
+        const cs = await cursorCards.toArray()
+        debugger
+        cs.forEach(c=>{
+            if(c.gift){
+                member.balance += (c.price+c.gift)
+            }
+            else if(c.head)
+            {
+                member.head += c.head
+            }
+            else if(c.eye)
+            {
+                member.eye += c.eye
+            }
+            else if(c.facemask)
+            {
+                member.facemask += c.facemask
+            }
+            else if(c.ice)
+            {
+                member.ice += c.ice
+            }
+            else if(c.ginger)
+            {
+                member.ginger += c.ginger
+            }
+            else if(c.hair)
+            {
+                member.hair += c.hair
+            }
+        })
+           
         const result = await members.insertOne(member)
         const chargeItem = db.collection('ChargeItem')
         
         const insertedId = result.insertedId
         const cR = await chargeItem.insertOne({
             memberId:insertedId,
+            employees,
             itemId:items})
         console.log(cR)
         
 
-        mongoClient.close()
+        await mongoClient.close()
         return insertedId
         
     }

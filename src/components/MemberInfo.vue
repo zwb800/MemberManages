@@ -17,7 +17,7 @@
   </q-tabs>
   <q-tab-panels v-model="tab" style="min-height:320px">
       <q-tab-panel name="info">
-        <member-info-bar></member-info-bar>
+        <member-info-bar :member="member"></member-info-bar>
       </q-tab-panel>
       <q-tab-panel name="charge">
           <q-table flat></q-table>
@@ -37,22 +37,23 @@
 </q-dialog>
 </template>
 
-<script>
+<script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
 import { defineComponent,toRaw } from 'vue'
+import { Member } from './models'
 export default defineComponent({
     components:{
         MemberInfoBar
     },
-    props:['memberId'],
+    props:['member'],
    
-    methods:{
-        show(){
-            console.log(toRaw(this.memberId))
-        }
-    },
-    data(){
+
+    setup(props){
+
         return {
+            show:()=>{
+                console.log(props.member)
+            },
             tab:'info',
             consumeData:{
                 rows:[
