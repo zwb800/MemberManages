@@ -108,7 +108,7 @@ contextBridge.exposeInMainWorld('memberAPI', {
                 _id:{$in:items}
         })
         const cs = await cursorCards.toArray()
-        debugger
+        
         cs.forEach(c=>{
             if(c.gift){
                 member.balance += (c.price+c.gift)
