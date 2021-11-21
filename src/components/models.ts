@@ -10,7 +10,7 @@ export interface Meta {
 
 
 export interface Member {
-  _id:string;
+  _id:string|null;
   no: number;
   name: string;
   balance:number;

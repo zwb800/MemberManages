@@ -39,7 +39,7 @@
 
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
-import { defineComponent,toRaw } from 'vue'
+import { defineComponent,toRaw,ref } from 'vue'
 import { Member } from './models'
 export default defineComponent({
     components:{
@@ -54,7 +54,7 @@ export default defineComponent({
             show:()=>{
                 console.log(props.member)
             },
-            tab:'info',
+            tab:ref('info'),
             consumeData:{
                 rows:[
                     { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},

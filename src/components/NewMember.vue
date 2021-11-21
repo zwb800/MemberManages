@@ -53,7 +53,7 @@ export default defineComponent({
       const paytype = ref(0)
       const employees = ref(Array<Employee>())
       const member = ref<Member>({
-        _id:'',
+        _id:null,
         name:'',
         no:0,
         balance:0,
@@ -99,7 +99,7 @@ export default defineComponent({
           chargeItems,
           toRaw(employees.value))
         member.value = {
-          _id:'',
+          _id:null,
           name:'',
           no:0,
           balance:0,
