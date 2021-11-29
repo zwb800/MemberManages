@@ -1,24 +1,37 @@
 <template>
 <q-btn-group>
   <template :key="row.value" v-for="row in options">
-            <q-btn @click="selected = 0" :color="toggleColor" v-if='row.value == selected' :label='row.label'></q-btn>
-            <q-btn @click="selected = row.value" v-else :label='row.label'></q-btn>
+           <q-btn :size="size" @click="unSelected(row)" color="primary" v-if='row.selected' :label='row.label'></q-btn>
+            <q-btn  :size="size" @click="selected(row)" v-else :label='row.label'></q-btn>
         </template>
 </q-btn-group>
 </template>
 
 <script lang='ts'>
-import { defineComponent,ref,watch } from 'vue'
+import { defineComponent } from 'vue'
+import { Employee } from './models'
+
+interface option{
+    // value:Employee;
+    label:string;
+    selected:boolean;
+}
+
 export default  defineComponent ({
-    props:['options','toggleColor','modelValue'],
+    props:['options','toggleColor','modelValue','size'],
     emits:['update:modelValue'],
     setup(props,context){
-        const selected = ref<number>(props.modelValue)
-        watch(selected,()=>{
-            context.emit('update:modelValue',selected.value)
-        })
         return {
-            selected
+            selected(v:option){
+                v.selected = true
+                // context.emit('update:modelValue',
+                // rows.value)
+            },
+            unSelected(v:option){
+                v.selected = false
+            //    context.emit('update:modelValue',
+            //     rows.value)
+            }
         }
     }
 })

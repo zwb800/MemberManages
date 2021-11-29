@@ -21,9 +21,6 @@ interface option{
 export default defineComponent({
     props:['modelValue'],
     emits:['update:modelValue'],
-    methods:{
-        
-    },
     setup(props,context){
         
         const rows = ref<Array<option>>()

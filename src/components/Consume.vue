@@ -1,14 +1,14 @@
 <template>
 <q-dialog v-model="value" persistent>
-    <q-card class="" style="">
+    <q-card class=""  >
         <q-bar class="bg-primary text-white">
-          <div>划卡</div>
+          <div>划卡 {{member.name}} {{member.phone}}</div>
           <q-space />
           <q-btn dense flat icon="close" v-close-popup></q-btn>
         </q-bar>
         <q-card-section class="">
 <div class="q-gutter-md">
-        <member-info-bar></member-info-bar>
+        <member-info-bar :member="member"></member-info-bar>
         
         <p class="q-mt-none">消费项目</p>
         <div style="min-width:400px" class="q-mt-none">
@@ -38,7 +38,7 @@
         <template :key="row.name" v-for="row in rows">
         <q-btn v-if='row.count>0'
                 color='primary' 
-                :label='row.name+" x "+row.count'
+                :label='row.name+"("+row.count+")"'
                 @click.left='row.count++'
                  @click.right='row.count--'></q-btn>
                 <q-btn v-else
@@ -47,7 +47,22 @@
                 </template>
         </q-btn-group>
         </div>
-        <employee-options></employee-options>
+     
+          
+        <p class="q-mb-none">头疗师</p>
+        <btn-toggle :options="employee"></btn-toggle>
+        <div class="row q-gutter-sm">
+         <template :key="e.name" v-for="e in employee.filter(e=>e.selected)">
+            <div>
+            <p class="q-mb-sm">{{e.label}}</p>
+            <div>
+                <btn-toggle
+                :options="e.items"></btn-toggle>
+            </div>
+            </div>
+            
+        </template>
+        </div>
         </div>
         </q-card-section>
         <q-separator></q-separator>
@@ -60,40 +75,52 @@
 </template>
 
 <script lang="ts">
-import EmployeeOptions from './EmployeeOptions.vue'
 import MemberInfoBar from './MemberInfoBar.vue'
-import {defineComponent} from 'vue'
+import {defineComponent,ref,onMounted,watch} from 'vue'
+import { Employee } from './models'
+import BtnToggle  from './BtnToggle.vue'
+interface option{
+    // value:Employee;
+    label:string;
+    selected:boolean;
+}
+
 export default defineComponent( {
-  components: { EmployeeOptions,MemberInfoBar },
-  props:{
-        modelValue:Boolean
-    },
-    computed:{
-        value:{
-            get(){
-                return this.modelValue
-            },
-            set(value:boolean){
-                this.$emit('update:modelValue',value)
-            }
-        }
-    },
-    data(){
+  components: { MemberInfoBar,BtnToggle },
+  props:['member'],
+   
+    setup(props){
+        const employee = ref<Array<option>>()
+        onMounted(async ()=>{
+            employee.value = (await window.employeeAPI.all()).map((e)=>{
+                            return {
+                                // value:e,
+                                label:e.name,
+                                selected:false,
+                                items:[
+                    {label:'头'},
+                    {label:'眼'},{label:'面'},{label:'姜'},]
+                            }
+                        })
+        })
+
+  
         return {
+            employee,
+            show:()=>{
+                console.log(props.member)
+            },
             selected:[],
-            rows:[
-                {name:'头疗',price:48,count:2},
+            rows:ref([
+                {name:'头疗',price:48,count:0},
                 {name:'眼疗',price:30,count:0},
+                {name:'面膜',price:30,count:0},
                 {name:'姜疗',price:48,count:0},
                 {name:'冰疗',price:55,count:0},
                 {name:'发疗',price:98,count:0},
                 {name:'头皮养护',price:88,count:0},
-                {name:'面膜',price:30,count:0}
-            ],
-            columns:[
-                { label:'项目',field:'name'},
-                { label:'价格',field:'price'}
-            ]
+                
+            ])
         }
     }
 })

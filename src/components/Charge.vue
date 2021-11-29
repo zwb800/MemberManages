@@ -2,13 +2,13 @@
 <q-dialog persistent>
     <q-card style="min-width:600px">
         <q-bar class="bg-secondary text-white">
-          <div>充值</div>
+          <div>充值 {{member.name}} {{member.phone}}</div>
           <q-space />
           <q-btn dense flat icon="close" v-close-popup></q-btn>
         </q-bar>
 
         <q-card-section class="q-pt-none">
-<member-info-bar></member-info-bar>
+<member-info-bar :member="member"></member-info-bar>
   <charge-form></charge-form>
   </q-card-section>
         <q-separator></q-separator>
@@ -26,6 +26,7 @@ import MemberInfoBar from './MemberInfoBar.vue'
 import {defineComponent} from 'vue'
 export default defineComponent({
     components:{ ChargeForm, MemberInfoBar},
+    props:['member'],
 
 })
 </script>

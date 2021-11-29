@@ -2,7 +2,7 @@
 <q-dialog ref="dialog" @show="show" persistent>
     <q-card class="full-width">
         <q-bar class="bg-info text-white">
-          <div>会员详情</div>
+          <div>会员详情 {{member.name}} {{member.phone}}</div>
           <q-space />
           <q-btn dense flat icon="close" v-close-popup></q-btn>
         </q-bar>
@@ -39,15 +39,12 @@
 
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
-import { defineComponent,toRaw,ref } from 'vue'
-import { Member } from './models'
+import { defineComponent,ref } from 'vue'
 export default defineComponent({
     components:{
         MemberInfoBar
     },
     props:['member'],
-   
-
     setup(props){
 
         return {

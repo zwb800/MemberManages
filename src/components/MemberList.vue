@@ -26,8 +26,8 @@
             </q-card-section>
             <q-separator></q-separator>
             <q-card-actions>
-                <q-btn size="sm" color="primary" @click="consume = true">划卡</q-btn>
-                <q-btn size="sm" color="secondary" @click="charge = true">充值</q-btn>
+                <q-btn size="sm" color="primary" @click="member = props.row;consume = true">划卡</q-btn>
+                <q-btn size="sm" color="secondary" @click="member = props.row;charge = true">充值</q-btn>
                 <q-btn size="sm" color="info" @click="member = props.row;memberinfo = true">详情</q-btn>
             </q-card-actions>
         </q-card>    
@@ -37,9 +37,9 @@
    
 </div>
 <new-member v-model="newmember" @added="getMembers"></new-member>
-<consume v-model="consume"></consume>
+<consume v-model="consume" :member="member"></consume>
 <member-info v-model="memberinfo" :member="member"></member-info>
-<charge v-model="charge"></charge>
+<charge v-model="charge" :member="member"></charge>
 </template>
 
 <script lang="ts">
