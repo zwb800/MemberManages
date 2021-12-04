@@ -21,7 +21,7 @@ export interface MemberAPI{
   get:(id:string)=>Promise<Member>,
   all:(keyword:string)=>Promise<Array<Member>>,
   add:(member:Member,chargeItems:PrepaidCard[],employees:Employee[])=>Promise<Uint8Array>,
-  consume:(memberId:string,serviceItems:string[])=>Promise<Uint8Array>
+  consume:(memberId:string,serviceItems:Array<{_id:string,count:number}>)=>Promise<Uint8Array>
 }
 
 export interface PrepaidCard{
@@ -39,11 +39,22 @@ export interface CardAPI{
   all:()=>Promise<Array<PrepaidCard>>
 }
 
+export interface ServiceItem{
+  _id:string,
+  name:string,
+  price:number
+}
+
+export interface ServiceItemAPI{
+  all:()=>Promise<Array<ServiceItem>>
+}
+
 declare global {
   interface Window{
     memberAPI:MemberAPI;
     cardAPI:CardAPI;
     employeeAPI:EmployeeAPI;
+    serviceItemAPI:ServiceItemAPI;
   }
  
 }

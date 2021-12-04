@@ -2,7 +2,7 @@
 <q-dialog persistent>
     <q-card style="min-width:600px">
         <q-bar class="bg-secondary text-white">
-          <div>充值 {{member.name}} {{member.phone}}</div>
+          <div>充值</div>
           <q-space />
           <q-btn dense flat icon="close" v-close-popup></q-btn>
         </q-bar>

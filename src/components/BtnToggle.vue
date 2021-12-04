@@ -9,7 +9,6 @@
 
 <script lang='ts'>
 import { defineComponent } from 'vue'
-import { Employee } from './models'
 
 interface option{
     // value:Employee;
@@ -20,7 +19,7 @@ interface option{
 export default  defineComponent ({
     props:['options','toggleColor','modelValue','size'],
     emits:['update:modelValue'],
-    setup(props,context){
+    setup(){
         return {
             selected(v:option){
                 v.selected = true

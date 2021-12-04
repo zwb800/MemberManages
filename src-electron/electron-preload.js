@@ -27,6 +27,20 @@ const connect = async()=>{
     return mongoClient
 }
 
+contextBridge.exposeInMainWorld('serviceItemAPI',{
+    all:async()=>{
+        const mongoClient = await connect()
+        const db = mongoClient.db('MemberManages')
+        const serviceItems = await db.collection('ServiceItem')
+        const cursor = serviceItems.find()
+        const arr = await cursor.toArray()
+        await mongoClient.close()
+        arr.forEach(v=>v._id = v._id.toString())
+        return arr
+}
+
+})
+
 contextBridge.exposeInMainWorld('employeeAPI',{
     all:async()=>{
         const mongoClient = await connect()
@@ -55,6 +69,21 @@ contextBridge.exposeInMainWorld('cardAPI',{
 })
 
 contextBridge.exposeInMainWorld('memberAPI', {
+    consume:async(id,serviceItems)=>{
+        const mongoClient = await connect()
+        const db = mongoClient.db('MemberManages')
+        const members = db.collection('Member')
+        const m = await members.findOne({_id:ObjectId.createFromHexString(id)}) 
+        const consumes = db.collection('Consumes')
+        const result = await consumes.insertOne({
+            memberId:ObjectId.createFromHexString(id),
+            serviceItems:serviceItems.map((e)=>{
+                return {_id:e._id,count:e.count}
+            })
+        })
+        const insertedId = result.insertedId
+        return insertedId
+    },
     get:async(id)=>{
         const mongoClient = await connect()
         const db = mongoClient.db('MemberManages')

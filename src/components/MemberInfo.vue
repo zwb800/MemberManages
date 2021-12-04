@@ -2,7 +2,7 @@
 <q-dialog ref="dialog" @show="show" persistent>
     <q-card class="full-width">
         <q-bar class="bg-info text-white">
-          <div>会员详情 {{member.name}} {{member.phone}}</div>
+          <div>会员详情</div>
           <q-space />
           <q-btn dense flat icon="close" v-close-popup></q-btn>
         </q-bar>
