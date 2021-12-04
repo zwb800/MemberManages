@@ -42,6 +42,7 @@ export interface CardAPI{
 export interface ServiceItem{
   _id:string,
   name:string,
+  shortName:string,
   price:number
 }
 

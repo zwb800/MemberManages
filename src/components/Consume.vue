@@ -15,14 +15,14 @@
         <div style="min-width:400px" class="q-mt-none">
             
         <q-btn-group>
-        <template :key="row.name" v-for="row in rows">
+        <template :key="row.label" v-for="row in rows">
         <q-btn v-if='row.count>0'
                 color='primary' 
-                :label='row.name+"("+row.count+")"'
+                :label='row.label+"("+row.count+")"'
                 @click.left='row.count++'
                  @click.right='row.count--'></q-btn>
                 <q-btn v-else
-                :label='row.name'
+                :label='row.label'
                 @click.left='row.count++'></q-btn>
                 </template>
         </q-btn-group>
@@ -32,7 +32,7 @@
         <p>头疗师</p>
         <btn-toggle class="q-mt-none" :options="employee"></btn-toggle>
         <div class="row q-gutter-sm q-mt-none">
-         <template :key="e.name" v-for="e in employee.filter(e=>e.selected)">
+         <template :key="e.label" v-for="e in employee.filter(e=>e.selected)">
             <div>
             <p class="q-mb-sm">{{e.label}}</p>
             <div>
@@ -63,9 +63,16 @@ import {defineComponent,ref,onMounted,toRaw} from 'vue'
 import { QDialog } from 'quasar'
 import BtnToggle  from './BtnToggle.vue'
 interface option{
-    // value:Employee;
+    value:{_id:string};
     label:string;
     selected:boolean;
+    items:Array<{value:string,label:string,selected:boolean}>;
+}
+
+interface MultiSelectedOption{
+    label:string,
+    count:number,
+    value:{_id:string,shortName:string}
 }
 
 export default defineComponent( {
@@ -74,55 +81,86 @@ export default defineComponent( {
    
     setup(props,context){
         const employee = ref<Array<option>>()
-
+        let initEmployee = Array<option>()
         const rows = ref<
-        Array<{_id:string,name:string,count:number}>>()
+        Array<MultiSelectedOption>>()
+        let initRow =  new Array<MultiSelectedOption>()
+        const init = ()=>{
+            employee.value = JSON.parse(
+            JSON.stringify(initEmployee)) as Array<option>
+            rows.value = JSON.parse(JSON.stringify(initRow)) as 
+            Array<MultiSelectedOption>
+        }
 
+        onMounted(async ()=>{
 
-        const init= async ()=>{
-            employee.value = (await window.employeeAPI.all()).map((e)=>{
+             initRow = (await window.serviceItemAPI.all())
+                .map(((e)=>{
+                    return {
+                        label:e.name,
+                        count:0,
+                        value:e
+                    }
+                }))
+
+                const eItems = initRow.map(e=>{
+                    return {
+                          value:e.value._id,
+                        label:e.value.shortName,
+                        selected:false,
+                    }
+                })
+
+            initEmployee = (await window.employeeAPI.all()).map((e)=>{
                             return {
-                                // value:e,
+                                value:e,
                                 label:e.name,
                                 selected:false,
-                                items:[
-                    {label:'头'},
-                    {label:'眼'},
-                    {label:'面'},
-                    {label:'姜'},]
+                                items:
+                                JSON.parse(JSON.stringify(eItems)) as 
+                                Array<{value:string,label:string,selected:boolean}>
                             }
                         })
 
-            rows.value = (await window.serviceItemAPI.all())
-                .map(((e)=>{
-                    return {
-                        _id:e._id,
-                        name:e.name,
-                        count:0
-                    }
-                }))
-        }
+            
 
-        onMounted(init)
+           
+
+              init()
+        })
+
         const dialog = ref<QDialog>()
         return {
             employee,
-            show:async ()=>{
-                await init()
+            show: ()=>{
+                init()
             },
             submit:async ()=>{
                 if(rows.value!=undefined)
                 {
+                    const es = employee.value?.filter(p=>p.selected).map(p=>{
+                        return {
+                            memberId:p.value._id,
+                            items:p.items.filter(pp=>pp.selected).map(pp=>pp.value)
+                            }
+                    })
+
+                    console.log(es)
                     const selectedItems = (rows.value.filter(p=>p.count>0))
                     const insertedId = await window.memberAPI.consume(props.member._id,
-                    selectedItems.map(p=>toRaw(p)))
-
-                    dialog.value?.hide()
-                    context.emit.call(null,'consumed')
-                    console.log(insertedId)
+                    selectedItems.map((p)=>{
+                        return {
+                            _id:p.value._id,
+                            count:p.count
+                        }
+                    }))
+                    if(insertedId!=null)
+                    {
+                        dialog.value?.hide()
+                        context.emit.call(null,'consumed')
+                    }
+                    
                 }
-
-                
             },
             dialog,
             selected:[],
