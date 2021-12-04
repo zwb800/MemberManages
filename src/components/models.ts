@@ -20,7 +20,8 @@ export interface Member {
 export interface MemberAPI{
   get:(id:string)=>Promise<Member>,
   all:(keyword:string)=>Promise<Array<Member>>,
-  add:(member:Member,chargeItems:PrepaidCard[],employees:Employee[])=>Promise<Uint8Array>
+  add:(member:Member,chargeItems:PrepaidCard[],employees:Employee[])=>Promise<Uint8Array>,
+  consume:(memberId:string,serviceItems:string[])=>Promise<Uint8Array>
 }
 
 export interface PrepaidCard{

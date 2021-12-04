@@ -9,31 +9,10 @@
         <q-card-section class="">
 <div class="q-gutter-md">
         <member-info-bar :member="member"></member-info-bar>
-        
+        <q-form @submit="submit" greedy>
         <p class="q-mt-none">消费项目</p>
         <div style="min-width:400px" class="q-mt-none">
-        <!-- <q-table
-        grid
-        flat
-        rows-per-page-options="0"
-        hide-bottom
-        row-key="name"
-        v-model:selected="selected"
-        class="q-mt-none"
-        selection="multiple" 
-        :rows="rows" 
-        :columns="columns">
-        <template v-slot:item="props">
-             <q-card class="q-ma-xs cursor-pointer" tag="label" v-bind:class="{'bg-primary text-white':props.selected}">
-                <q-card-section horizontal class="text-center q-pa-sm">
-                    <p class="q-mb-none">{{props.row.name}}</p>
-                    <p class="q-mb-none">￥{{props.row.price}}</p>
-                    <q-checkbox class="hidden" dense v-model="props.selected"/>
-                </q-card-section>
-            </q-card> 
             
-        </template>
-        </q-table> -->
         <q-btn-group>
         <template :key="row.name" v-for="row in rows">
         <q-btn v-if='row.count>0'
@@ -49,7 +28,7 @@
         </div>
      
           
-        <p class="q-mb-none">头疗师</p>
+        <p class="q-mt-md">头疗师</p>
         <btn-toggle :options="employee"></btn-toggle>
         <div class="row q-gutter-sm">
          <template :key="e.name" v-for="e in employee.filter(e=>e.selected)">
@@ -63,7 +42,9 @@
             
         </template>
         </div>
+        </q-form>
         </div>
+        
         </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
@@ -87,7 +68,7 @@ interface option{
 
 export default defineComponent( {
   components: { MemberInfoBar,BtnToggle },
-  props:['member'],
+  props:{'member':{type:Object}},
    
     setup(props){
         const employee = ref<Array<option>>()
@@ -109,6 +90,9 @@ export default defineComponent( {
             employee,
             show:()=>{
                 console.log(props.member)
+            },
+            submit:async ()=>{
+                await window.memberAPI.consume(props.member?._id,[])
             },
             selected:[],
             rows:ref([
