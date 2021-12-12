@@ -17,11 +17,30 @@ export interface Member {
   newCardTime:Date;
 }
 
+export interface ConsumeView{
+  time:Date;
+  product:Array<{name:string,count:number}>;
+  price:number;
+}
+
+export interface MemberView{
+  member:Member;
+  balances:Array<{serviceItemName:string,balance:number}>;
+}
+
 export interface MemberAPI{
-  get:(id:string)=>Promise<Member>,
+  get:(id:string)=>Promise<MemberView>,
   all:(keyword:string)=>Promise<Array<Member>>,
   add:(member:Member,chargeItems:PrepaidCard[],employees:Employee[])=>Promise<Uint8Array>,
-  consume:(memberId:string,serviceItems:Array<{_id:string,count:number}>)=>Promise<Uint8Array>
+  
+}
+
+export interface ConsumeAPI{
+  consume:(
+    memberId:string,
+    serviceItems:Array<{serviceItemId:string,count:number}>,
+    employees:Array<{employeeId:string,items:Array<string>}>)=>Promise<Uint8Array>,
+  getConsumeList:(memberId:string)=>Promise<Array<ConsumeView>>
 }
 
 export interface PrepaidCard{
@@ -56,6 +75,7 @@ declare global {
     cardAPI:CardAPI;
     employeeAPI:EmployeeAPI;
     serviceItemAPI:ServiceItemAPI;
+    consumeAPI:ConsumeAPI;
   }
  
 }

@@ -18,8 +18,6 @@
       
       <charge-form 
       v-model:card="card" 
-      v-model:card2="card2" 
-      v-model:card3="card3" 
       v-model:pay="paytype"
       v-model:employees="employees"></charge-form>
       </q-card-section>
@@ -48,8 +46,6 @@ export default defineComponent({
    
     setup(props, context){
       const card = ref<PrepaidCard>()
-      const card2 = ref<PrepaidCard>()
-      const card3 = ref<PrepaidCard>()
       const paytype = ref(0)
       const employees = ref(Array<Employee>())
       const member = ref<Member>({
@@ -61,17 +57,10 @@ export default defineComponent({
       })
 
       const text = ref('')
-      watch([card,card2,card3],()=>{
+      watch(card,()=>{
         text.value = ''
         if(card.value)
           text.value += `+${card.value?.price}`
-        
-        
-        if(card2.value)
-        text.value += `+${card2.value?.price}`
-        if(card3.value)
-          text.value += `+${card3.value?.price}`
-
         text.value = text.value.substring(1)
 
         if(text.value.includes('+'))
@@ -81,17 +70,11 @@ export default defineComponent({
         }
        
       })
-
- 
       
       const add =  async()=>{
         const chargeItems = new Array<PrepaidCard>()
         if(card.value)
           chargeItems.push(toRaw(card.value))
-        if(card2.value)
-          chargeItems.push(toRaw(card2.value))
-        if(card3.value)
-          chargeItems.push(toRaw(card3.value))
 
         
         const insertedId = await window.memberAPI.add(
@@ -106,8 +89,9 @@ export default defineComponent({
           newCardTime:new Date()
         }
 
-      paytype.value = 0
-      text.value = ''
+        paytype.value = 0
+        text.value = ''
+        card.value = undefined
         dialog.value?.hide()
         context.emit.call(null,'added')
         console.log(insertedId)
@@ -121,8 +105,6 @@ export default defineComponent({
         member,
         add,
         card,
-        card2,
-        card3,
         paytype
       }
     }

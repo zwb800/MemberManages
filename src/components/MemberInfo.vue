@@ -1,5 +1,5 @@
 <template>
-<q-dialog ref="dialog" @show="show" persistent>
+<q-dialog ref="dialog" @before-show="show" persistent>
     <q-card class="full-width">
         <q-bar class="bg-info text-white">
           <div>会员详情</div>
@@ -23,7 +23,7 @@
           <q-table flat></q-table>
       </q-tab-panel>
       <q-tab-panel name="consume" class="q-pa-none">
-          <q-table :rows="consumeData.rows" :columns="consumeData.columns" flat></q-table>
+          <q-table :rows="consumeRows" :columns="consumeColumns" flat></q-table>
       </q-tab-panel>
   </q-tab-panels>
   </q-card-section>
@@ -40,34 +40,33 @@
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
 import { defineComponent,ref } from 'vue'
+import { ConsumeView } from './models'
 export default defineComponent({
     components:{
         MemberInfoBar
     },
-    props:['member'],
+   props:{'member':{type:Object,required:true}},
     setup(props){
 
+        const consumeRows = ref<Array<ConsumeView>>()
+        const tab = ref('info')
         return {
-            show:()=>{
-                console.log(props.member)
+            show:async ()=>{
+                tab.value = 'info'
+                consumeRows.value = await window.consumeAPI.getConsumeList(props.member._id)
             },
-            tab:ref('info'),
-            consumeData:{
-                rows:[
-                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
-                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
-                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
-                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
-                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
-                    { time:'2021-8-19 19:12',product:'头疗 + 眼疗',price:'78'},
-                ],
-                columns:[
-                { label:'时间',field:'time',style:'width:100px'},
-                { label:'项目',field:'product'},
+            tab,
+            consumeRows,
+            consumeColumns:[
+                { label:'时间',field:'time',
+                format:(d:Date)=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`},
+                { label:'项目',field:'product',format:(p:Array<{name:string,count:number}>)=>{
+                    let result = ''
+                    p.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
+                    return result
+                }},
                 { label:'金额',field:'price'},
-
             ]
-            }
         }
     }
 })

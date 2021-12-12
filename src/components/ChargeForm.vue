@@ -5,19 +5,19 @@
               <p class="q-mb-sm">储值卡</p>
               <q-btn-toggle clearable
               toggle-color="primary"
-              v-model="cardtype1" :options="cardoptions"></q-btn-toggle>
+              v-model="cardtype" :options="cardoptions"></q-btn-toggle>
             </div>
             <div class="col-4 q-ml-md">
               <p class="q-mb-sm">次卡</p>
               <q-btn-toggle clearable
               toggle-color="primary"
-              v-model="cardtype2" :options="cardoptions2"></q-btn-toggle>
+              v-model="cardtype" :options="cardoptions2"></q-btn-toggle>
             </div>
           </div>
           <p class="q-mb-none">套盒</p>
           <q-btn-toggle clearable
            toggle-color="primary"
-           v-model="cardtype3" :options="cardoptions3"></q-btn-toggle>
+           v-model="cardtype" :options="cardoptions3"></q-btn-toggle>
         <p class="q-mb-none">支付方式</p>
           <q-btn-toggle
            v-model="paytype" :options="[
@@ -39,25 +39,15 @@ export default defineComponent({
     components:{
         EmployeeOptions,
     },
-    props:['card','card2','card3','pay','employees'],
-    emits:['update:card','update:card2','update:card3','update:pay','update:employees'],
+    props:['card','pay','employees'],
+    emits:['update:card','update:pay','update:employees'],
 
     setup(props,context){
-      const cardtype1 = ref<PrepaidCard>(props.card)
-      const cardtype2 = ref<PrepaidCard>(props.card2)
-      const cardtype3 = ref<PrepaidCard>(props.card3)
+      const cardtype = ref<PrepaidCard>(props.card)
       const paytype = ref<number>(props.pay)
 
-      watch(cardtype1,()=>{
-        context.emit('update:card',cardtype1.value)
-      })
-
-      watch(cardtype2,()=>{
-        context.emit('update:card2',cardtype2.value)
-      })
-
-      watch(cardtype3,()=>{
-        context.emit('update:card3',cardtype3.value)
+      watch(cardtype,()=>{
+        context.emit('update:card',cardtype.value)
       })
 
       watch(paytype,()=>{
@@ -75,13 +65,14 @@ export default defineComponent({
               label:c.label}
           })
 
-          cardoptions2.value = cards.filter((it)=>it.head).map((c)=>{
+          cardoptions2.value = cards.filter((it)=>it.label.includes('次卡')).map((c)=>{
             return {
               value : c,
-              label:c.label}
+              label:c.label
+              }
           })
 
-          cardoptions3.value = cards.filter((it)=>it.ice||it.hair||it.ginger).map((c)=>{
+          cardoptions3.value = cards.filter((it)=>it.label.includes('套盒')).map((c)=>{
             return {
               value : c,
               label:c.label}
@@ -99,9 +90,7 @@ export default defineComponent({
         cardoptions,
         cardoptions2,
         cardoptions3,
-        cardtype1,
-        cardtype2,
-        cardtype3,
+        cardtype,
         paytype,
         employeesC
       }

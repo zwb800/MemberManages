@@ -37,7 +37,7 @@
    
 </div>
 <new-member v-model="newmember" @added="getMembers"></new-member>
-<consume v-model="consume" :member="member"></consume>
+<consume v-model="consume" :member="member" @finished="getMembers"></consume>
 <member-info v-model="memberinfo" :member="member"></member-info>
 <charge v-model="charge" :member="member"></charge>
 </template>

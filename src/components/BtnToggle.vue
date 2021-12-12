@@ -1,8 +1,8 @@
 <template>
 <q-btn-group>
   <template :key="row.value" v-for="row in options">
-           <q-btn :size="size" @click="unSelected(row)" color="primary" v-if='row.selected' :label='row.label'></q-btn>
-            <q-btn  :size="size" @click="selected(row)" v-else :label='row.label'></q-btn>
+           <q-btn :size="size" @click="row.selected = false" @click.right="row.selected = false" color="primary" v-if='row.selected' :label='row.label'></q-btn>
+            <q-btn  :size="size" @click="row.selected = true" @click.right="row.selected = true" v-else :label='row.label'></q-btn>
         </template>
 </q-btn-group>
 </template>

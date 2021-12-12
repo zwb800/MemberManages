@@ -22,34 +22,31 @@
               ￥{{member.balance}}
           </template>
       </q-field>
-      <q-field class="col q-mt-none" label="头疗" stack-label borderless>
+      <template v-if="m">
+      <template :key="b.serviceItemName" v-for="b in m.balances">
+      <q-field class="col q-mt-none" :label='b.serviceItemName' stack-label borderless>
           <template v-slot:control>
-              {{member.head}}
+              {{b.balance}}
           </template>
       </q-field>
-      <q-field class="col q-mt-none" label="姜疗" stack-label borderless>
-          <template v-slot:control>
-              {{member.ginger}}
-          </template>
-      </q-field>
-      <q-field class="col q-mt-none" label="冰疗" stack-label borderless>
-          <template v-slot:control>
-              {{member.ice}}
-          </template>
-      </q-field>
-      <q-field class="col q-mt-none" label="发疗" stack-label borderless>
-          <template v-slot:control>
-              {{member.hair}}
-          </template>
-      </q-field>
+      </template>
+      </template>
   </div>
 </template>
 <script lang='ts'>
-import { defineComponent} from 'vue'
+import { defineComponent,onMounted,ref} from 'vue'
+import { MemberView } from './models'
 export default defineComponent({
-    props:['member'],
-    setup(){
+   props:{'member':{type:Object,required:true}},
+    setup(props){
+        const m = ref<MemberView>()
+        onMounted(async ()=>{
+            m.value = await window.memberAPI.get(props.member._id)
+            console.log(m.value)
+        })
+        
         return {
+            m,
              dateStr (d:Date)
             {
                 return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
