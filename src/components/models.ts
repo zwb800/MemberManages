@@ -28,11 +28,20 @@ export interface MemberView{
   balances:Array<{serviceItemName:string,balance:number}>;
 }
 
+export interface ChargeView{
+  time:Date;
+  card:string;
+  balance:number;
+  pay:number;
+  amount:number;
+}
+
 export interface MemberAPI{
   get:(id:string)=>Promise<MemberView>,
   all:(keyword:string)=>Promise<Array<Member>>,
-  add:(member:Member,chargeItems:PrepaidCard[],employees:Employee[])=>Promise<Uint8Array>,
-  
+  add:(member:Member,chargeItem:PrepaidCard|undefined,employees:Employee[])=>Promise<Uint8Array>,
+  charge:(memberId:string,amount:number,chargeItem:PrepaidCard|undefined,employees:Employee[])=>Promise<Uint8Array>,
+  getChargeList:(memberId:string)=>Promise<Array<ChargeView>>
 }
 
 export interface ConsumeAPI{

@@ -8,12 +8,12 @@
         </q-bar>
         <q-form ref="form" @submit="submit" greedy>
         <q-card-section class="">
-<div class="q-gutter-md">
+<div>
         <member-info-bar :member="member"></member-info-bar>
         
-        <p class="q-mt-none q-mb-sm">消费项目</p>
+        <p class="q-mb-none">消费项目</p>
         <div style="min-width:400px" class="q-mt-none">
-            <q-field class="" v-model="serviceItems" :rules="[value=>value.some(p=>p.count>0)||'请选择消费项目']" borderless>
+            <q-field class="q-pb-none" v-model="serviceItems" :rules="[value=>value.some(p=>p.count>0)||'请选择消费项目']" borderless>
                 <template v-slot:control>
         <q-btn-group>
         <template :key="row.label" v-for="row in serviceItems">
@@ -32,12 +32,11 @@
         </div>
      
           
-        <p class="q-mt-none q-mb-sm">头疗师</p>
-        <q-field class="q-mt-none" v-model="employee"
+        <p class="q-mb-none">头疗师</p>
+        <q-field class="q-mt-none q-pb-none" v-model="employee"
          :rules="[value=>value.some(p=>p.selected)||'请选择头疗师']"
           borderless>
         <template v-slot:control>
-        
             <btn-toggle class="q-mt-none" :options="employee"></btn-toggle>
               </template>
         </q-field>
@@ -178,7 +177,7 @@ export default defineComponent( {
                         context.emit.call(null,'finished')
 
                         $q.notify({
-                            message:"划卡成功",
+                            message:'划卡成功',
                             type:'positive',
                             position:'center',
                             timeout:1000
@@ -188,7 +187,7 @@ export default defineComponent( {
                     {
                         dialog.value?.shake()
                         $q.notify({
-                            message:"划卡失败，余额不足",
+                            message:'划卡失败，余额不足',
                             type:'negative',
                             position:'center',
                             timeout:2000

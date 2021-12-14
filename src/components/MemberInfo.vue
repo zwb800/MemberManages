@@ -20,10 +20,19 @@
         <member-info-bar :member="member"></member-info-bar>
       </q-tab-panel>
       <q-tab-panel name="charge">
-          <q-table flat></q-table>
+          <q-table 
+            rows-per-page-label="每页条数"
+            no-results-label="无数据"
+            no-data-label="无数据"
+            loading-label="加载中" :rows="chargeRows" :columns="chargeColumns" flat></q-table>
       </q-tab-panel>
-      <q-tab-panel name="consume" class="q-pa-none">
-          <q-table :rows="consumeRows" :columns="consumeColumns" flat></q-table>
+      <q-tab-panel
+        name="consume" class="q-pa-none">
+          <q-table
+            rows-per-page-label="每页条数"
+            no-results-label="无数据"
+            no-data-label="无数据"
+            loading-label="加载中" :rows="consumeRows" :columns="consumeColumns" flat></q-table>
       </q-tab-panel>
   </q-tab-panels>
   </q-card-section>
@@ -40,7 +49,7 @@
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
 import { defineComponent,ref } from 'vue'
-import { ConsumeView } from './models'
+import { ConsumeView,ChargeView } from './models'
 export default defineComponent({
     components:{
         MemberInfoBar
@@ -49,11 +58,13 @@ export default defineComponent({
     setup(props){
 
         const consumeRows = ref<Array<ConsumeView>>()
+        const chargeRows = ref<Array<ChargeView>>()
         const tab = ref('info')
         return {
             show:async ()=>{
                 tab.value = 'info'
                 consumeRows.value = await window.consumeAPI.getConsumeList(props.member._id)
+                chargeRows.value = await window.memberAPI.getChargeList(props.member._id)
             },
             tab,
             consumeRows,
@@ -66,6 +77,17 @@ export default defineComponent({
                     return result
                 }},
                 { label:'金额',field:'price'},
+            ],
+            chargeRows,
+            chargeColumns:[
+                { label:'时间',field:'time',
+                format:(d:Date)=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`},
+                { label:'项目',field:'card',format:(v:any,row:ChargeView)=>{
+                    return row.card + (row.amount?` 单充${row.amount}元`:'')
+                }
+                
+                },
+                {label:'支付',field:'pay'}
             ]
         }
     }

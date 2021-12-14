@@ -1,23 +1,34 @@
 <template>
-<div class="q-gutter-md">
+<div class="q-gutter-sm">
+  
   <div class="row">
-            <div class="col">
+    <div class="col-2 q-mr-md">
+      <q-input label="单付金额" mask="####" v-model="amountValue"></q-input>
+    </div>
+          
+          </div>
+          <div class="row">
+              <div class="col">
               <p class="q-mb-sm">储值卡</p>
               <q-btn-toggle clearable
               toggle-color="primary"
               v-model="cardtype" :options="cardoptions"></q-btn-toggle>
             </div>
-            <div class="col-4 q-ml-md">
+          </div>
+          <div class="row">
+            <div class="col">
               <p class="q-mb-sm">次卡</p>
               <q-btn-toggle clearable
               toggle-color="primary"
               v-model="cardtype" :options="cardoptions2"></q-btn-toggle>
             </div>
-          </div>
-          <p class="q-mb-none">套盒</p>
+            <div class="col">
+          <p class="q-mb-sm">套盒</p>
           <q-btn-toggle clearable
            toggle-color="primary"
            v-model="cardtype" :options="cardoptions3"></q-btn-toggle>
+            </div>
+          </div>
         <p class="q-mb-none">支付方式</p>
           <q-btn-toggle
            v-model="paytype" :options="[
@@ -39,12 +50,13 @@ export default defineComponent({
     components:{
         EmployeeOptions,
     },
-    props:['card','pay','employees'],
-    emits:['update:card','update:pay','update:employees'],
+    props:['amount','card','pay','employees'],
+    emits:['update:amount','update:card','update:pay','update:employees'],
 
     setup(props,context){
       const cardtype = ref<PrepaidCard>(props.card)
       const paytype = ref<number>(props.pay)
+      const amountValue = ref<number>(props.amount)
 
       watch(cardtype,()=>{
         context.emit('update:card',cardtype.value)
@@ -52,6 +64,10 @@ export default defineComponent({
 
       watch(paytype,()=>{
         context.emit('update:pay',paytype.value)
+      })
+
+      watch(amountValue,()=>{
+        context.emit('update:amount',amountValue.value)
       })
 
       var cardoptions = ref<{label:string,value:PrepaidCard}[]>([])
@@ -87,6 +103,7 @@ export default defineComponent({
       })
       
       return {
+        amountValue,
         cardoptions,
         cardoptions2,
         cardoptions3,

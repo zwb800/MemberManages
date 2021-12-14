@@ -6,7 +6,7 @@
           <q-space />
           <q-btn dense flat icon="close" v-close-popup></q-btn>
         </q-bar>
-        <q-form class="q-gutter-md q-pb-md" @submit="add" greedy autofocus>
+        <q-form @submit="add" greedy autofocus>
         <q-card-section class="">
       
           <div class="row q-mt-none">
@@ -17,14 +17,15 @@
           </div>
       
       <charge-form 
+      v-model:amount="amount"
       v-model:card="card" 
       v-model:pay="paytype"
       v-model:employees="employees"></charge-form>
       </q-card-section>
         <q-separator></q-separator>
-        <q-card-actions align="right">
+        <q-card-actions align="right" class="">
           <span>{{text?'应付金额:':''}}</span><span class="text-negative text-bold">{{text}}</span>&nbsp;
-            <q-btn label="提交" type="submit" color="primary"></q-btn>
+            <q-btn label="开卡" type="submit" color="primary"></q-btn>
               <q-btn label="重置" type="reset"></q-btn>
         </q-card-actions>
         </q-form>
@@ -47,6 +48,7 @@ export default defineComponent({
     setup(props, context){
       const card = ref<PrepaidCard>()
       const paytype = ref(0)
+      const amount = ref<number|undefined>()
       const employees = ref(Array<Employee>())
       const member = ref<Member>({
         _id:null,
@@ -57,10 +59,13 @@ export default defineComponent({
       })
 
       const text = ref('')
-      watch(card,()=>{
+      watch([amount,card],()=>{
         text.value = ''
+        if(amount.value && amount.value>0)
+          text.value += `+${amount.value}`
         if(card.value)
           text.value += `+${card.value?.price}`
+
         text.value = text.value.substring(1)
 
         if(text.value.includes('+'))
@@ -68,18 +73,16 @@ export default defineComponent({
           const sum = parseInt(eval(text.value))
           text.value += `=${sum}`
         }
-       
       })
       
       const add =  async()=>{
-        const chargeItems = new Array<PrepaidCard>()
-        if(card.value)
-          chargeItems.push(toRaw(card.value))
 
+        if(amount.value)
+          member.value.balance = parseInt(amount.value.toString())
         
         const insertedId = await window.memberAPI.add(
           toRaw(member.value),
-          chargeItems,
+          toRaw(card.value),
           toRaw(employees.value))
         member.value = {
           _id:null,
@@ -89,6 +92,7 @@ export default defineComponent({
           newCardTime:new Date()
         }
 
+        amount.value = undefined
         paytype.value = 0
         text.value = ''
         card.value = undefined
@@ -99,6 +103,7 @@ export default defineComponent({
       const dialog = ref<QDialog>()
 
       return {
+        amount,
         employees,
         text,
         dialog,

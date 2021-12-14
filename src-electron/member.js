@@ -44,8 +44,100 @@ contextBridge.exposeInMainWorld('memberAPI', {
         return arr
         
     },
-    add:async (member,items,employees)=>{
-        items = items.map(it=>ObjectId.createFromHexString(it._id))
+    getChargeList:async(memberId)=>{
+        memberId = ObjectId.createFromHexString(memberId)
+        const mongoClient = await connect()
+        const db = mongoClient.db('MemberManages')
+        const chargeItem = db.collection('ChargeItem')
+        const cards = await db.collection('PrepaidCard')
+
+        const arrCards = await cards.find().toArray()
+        const citems = await chargeItem.find({memberId:memberId},{sort:{time:-1}}).toArray()
+        return citems.map(c=>{
+            let card 
+            if(c.itemId)
+              card = arrCards.find(ac=>ac._id.toString() == c.itemId.toString())
+            return {
+                time:c.time,
+                balance:c.balance,
+                pay:c.pay,
+                amount:c.amount,
+                card:card?card.label:null,
+            }
+        })
+    },
+    charge:async(memberId,amount,item,employees)=>{
+        item = item?ObjectId.createFromHexString(item._id):item
+        employees = employees.map(it=>ObjectId.createFromHexString(it._id))
+        const mongoClient = await connect()
+        const db = mongoClient.db('MemberManages')
+        const members = db.collection('Member')
+        const cards = await db.collection('PrepaidCard')
+        const balances = db.collection('Balance')
+        const chargeItem = db.collection('ChargeItem')
+
+        const m = await members.findOne({_id:ObjectId.createFromHexString(memberId)}) 
+      
+        const prepayCards = await cards.find({ _id:item }).toArray()
+        let balance = amount
+        let pay = amount
+        
+        prepayCards.filter(p=>p.gift).forEach(v=>{
+            balance += (v.price+v.gift)
+            pay += v.price
+        })
+
+        const arrBalances = prepayCards.filter(p=>p.serviceItemId).map(p=>{ 
+            pay += p.price
+            return {
+                memberId,
+                serviceItemId:p.serviceItemId,
+                balance:p.count
+            }
+        })
+
+        const balancesOld = await balances.find({memberId:m._id}).toArray()
+
+        const session = mongoClient.startSession()
+        let result
+        await session.withTransaction(async()=>{
+
+            //更新余额
+            result = await members.findOneAndUpdate({_id:m._id},{$inc:{balance:balance}},{session})
+            
+            //插入次卡余额
+            for (const b of arrBalances) {
+                if(balancesOld.some(bo=>
+                    bo.serviceItemId.toString() == b.serviceItemId.toString()))
+                {
+                    balances.updateOne({memberId:m._id,serviceItemId:b.serviceItemId},
+                        {$inc:{balance:b.balance}})
+                }
+                else
+                {
+                    balances.insertOne(b,{session})
+                }
+            }
+    
+            
+            //插入充值记录
+            await chargeItem.insertOne({
+                memberId:m._id,
+                employees,
+                balance:result.value.balance,
+                pay:pay,
+                amount,
+                itemId:item,
+                time:new Date()
+            },{session})
+        })
+
+        await session.endSession()
+        await mongoClient.close()
+        return true
+    },
+    add:async (member,item,employees)=>{
+        item = item?ObjectId.createFromHexString(item._id):item
         employees = employees.map(it=>ObjectId.createFromHexString(it._id))
         const mongoClient = await connect()
         const db = mongoClient.db('MemberManages')
@@ -67,11 +159,12 @@ contextBridge.exposeInMainWorld('memberAPI', {
         else
             member.no = 80000
         
-        const prepayCards = await cards.find({ _id:{$in:items} }).toArray()
-        
-        member.balance = 0
+        const prepayCards = await cards.find({ _id:item }).toArray()
+        let pay = member.balance
+        const amount = member.balance
         prepayCards.filter(p=>p.gift).forEach(v=>{
             member.balance += (v.price+v.gift)
+            pay += v.price
         })
 
         //插入会员
@@ -79,6 +172,7 @@ contextBridge.exposeInMainWorld('memberAPI', {
         const memberId = result.insertedId
 
         const arrBalances = prepayCards.filter(p=>p.serviceItemId).map(p=>{ 
+            pay += p.price
             return {
                 memberId,
                 serviceItemId:p.serviceItemId,
@@ -94,7 +188,10 @@ contextBridge.exposeInMainWorld('memberAPI', {
         await chargeItem.insertOne({
             memberId:memberId,
             employees,
-            itemId:items,
+            balance:member.balance,
+            pay:pay,
+            amount,
+            itemId:item,
             time:new Date()
         })
 
