@@ -3,7 +3,7 @@
   
   <div class="row">
     <div class="col-2 q-mr-md">
-      <q-input label="单付金额" mask="####" v-model="amountValue"></q-input>
+      <q-input standout="bg-teal text-white" label="单付金额" mask="####" v-model="amountValue"></q-input>
     </div>
           
           </div>
@@ -54,11 +54,20 @@ export default defineComponent({
     emits:['update:amount','update:card','update:pay','update:employees'],
 
     setup(props,context){
-      const cardtype = ref<PrepaidCard>(props.card)
+      const cardtype = ref<PrepaidCard|undefined>(props.card)
       const paytype = ref<number>(props.pay)
-      const amountValue = ref<number>(props.amount)
+      const amountValue = ref<number|string|undefined>(props.amount)
+      watch(amountValue,()=>{
+        if(amountValue.value!=undefined && amountValue.value!='')
+          cardtype.value = undefined
+        
+        context.emit('update:amount',amountValue.value)
+      })
 
       watch(cardtype,()=>{
+        if(cardtype.value!= undefined)
+          amountValue.value = undefined
+        
         context.emit('update:card',cardtype.value)
       })
 
@@ -66,9 +75,7 @@ export default defineComponent({
         context.emit('update:pay',paytype.value)
       })
 
-      watch(amountValue,()=>{
-        context.emit('update:amount',amountValue.value)
-      })
+      
 
       var cardoptions = ref<{label:string,value:PrepaidCard}[]>([])
       var cardoptions2 = ref<{label:string,value:PrepaidCard}[]>([])

@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <!-- <q-header elevated>
+    <q-header elevated>
       <q-toolbar>
         <q-btn
           flat
@@ -12,14 +12,21 @@
         />
 
         <q-toolbar-title>
-          Quasar App
+          会员
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+          <q-input dark dense standout v-model="text" placeholder="姓名/手机号" class="col-3" input-class="text-right">
+          <template v-slot:append>
+            <q-icon v-if="text === ''" name="search" />
+            <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
+          </template>
+        </q-input>
+        <!-- <q-btn flat round dense icon="search" /> -->
       </q-toolbar>
-    </q-header> -->
+       
+    </q-header>
 
-    <!-- <q-drawer
+    <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -28,16 +35,15 @@
         <q-item-label
           header
         >
-          Essential Links
+          菜单
         </q-item-label>
-
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
         />
       </q-list>
-    </q-drawer> -->
+    </q-drawer>
 
     <q-page-container>
       <router-view />
@@ -46,66 +52,45 @@
 </template>
 
 <script lang="ts">
-// import EssentialLink from 'components/EssentialLink.vue'
+import EssentialLink from 'components/EssentialLink.vue'
+import { useRouter } from 'vue-router'
+
 
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
+    title: '会员',
+    caption: '会员列表',
     icon: 'school',
-    link: 'https://quasar.dev'
+    link: '/'
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
+    title: '工作量',
+    caption: '工作量统计',
     icon: 'code',
-    link: 'https://github.com/quasarframework'
+    link: 'work'
   },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
+  
 ];
 
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref,watch } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    // EssentialLink
+    EssentialLink
   },
 
   setup () {
+    const router = useRouter()
     const leftDrawerOpen = ref(false)
+    const text = ref('')
+    watch(text,async ()=>{
+      await router.replace({name:'memberlist',params:{search:text.value}})
+    })
 
     return {
+      text,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {

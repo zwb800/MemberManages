@@ -30,13 +30,13 @@
 import ChargeForm from './ChargeForm.vue'
 import MemberInfoBar from './MemberInfoBar.vue'
 import {defineComponent,watch,ref,toRaw} from 'vue'
-import {Member, PrepaidCard,Employee} from './models'
+import { PrepaidCard,Employee} from './models'
 import { QDialog,useQuasar } from 'quasar'
 
 
 export default defineComponent({
     components:{ ChargeForm, MemberInfoBar},
-   props:{'member':{type:Object,required:true}},
+   props:{'member':{type:Object}},
    emits:['finished'],
     setup(props,context){
       const $q = useQuasar()
@@ -65,6 +65,8 @@ export default defineComponent({
       })
 
         const submit =  async()=>{
+          if(!props.member)
+            return
            let amountV = 0
         if(amount.value)
           amountV = parseInt(amount.value.toString())

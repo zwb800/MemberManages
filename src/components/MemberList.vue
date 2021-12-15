@@ -1,11 +1,11 @@
 <template>
-<div class="full-width full-height q-gutter-md">
-    <div class="row q-gutter-sm">
+<div class="full-width full-height q-gutter-md q-pt-md">
+    <!-- <div class="row q-gutter-sm">
         <q-input class="q-ml-none" outlined  label="手机号/姓名" v-model='keyword'></q-input>
         <q-btn color="primary" label="查询" @click="getMembers"></q-btn>
         <q-btn color="secondary" label="开卡" @click="newmember = true"></q-btn>
-    </div>
-    <q-table flat grid class="full-height q-mt-sm"
+    </div> -->
+    <q-table flat grid class="full-height"
     :rows="rows"
     :rows-per-page-options="[10, 20,50,100]"
     rows-per-page-label="每页条数"
@@ -36,7 +36,7 @@
    
    
 </div>
-<new-member v-model="newmember" @added="getMembers"></new-member>
+
 <consume v-model="consume" :member="member" @finished="getMembers"></consume>
 <member-info v-model="memberinfo" :member="member"></member-info>
 <charge v-model="charge" :member="member" @finished="getMembers"></charge>
@@ -47,36 +47,33 @@ import { defineComponent,ref,onMounted,watch } from 'vue'
 import Charge from './Charge.vue'
 import Consume from './Consume.vue'
 import MemberInfo from './MemberInfo.vue'
-import NewMember from './NewMember.vue'
+
 import './models'
 import { Member } from './models'
 
 
 export default defineComponent({
-  components: { NewMember, Consume,MemberInfo, Charge },
- 
+  components: {  Consume,MemberInfo, Charge },
+ props:{search:{type:String,default:''}},
    methods:{
         dateStr (d:Date)
         {
             return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
         },
     },
-     setup(){
+     setup(props){
         const member = ref<Member|undefined>()
         const members = ref(Array<Member>())
-        const keyword = ref('')
         const getMembers =  async () =>{
-            members.value = await window.memberAPI.all(keyword.value)
+            members.value = await window.memberAPI.all(props.search)
         }
         
         onMounted(getMembers)
-        watch(keyword,getMembers)
+        watch(props,getMembers)
         return {
             member,
             rows:members,
             getMembers, 
-            keyword,
-            newmember:ref(false),
             consume:ref(false),
             memberinfo:ref(false),
             charge:ref(false),

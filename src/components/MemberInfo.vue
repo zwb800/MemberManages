@@ -54,7 +54,7 @@ export default defineComponent({
     components:{
         MemberInfoBar
     },
-   props:{'member':{type:Object,required:true}},
+   props:{'member':{type:Object}},
     setup(props){
 
         const consumeRows = ref<Array<ConsumeView>>()
@@ -62,6 +62,8 @@ export default defineComponent({
         const tab = ref('info')
         return {
             show:async ()=>{
+                if(!props.member)
+                return
                 tab.value = 'info'
                 consumeRows.value = await window.consumeAPI.getConsumeList(props.member._id)
                 chargeRows.value = await window.memberAPI.getChargeList(props.member._id)
@@ -82,7 +84,7 @@ export default defineComponent({
             chargeColumns:[
                 { label:'时间',field:'time',
                 format:(d:Date)=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`},
-                { label:'项目',field:'card',format:(v:any,row:ChargeView)=>{
+                { label:'项目',field:'card',format:(v:string,row:ChargeView)=>{
                     return row.card + (row.amount?` 单充${row.amount}元`:'')
                 }
                 

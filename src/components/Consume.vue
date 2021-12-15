@@ -1,5 +1,5 @@
 <template>
-<q-dialog ref="dialog" @before-show="show" v-model="value" persistent>
+<q-dialog ref="dialog" @before-show="show" persistent>
     <q-card >
         <q-bar class="bg-primary text-white">
           <div>划卡</div>
@@ -90,7 +90,7 @@ interface ServiceItemOption{
 
 export default defineComponent( {
   components: { MemberInfoBar,BtnToggle },
-  props:{'member':{type:Object,required:true}},
+  props:{'member':{type:Object}},
    emits:['finished'],
     setup(props,context){
         const employee = ref<Array<EmployeeOption>>()
@@ -149,7 +149,8 @@ export default defineComponent( {
                 init()
             },
             submit:async ()=>{
-     
+                if(!props.member)
+                    return
                 if(serviceItems.value!=undefined)
                 {
                     let es = employee.value?.filter(p=>p.selected).map(p=>{
