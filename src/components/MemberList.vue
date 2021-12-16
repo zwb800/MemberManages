@@ -1,5 +1,5 @@
 <template>
-<div class="full-width full-height q-gutter-md q-pt-md">
+<div class="full-width full-height q-pl-md q-pt-md">
     <!-- <div class="row q-gutter-sm">
         <q-input class="q-ml-none" outlined  label="手机号/姓名" v-model='keyword'></q-input>
         <q-btn color="primary" label="查询" @click="getMembers"></q-btn>
@@ -25,10 +25,15 @@
                 <div class="text-subtitle2">开卡时间:{{dateStr(props.row.newCardTime)}}</div>
             </q-card-section>
             <q-separator></q-separator>
-            <q-card-actions>
-                <q-btn size="sm" color="primary" @click="member = props.row;consume = true">划卡</q-btn>
-                <q-btn size="sm" color="secondary" @click="member = props.row;charge = true">充值</q-btn>
-                <q-btn size="sm" color="info" @click="member = props.row;memberinfo = true">详情</q-btn>
+            <q-card-actions align="around">
+                <q-btn size="sm"   color="primary" @click="member = props.row;consume = true">
+                    <q-icon name="credit_card"></q-icon> &nbsp;划卡</q-btn>
+                <q-btn size="sm"  color="secondary" @click="member = props.row;charge = true">
+                    <q-icon name="paid"></q-icon> &nbsp;充值
+                </q-btn>
+                <q-btn size="sm"  color="info" @click="member = props.row;memberinfo = true">
+                    <q-icon name="list"></q-icon> &nbsp;详情
+                </q-btn>
             </q-card-actions>
         </q-card>    
         </template>

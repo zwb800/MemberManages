@@ -61,13 +61,16 @@ contextBridge.exposeInMainWorld('consumeAPI', {
                     memberId:ObjectId.createFromHexString(id),
                     serviceItems:serviceItems.map((e)=>{
                         return {
-                            serviceItemId:e.serviceItemId,
+                            serviceItemId:ObjectId.createFromHexString(e.serviceItemId),
                             count:e.count
                         }
                     }),
                     price:priceSum,
                     employees:employees.map((e)=>{
-                        return { employeeId:e.employeeId,items:e.items}
+                        return { 
+                            employeeId:ObjectId.createFromHexString(e.employeeId),
+                            items:e.items.map(i=>ObjectId.createFromHexString(i))
+                        }
                     }),
                     time:new Date()
                 },{session})

@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb'
+import { contextBridge } from 'electron'
 
 
 
@@ -17,4 +18,13 @@ export const get = async(name)=>{
     await mongoClient.close()
     arr.forEach(v=>v._id = v._id.toString())
     return arr
+}
+
+export const exposeAll = (apiname,name,api={})=>{
+    
+    contextBridge.exposeInMainWorld(apiname,Object.assign({
+        all:async()=>{
+            return get(name)
+        }
+    },api))
 }

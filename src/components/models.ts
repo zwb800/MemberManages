@@ -99,6 +99,12 @@ export interface Employee{
   name:string;
 }
 
+export interface WorkView{
+  employee:string;
+  consumers:Array<{name:string,items:Array<string>}>
+}
+
 export interface EmployeeAPI{
   all:()=>Promise<Array<Employee>>;
+  work:(startDate:Date,endDate:Date)=>Promise<Array<WorkView>>;
 }
