@@ -27,7 +27,7 @@
             <q-separator></q-separator>
              <q-card-section>
                  <div :key="c" v-for="c of table.row.consumers">
-                    <q-btn flat>
+                    <q-btn flat @click="memberId = c._id;memberinfo = true">
                         {{c.name}}<template :key="i" v-for="i of c.items">+{{i}}</template>
                     </q-btn>
                  </div>
@@ -37,14 +37,16 @@
     </template>
 </q-table>
 </div>
+<member-info v-model="memberinfo" :memberId="memberId"></member-info>
 </template>
 
 
 <script lang="ts">
 import { ServiceItem, WorkView } from 'src/components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
+import MemberInfo from 'src/components/MemberInfo.vue'
 export default defineComponent({
-
+    components:{MemberInfo},
     setup(){
         const today = new Date()
 
@@ -57,6 +59,7 @@ export default defineComponent({
             rows.value = await window.employeeAPI.work(
                 new Date(startDate.value),
                 new Date(endDate.value+' 23:59:59'))
+                
             serviceItems.value = await window.serviceItemAPI.all()
         }
 
@@ -78,8 +81,6 @@ export default defineComponent({
             date.setMonth(date.getMonth()+1)
             date.setDate(date.getDate()-1)
             const strEnd  = dateStr(date)
-            console.log(strStart)
-            console.log(strEnd)
             if(startDate.value == strStart && endDate.value == strEnd)
             {
                 return 'month'
@@ -93,6 +94,8 @@ export default defineComponent({
             serviceItems,
             modelToday,
             modelMonth,
+            memberId:ref(''),
+            memberinfo:ref(false),
             today:()=>{
                 const todayStr = dateStr(new Date())
                 startDate.value = todayStr

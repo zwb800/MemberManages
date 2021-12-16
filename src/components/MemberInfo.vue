@@ -1,47 +1,50 @@
 <template>
 <q-dialog ref="dialog" @before-show="show" persistent>
     <q-card class="full-width">
-        <q-bar class="bg-info text-white">
-          <div>会员详情</div>
+         <q-card-section class="row q-pb-none">
+          <div class="text-h6">会员详情</div>
           <q-space />
-          <q-btn dense flat icon="close" v-close-popup></q-btn>
-        </q-bar>
+          <q-btn round flat icon="close" v-close-popup></q-btn>
+        </q-card-section>
         <q-card-section class="q-pb-none q-pt-none">
-  <q-tabs v-model="tab"  
-    class="text-grey"
-    active-color="primary"
-    indicator-color="primary">
-    <q-tab name="info" label="详情"></q-tab>
-      <q-tab name="charge" label="充值"></q-tab>
-      <q-tab name="consume" label="划卡"></q-tab>
-  </q-tabs>
-  <q-tab-panels v-model="tab" style="min-height:320px">
-      <q-tab-panel name="info">
-        <member-info-bar :member="member"></member-info-bar>
-      </q-tab-panel>
-      <q-tab-panel name="charge">
-          <q-table 
-            rows-per-page-label="每页条数"
-            no-results-label="无数据"
-            no-data-label="无数据"
-            loading-label="加载中" :rows="chargeRows" :columns="chargeColumns" flat></q-table>
-      </q-tab-panel>
-      <q-tab-panel
-        name="consume" class="q-pa-none">
-          <q-table
-            rows-per-page-label="每页条数"
-            no-results-label="无数据"
-            no-data-label="无数据"
-            loading-label="加载中" :rows="consumeRows" :columns="consumeColumns" flat></q-table>
-      </q-tab-panel>
-  </q-tab-panels>
+            <q-splitter>
+                <template v-slot:before>
+                    <q-tabs v-model="tab" vertical >
+                        <q-tab icon="info" name="info" label="详情"></q-tab>
+                        <q-tab icon="credit_card" name="charge" label="充值"></q-tab>
+                        <q-tab icon="paid" name="consume" label="划卡"></q-tab>
+                    </q-tabs>
+                </template>
+                <template v-slot:after>
+                    <q-tab-panels v-model="tab" class="q-pl-sm" style="min-height:320px">
+                        <q-tab-panel name="info">
+                            <member-info-bar :memberId="memberId"></member-info-bar>
+                        </q-tab-panel>
+                        <q-tab-panel name="charge" class="q-pa-none">
+                            <q-table 
+                                rows-per-page-label="每页条数"
+                                no-results-label="无数据"
+                                no-data-label="无数据"
+                                loading-label="加载中" :rows="chargeRows" :columns="chargeColumns" flat></q-table>
+                        </q-tab-panel>
+                        <q-tab-panel
+                            name="consume" class="q-pa-none">
+                            <q-table
+                                rows-per-page-label="每页条数"
+                                no-results-label="无数据"
+                                no-data-label="无数据"
+                                loading-label="加载中" :rows="consumeRows" :columns="consumeColumns" flat></q-table>
+                        </q-tab-panel>
+                    </q-tab-panels>
+                </template>
+            </q-splitter>
   </q-card-section>
-        <q-separator></q-separator>
-        <q-card-actions align="right">
+        <!-- <q-separator></q-separator> 
+         <q-card-actions align="right">
             
             <q-btn label="划卡" color="primary"></q-btn>
               <q-btn label="充值" color="secondary" ></q-btn>
-        </q-card-actions>
+        </q-card-actions> -->
     </q-card>
 </q-dialog>
 </template>
@@ -54,7 +57,7 @@ export default defineComponent({
     components:{
         MemberInfoBar
     },
-   props:{'member':{type:Object}},
+   props:{'memberId':{type:String,required:true}},
     setup(props){
 
         const consumeRows = ref<Array<ConsumeView>>()
@@ -62,11 +65,11 @@ export default defineComponent({
         const tab = ref('info')
         return {
             show:async ()=>{
-                if(!props.member)
-                return
+                
                 tab.value = 'info'
-                consumeRows.value = await window.consumeAPI.getConsumeList(props.member._id)
-                chargeRows.value = await window.memberAPI.getChargeList(props.member._id)
+                consumeRows.value = await window.consumeAPI.getConsumeList(props.memberId)
+                
+                chargeRows.value = await window.memberAPI.getChargeList(props.memberId)
             },
             tab,
             consumeRows,

@@ -1,14 +1,14 @@
 <template>
 <q-dialog ref="dialog" persistent>
     <q-card style="min-width:600px">
-        <q-bar class="bg-secondary text-white">
-          <div>充值</div>
+         <q-card-section class="row q-pb-none">
+          <div class="text-h6">充值</div>
           <q-space />
-          <q-btn dense flat icon="close" v-close-popup></q-btn>
-        </q-bar>
+          <q-btn round flat icon="close" v-close-popup></q-btn>
+        </q-card-section>
 <q-form @submit="submit">
         <q-card-section class="q-pt-none">
-          <member-info-bar :member="member"></member-info-bar>
+        <member-info-bar :memberId="memberId"></member-info-bar>
             <charge-form 
               v-model:amount="amount"
                 v-model:card="card" 
@@ -36,7 +36,7 @@ import { QDialog,useQuasar } from 'quasar'
 
 export default defineComponent({
     components:{ ChargeForm, MemberInfoBar},
-   props:{'member':{type:Object}},
+   props:{'memberId':{type:String,required:true}},
    emits:['finished'],
     setup(props,context){
       const $q = useQuasar()
@@ -65,14 +65,13 @@ export default defineComponent({
       })
 
         const submit =  async()=>{
-          if(!props.member)
-            return
+
            let amountV = 0
         if(amount.value)
           amountV = parseInt(amount.value.toString())
           
         const result = await window.memberAPI.charge(
-          props.member._id,
+          props.memberId,
           amountV,
           toRaw(card.value),
           toRaw(employees.value))

@@ -99,7 +99,8 @@ contextBridge.exposeInMainWorld('consumeAPI', {
             return {
                 _id : v._id.toString(),
                 product:v.serviceItems.map(s=>{
-                    const si = arrServiceItems.find(asi=>asi._id == s.serviceItemId)
+                    
+                    const si = arrServiceItems.find(asi=>asi._id.equals(s.serviceItemId))
                     return {
                         name:si.name,
                         count:s.count

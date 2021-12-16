@@ -42,7 +42,7 @@ exposeAll('employeeAPI','Employee',{
             
             const consumers = Array()
             for (const c of cArr) {
-                const m = await members.findOne({_id:c.memberId},{projection:{name:1}})
+                const m = await members.findOne({_id:c.memberId},{projection:{_id:1,name:1}})
                 const items = Array()
                 const itemIds = c.employees.find(v=>v.employeeId.equals(e._id)).items
                 
@@ -51,7 +51,7 @@ exposeAll('employeeAPI','Employee',{
                     items.push(s.shortName)
                 }
                 
-                consumers.push({name:m.name,items:items})
+                consumers.push({_id:m._id.toString(),name:m.name,items:items})
             }
            
             result.push({

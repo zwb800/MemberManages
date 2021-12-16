@@ -1,15 +1,15 @@
 <template>
 <q-dialog ref="dialog" persistent>
     <q-card style="min-width:600px">
-        <q-bar class="bg-secondary text-white">
-          <div>开卡</div>
+        <q-card-section class="row q-pb-none">
+          <div class="text-h6">开卡</div>
           <q-space />
-          <q-btn dense flat icon="close" v-close-popup></q-btn>
-        </q-bar>
+          <q-btn round flat icon="close" v-close-popup></q-btn>
+        </q-card-section>
         <q-form @submit="add" greedy autofocus>
-        <q-card-section class="">
+        <q-card-section class="q-pt-none">
       
-          <div class="row q-mt-none">
+          <div class="row ">
             <q-input class="col" label="姓名" v-model="member.name"
              :rules="[ val => val && val.length > 0 || '请填写姓名'] "></q-input>
             <q-input class="col q-ml-md" label="手机号" v-model="member.phone"

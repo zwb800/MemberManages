@@ -101,7 +101,7 @@ export interface Employee{
 
 export interface WorkView{
   employee:string;
-  consumers:Array<{name:string,items:Array<string>}>
+  consumers:Array<{_id:string,name:string,items:Array<string>}>
 }
 
 export interface EmployeeAPI{

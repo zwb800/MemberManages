@@ -3,7 +3,9 @@
   
   <div class="row">
     <div class="col-2 q-mr-md">
-      <q-input standout="bg-teal text-white" label="单付金额" mask="####" v-model="amountValue"></q-input>
+      <q-input standout="bg-teal text-white" 
+      label="单付金额" mask="####" 
+      v-model="amountValue"></q-input>
     </div>
           
           </div>

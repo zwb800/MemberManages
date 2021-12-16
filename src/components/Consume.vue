@@ -1,15 +1,15 @@
 <template>
 <q-dialog ref="dialog" @before-show="show" persistent>
     <q-card >
-        <q-bar class="bg-primary text-white">
-          <div>划卡</div>
+       <q-card-section class="row q-pb-none">
+          <div class="text-h6">划卡</div>
           <q-space />
-          <q-btn dense flat icon="close" v-close-popup></q-btn>
-        </q-bar>
+          <q-btn round flat icon="close" v-close-popup></q-btn>
+        </q-card-section>
         <q-form ref="form" @submit="submit" greedy>
-        <q-card-section class="">
+        <q-card-section class="q-pt-none">
 <div>
-        <member-info-bar :member="member"></member-info-bar>
+        <member-info-bar :memberId="memberId"></member-info-bar>
         
         <p class="q-mb-none">消费项目</p>
         <div style="min-width:400px" class="q-mt-none">
@@ -90,7 +90,7 @@ interface ServiceItemOption{
 
 export default defineComponent( {
   components: { MemberInfoBar,BtnToggle },
-  props:{'member':{type:Object}},
+  props:{'memberId':{type:String,required:true}},
    emits:['finished'],
     setup(props,context){
         const employee = ref<Array<EmployeeOption>>()
@@ -149,8 +149,6 @@ export default defineComponent( {
                 init()
             },
             submit:async ()=>{
-                if(!props.member)
-                    return
                 if(serviceItems.value!=undefined)
                 {
                     let es = employee.value?.filter(p=>p.selected).map(p=>{
@@ -164,7 +162,7 @@ export default defineComponent( {
                         es = []
 
                     const selectedItems = (serviceItems.value.filter(p=>p.count>0))
-                    const result = await window.consumeAPI.consume(props.member._id,
+                    const result = await window.consumeAPI.consume(props.memberId,
                     selectedItems.map((p)=>{
                         return {
                             serviceItemId:p.value.serviceItemId,
