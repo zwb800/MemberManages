@@ -36,16 +36,17 @@
 <script lang='ts'>
 import ChargeForm from './ChargeForm.vue'
 import {defineComponent,ref,toRaw,watch } from 'vue'
-import { QDialog } from 'quasar'
+import { QDialog,useQuasar } from 'quasar'
 import {Member, PrepaidCard,Employee} from './models'
 
 export default defineComponent({
     components:{ ChargeForm},
     emits:[
-      'added',
+      'finished',
     ],
    
     setup(props, context){
+      const $q = useQuasar()
       const card = ref<PrepaidCard>()
       const paytype = ref(0)
       const amount = ref<number|undefined>()
@@ -80,25 +81,47 @@ export default defineComponent({
         if(amount.value)
           member.value.balance = parseInt(amount.value.toString())
         
-        const insertedId = await window.memberAPI.add(
+        const result = await window.memberAPI.add(
           toRaw(member.value),
           toRaw(card.value),
           toRaw(employees.value))
-        member.value = {
-          _id:null,
-          name:'',
-          no:0,
-          balance:0,
-          newCardTime:new Date()
-        }
+      
 
-        amount.value = undefined
-        paytype.value = 0
-        text.value = ''
-        card.value = undefined
-        dialog.value?.hide()
-        context.emit.call(null,'added')
-        console.log(insertedId)
+        if(result)
+          {
+
+              $q.notify({
+                  message:'开卡成功',
+                  type:'positive',
+                  position:'center',
+                  timeout:1000
+              })
+
+              member.value = {
+                _id:null,
+                name:'',
+                no:0,
+                balance:0,
+                newCardTime:new Date()
+              }
+
+              amount.value = undefined
+              paytype.value = 0
+              text.value = ''
+              card.value = undefined
+              dialog.value?.hide()
+              context.emit.call(null,'finished')
+            }
+            else
+            {
+                dialog.value?.shake()
+                $q.notify({
+                    message:'开卡失败',
+                    type:'negative',
+                    position:'center',
+                    timeout:2000
+                })
+            }
       }
       const dialog = ref<QDialog>()
 

@@ -54,7 +54,7 @@
       <router-view />
     </q-page-container>
   </q-layout>
-   <new-member v-model="newmember" @added="search"></new-member>
+   <new-member v-model="newmember" @finished="refersh"></new-member>
 </template>
 
 <script lang="ts">
@@ -95,9 +95,10 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
     const text = ref('')
 
-    const search = async()=>{
-      await router.replace({name:'memberlist',
-      params:{search:text.value}})
+    const search = async(s=text.value)=>{
+      const result = await router.replace({name:'memberlist',
+      params:{search:s}})
+      console.log(result)
     }
 
     watch(text,search)
@@ -122,6 +123,10 @@ export default defineComponent({
     return {
       text,
       search,
+      async refersh(){
+        await search(' ')
+        await search('')
+      },
       title,
       color,
       essentialLinks: linksList,

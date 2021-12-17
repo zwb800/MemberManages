@@ -56,10 +56,6 @@ export interface PrepaidCard{
   _id:string;
   price:number;
   gift:number;
-  head:number;
-  ice:number;
-  ginger:number;
-  hair:number;
   label:string;
 }
 
@@ -102,6 +98,7 @@ export interface Employee{
 export interface WorkView{
   employee:string;
   consumers:Array<{_id:string,name:string,items:Array<string>}>
+  charges:Array<{_id:string,name:string,card:PrepaidCard,commission:number}>
 }
 
 export interface EmployeeAPI{

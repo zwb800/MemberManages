@@ -3,6 +3,102 @@ import { contextBridge } from 'electron'
 
 import {connect} from './db'
 
+const getNo = async(db)=>{
+    let no = 80000
+    const members = db.collection('Member')
+    const maxNo = await members.findOne({},{
+        sort:{
+            no:-1
+        },
+        projection:{
+            no:1
+        }})
+        
+        if(maxNo)
+            no = maxNo.no+1
+    return no
+}
+
+const charge = async(mongoClient,member,amount,card,employees)=>{
+    const db = mongoClient.db('MemberManages')
+    const members = db.collection('Member')
+    const cards = db.collection('PrepaidCard')
+    const balances = db.collection('Balance')
+    const chargeItem = db.collection('ChargeItem')
+
+    const prepayCard = await cards.findOne({ _id:card })
+    let balance = amount
+    let pay = amount
+    let arrBalances = Array()
+
+    if(prepayCard){
+        pay += prepayCard.price
+        if(prepayCard.gift){
+            balance += (prepayCard.price+prepayCard.gift)
+        }
+        if(prepayCard.serviceItemIds){
+             arrBalances = prepayCard.serviceItemIds.map(p=>{
+                 return {
+                    serviceItemId:p.serviceItemId,
+                    balance:p.count
+                }
+            })
+        }
+    }
+    
+    const session = mongoClient.startSession()
+    let accountBalance = 0
+    await session.withTransaction(async()=>{
+        let balancesOld = Array()
+        
+        if(member._id)
+        {
+            balancesOld = await balances.find({memberId:member._id}).toArray()
+            //更新余额
+            const result = await members.findOneAndUpdate({_id:member._id},
+                {$inc:{balance:balance}},{session})
+            accountBalance = result.value.balance
+        }
+        else
+        {
+            member.no = await getNo(db)
+            member.balance = balance
+            const r = await members.insertOne(member,{session})
+            member._id = r.insertedId
+            accountBalance = balance
+            
+        }
+        
+        //插入次卡余额
+        for (const b of arrBalances) {
+            if(balancesOld.some(bo=>bo.serviceItemId.equals(b.serviceItemId)))
+            {
+                await balances.updateOne({memberId:member._id,serviceItemId:b.serviceItemId},
+                    {$inc:{balance:b.balance}})
+            }
+            else
+            {
+                await balances.insertOne(Object.assign(b,{memberId:member._id}),{session})
+            }
+        }
+
+        
+        //插入充值记录
+        await chargeItem.insertOne({
+            memberId:member._id,
+            employees,
+            balance:accountBalance,//充完余额
+            pay:pay,//实际支付
+            amount,//单付
+            itemId:card,
+            time:new Date()
+        },{session})
+    })
+
+    await session.endSession()
+    return true
+}
+
 contextBridge.exposeInMainWorld('memberAPI', {
     
     get:async(id)=>{
@@ -66,137 +162,29 @@ contextBridge.exposeInMainWorld('memberAPI', {
             }
         })
     },
-    charge:async(memberId,amount,item,employees)=>{
-        item = item?ObjectId.createFromHexString(item._id):item
+    charge:async(memberId,amount,card,employees)=>{
+        memberId = ObjectId.createFromHexString(memberId)
+        card = card?ObjectId.createFromHexString(card._id):card
         employees = employees.map(it=>ObjectId.createFromHexString(it._id))
+
         const mongoClient = await connect()
-        const db = mongoClient.db('MemberManages')
-        const members = db.collection('Member')
-        const cards = await db.collection('PrepaidCard')
-        const balances = db.collection('Balance')
-        const chargeItem = db.collection('ChargeItem')
-
-        const m = await members.findOne({_id:ObjectId.createFromHexString(memberId)}) 
-      
-        const prepayCards = await cards.find({ _id:item }).toArray()
-        let balance = amount
-        let pay = amount
         
-        prepayCards.filter(p=>p.gift).forEach(v=>{
-            balance += (v.price+v.gift)
-            pay += v.price
-        })
 
-        const arrBalances = prepayCards.filter(p=>p.serviceItemId).map(p=>{ 
-            pay += p.price
-            return {
-                memberId,
-                serviceItemId:p.serviceItemId,
-                balance:p.count
-            }
-        })
+        await charge(mongoClient,{_id:memberId},amount,card,employees)
 
-        const balancesOld = await balances.find({memberId:m._id}).toArray()
-
-        const session = mongoClient.startSession()
-        let result
-        await session.withTransaction(async()=>{
-
-            //更新余额
-            result = await members.findOneAndUpdate({_id:m._id},{$inc:{balance:balance}},{session})
-            
-            //插入次卡余额
-            for (const b of arrBalances) {
-                if(balancesOld.some(bo=>
-                    bo.serviceItemId.toString() == b.serviceItemId.toString()))
-                {
-                    balances.updateOne({memberId:m._id,serviceItemId:b.serviceItemId},
-                        {$inc:{balance:b.balance}})
-                }
-                else
-                {
-                    balances.insertOne(b,{session})
-                }
-            }
-    
-            
-            //插入充值记录
-            await chargeItem.insertOne({
-                memberId:m._id,
-                employees,
-                balance:result.value.balance,
-                pay:pay,
-                amount,
-                itemId:item,
-                time:new Date()
-            },{session})
-        })
-
-        await session.endSession()
         await mongoClient.close()
         return true
     },
-    add:async (member,item,employees)=>{
-        item = item?ObjectId.createFromHexString(item._id):item
+    add:async (member,card,employees)=>{
+        card = card?ObjectId.createFromHexString(card._id):card
         employees = employees.map(it=>ObjectId.createFromHexString(it._id))
+
         const mongoClient = await connect()
-        const db = mongoClient.db('MemberManages')
-        const members = db.collection('Member')
-        const chargeItem = db.collection('ChargeItem')
-        const balances = db.collection('Balance')
-        const cards = await db.collection('PrepaidCard')
-
-        const maxNo = await members.findOne({},{
-        sort:{
-            no:-1
-        },
-        projection:{
-            no:1
-        }})
         
-        if(maxNo)
-            member.no = maxNo.no+1
-        else
-            member.no = 80000
+        await charge(mongoClient,member,member.balance,card,employees)
         
-        const prepayCards = await cards.find({ _id:item }).toArray()
-        let pay = member.balance
-        const amount = member.balance
-        prepayCards.filter(p=>p.gift).forEach(v=>{
-            member.balance += (v.price+v.gift)
-            pay += v.price
-        })
-
-        //插入会员
-        const result = await members.insertOne(member)
-        const memberId = result.insertedId
-
-        const arrBalances = prepayCards.filter(p=>p.serviceItemId).map(p=>{ 
-            pay += p.price
-            return {
-                memberId,
-                serviceItemId:p.serviceItemId,
-                balance:p.count
-            }
-        })
-        
-        //插入余额
-        if(arrBalances&&arrBalances.length)
-            await balances.insertMany(arrBalances)
-
-        //插入充值记录
-        await chargeItem.insertOne({
-            memberId:memberId,
-            employees,
-            balance:member.balance,
-            pay:pay,
-            amount,
-            itemId:item,
-            time:new Date()
-        })
-
         await mongoClient.close()
-        return memberId
+        return true
         
     }
 })

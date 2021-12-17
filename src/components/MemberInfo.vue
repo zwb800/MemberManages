@@ -7,7 +7,7 @@
           <q-btn round flat icon="close" v-close-popup></q-btn>
         </q-card-section>
         <q-card-section class="q-pb-none q-pt-none">
-            <q-splitter>
+            <q-splitter v-model="splitterModel" unit="px">
                 <template v-slot:before>
                     <q-tabs v-model="tab" vertical >
                         <q-tab icon="info" name="info" label="详情"></q-tab>
@@ -53,6 +53,7 @@
 import MemberInfoBar from './MemberInfoBar.vue'
 import { defineComponent,ref } from 'vue'
 import { ConsumeView,ChargeView } from './models'
+import { dateTimeStr } from './utils'
 export default defineComponent({
     components:{
         MemberInfoBar
@@ -64,6 +65,7 @@ export default defineComponent({
         const chargeRows = ref<Array<ChargeView>>()
         const tab = ref('info')
         return {
+            splitterModel:ref(80),
             show:async ()=>{
                 
                 tab.value = 'info'
@@ -75,7 +77,7 @@ export default defineComponent({
             consumeRows,
             consumeColumns:[
                 { label:'时间',field:'time',
-                format:(d:Date)=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`},
+                format:dateTimeStr},
                 { label:'项目',field:'product',format:(p:Array<{name:string,count:number}>)=>{
                     let result = ''
                     p.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
@@ -86,9 +88,9 @@ export default defineComponent({
             chargeRows,
             chargeColumns:[
                 { label:'时间',field:'time',
-                format:(d:Date)=>`${d.getFullYear()}-${d.getMonth()}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}`},
+                format:dateTimeStr},
                 { label:'项目',field:'card',format:(v:string,row:ChargeView)=>{
-                    return row.card + (row.amount?` 单充${row.amount}元`:'')
+                    return (row.card?row.card:'') + (row.amount?` 单充${row.amount}元`:'')
                 }
                 
                 },

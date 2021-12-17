@@ -30,15 +30,20 @@ exposeAll('employeeAPI','Employee',{
         const employees = await db.collection('Employee').find().toArray()
         const consumes = db.collection('Consumes')
         const members = db.collection('Member')
+        const charges = db.collection('ChargeItem')
+        const prepaidCard = db.collection('PrepaidCard')
         const serviceItems = await db.collection('ServiceItem').find().project({_id:1,shortName:1}).toArray()
         
         const result = Array()
         for(const e of employees){
-            const cArr = await consumes.find(
-                {
-                    'employees.employeeId':e._id,
-                    $and:[{time:{$gte:startDate}},{time:{$lte:endDate}}]
-                }).toArray()
+            const cArr = await consumes.find({
+                'employees.employeeId':e._id,
+                $and:[{time:{$gte:startDate}},{time:{$lte:endDate}}]
+            }).toArray()
+
+            const chargeArr = await charges.find({ 
+                employees:e._id,
+                $and:[{time:{$gte:startDate}},{time:{$lte:endDate}}]}).toArray()
             
             const consumers = Array()
             for (const c of cArr) {
@@ -53,10 +58,19 @@ exposeAll('employeeAPI','Employee',{
                 
                 consumers.push({_id:m._id.toString(),name:m.name,items:items})
             }
+
+            const chargeResult = Array()
+            for(const c of chargeArr){
+                const m = await members.findOne({_id:c.memberId},{projection:{_id:1,name:1}})
+                const card = await prepaidCard.findOne({_id:c.itemId})
+                chargeResult.push({_id:m._id.toString(),name:m.name,card:card,
+                    commission:card.price / 10 / c.employees.length})
+            }
            
             result.push({
                 employee:e.name,
-                consumers:consumers
+                consumers:consumers,
+                charges:chargeResult
             })
         }
 

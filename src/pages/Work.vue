@@ -4,8 +4,8 @@
 <q-input stack-label v-model="startDate" label="开始时间" type="date"></q-input>
 <q-input stack-label label="结束时间" v-model="endDate" type="date"></q-input>
 <q-btn-group class="q-mt-lg">
-<q-btn-toggle  v-model="modelMonth" :options="[{label: '本月', value: 'month'}]" @click="month()"></q-btn-toggle>
-<q-btn-toggle   v-model="modelToday" :options="[{label: '今天', value: 'today'}]" @click="today()"></q-btn-toggle>
+<q-btn-toggle  toggle-color="teal"  v-model="modelMonth" :options="[{label: '本月', value: 'month'}]" @click="month()"></q-btn-toggle>
+<q-btn-toggle  toggle-color="teal" v-model="modelToday" :options="[{label: '今天', value: 'today'}]" @click="today()"></q-btn-toggle>
 <q-btn label="前一天" @click="prevDay()"></q-btn>
 <q-btn label="后一天" @click="nextDay()"></q-btn>
 </q-btn-group>
@@ -33,6 +33,17 @@
                  </div>
             </q-card-section>
             </template>
+
+            <template v-if="table.row.charges.length>0">
+            <q-separator></q-separator>
+             <q-card-section>
+                 <div :key="c" v-for="c of table.row.charges">
+                    <q-btn flat @click="memberId = c._id;memberinfo = true">
+                        {{c.name}} {{c.card.label}} {{c.commission}}
+                    </q-btn>
+                 </div>
+            </q-card-section>
+            </template>
         </q-card>
     </template>
 </q-table>
@@ -45,6 +56,7 @@
 import { ServiceItem, WorkView } from 'src/components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
 import MemberInfo from 'src/components/MemberInfo.vue'
+import {dateStr} from 'src/components/utils'
 export default defineComponent({
     components:{MemberInfo},
     setup(){
@@ -60,18 +72,13 @@ export default defineComponent({
                 new Date(startDate.value),
                 new Date(endDate.value+' 23:59:59'))
                 
+                
             serviceItems.value = await window.serviceItemAPI.all()
         }
 
         onMounted(getRows)
-
-       
-
         watch([startDate,endDate],getRows)
 
-        const dateStr = (date:Date)=>{
-            return `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate().toString().padStart(2,'0')}`
-        }
 
         const modelToday = computed(()=>startDate.value == dateStr(new Date())?'today':null)
         const modelMonth = computed(()=>{

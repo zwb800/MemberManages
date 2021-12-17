@@ -25,7 +25,7 @@
   <div  class="row q-gutter-md q-mt-none">
       
       <template v-if="m">
-      <template :key="b.serviceItemName" v-for="b in m.member.balances">
+      <template :key="b.serviceItemName" v-for="b in m.balances">
       <q-field class="col q-mt-none" :label='b.serviceItemName' stack-label borderless>
           <template v-slot:control>
               {{b.balance}}
