@@ -1,4 +1,4 @@
-
+import axios from 'axios'
 export interface Todo {
   id: number;
   content: string;
@@ -36,20 +36,66 @@ export interface ChargeView{
   amount:number;
 }
 
-export interface MemberAPI{
-  get:(id:string)=>Promise<MemberView>,
-  all:(keyword:string)=>Promise<Array<Member>>,
-  add:(member:Member,chargeItem:PrepaidCard|undefined,employees:Employee[])=>Promise<Uint8Array>,
-  charge:(memberId:string,amount:number,chargeItem:PrepaidCard|undefined,employees:Employee[])=>Promise<Uint8Array>,
-  getChargeList:(memberId:string)=>Promise<Array<ChargeView>>
+axios.defaults.baseURL = 'http://localhost:3000'
+
+export class MemberAPI{
+  async get(id:string):Promise<MemberView>{
+    const result = await axios.get(
+      '/member/get',
+      { params:{id:id} })
+
+      const r =  result.data as MemberView
+      r.member.newCardTime = new Date(r.member.newCardTime)
+      return r
+  }
+  async all(keyword:string):Promise<Array<Member>>{
+    const result =  await axios.get(
+      '/member/',
+      { params:{search:keyword} })
+      const r =  result.data as Array<Member>
+      r.forEach(e=> e.newCardTime = new Date(e.newCardTime))
+      
+      return r
+  }
+  async add(member:Member,chargeItem:PrepaidCard|undefined,employees:Employee[]):Promise<Uint8Array>{
+    const result =  await axios.get(
+      '/member/',
+      { params:{} })
+      return result.data as Uint8Array
+  }
+  async charge(memberId:string,amount:number,chargeItem:PrepaidCard|undefined,employees:Employee[]):Promise<Uint8Array>{
+    const result =  await axios.get(
+      '/member/',
+      { params:{} })
+      return result.data as Uint8Array
+  }
+  async getChargeList(memberId:string):Promise<Array<ChargeView>>{
+    const result =  await axios.get(
+      '/member/charge-list/',
+      { params:{memberId} })
+
+      const r = result.data as Array<ChargeView>
+      r.forEach(e=> e.time = new Date(e.time))
+      return r
+  }
 }
 
-export interface ConsumeAPI{
-  consume:(
+export class ConsumeAPI{
+  async consume(
     memberId:string,
     serviceItems:Array<{serviceItemId:string,count:number}>,
-    employees:Array<{employeeId:string,items:Array<string>}>)=>Promise<Uint8Array>,
-  getConsumeList:(memberId:string)=>Promise<Array<ConsumeView>>
+    employees:Array<{employeeId:string,items:Array<string>}>):Promise<Uint8Array>{
+      const result =  await axios.get(
+        '/member/',
+        { params:{} })
+        return result.data as Uint8Array
+    }
+    async getConsumeList(memberId:string):Promise<Array<ConsumeView>>{
+      const result =  await axios.get(
+        '/member/',
+        { params:{} })
+        return result.data as Array<ConsumeView>
+    }
 }
 
 export interface PrepaidCard{
@@ -70,8 +116,13 @@ export interface ServiceItem{
   price:number
 }
 
-export interface ServiceItemAPI{
-  all:()=>Promise<Array<ServiceItem>>
+export class ServiceItemAPI{
+  async all():Promise<Array<ServiceItem>>{
+    const result =  await axios.get(
+      '/member/',
+      { params:{} })
+      return result.data as Array<ServiceItem>
+  }
 }
 
 declare global {
@@ -101,7 +152,24 @@ export interface WorkView{
   charges:Array<{_id:string,name:string,card:PrepaidCard,commission:number}>
 }
 
-export interface EmployeeAPI{
-  all:()=>Promise<Array<Employee>>;
-  work:(startDate:Date,endDate:Date)=>Promise<Array<WorkView>>;
+export class EmployeeAPI{
+  async all():Promise<Array<Employee>>{
+    const result =  await axios.get(
+      '/member/',
+      { params:{} })
+      return result.data as Array<Employee>
+  }
+  async work(startDate:Date,endDate:Date):Promise<Array<WorkView>>{
+    const result =  await axios.get(
+      '/member/',
+      { params:{} })
+      return result.data as Array<WorkView>
+  }
 }
+
+Object.assign(window,{
+  memberAPI:new MemberAPI(),
+  consumeAPI:new ConsumeAPI(),
+  serviceItemAPI:new ServiceItemAPI(),
+  employeeAPI:new EmployeeAPI()
+})

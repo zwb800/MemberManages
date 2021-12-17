@@ -57,7 +57,6 @@ import { defineComponent,ref,onMounted,watch } from 'vue'
 import Charge from './Charge.vue'
 import Consume from './Consume.vue'
 import MemberInfo from './MemberInfo.vue'
-import axios from 'axios'
 
 import './models'
 import { Member } from './models'
@@ -76,7 +75,6 @@ export default defineComponent({
         const member = ref<Member|undefined>()
         const members = ref(Array<Member>())
         const getMembers =  async () =>{
-            await axios.get('')
             members.value = await window.memberAPI.all(props.search)
         }
         
