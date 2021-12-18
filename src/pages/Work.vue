@@ -67,18 +67,19 @@ export default defineComponent({
         const endDate = ref(todayStr)
         const rows = ref()
         const serviceItems = ref(Array<ServiceItem>())
+
         const getRows = async()=>{
             rows.value = await window.employeeAPI.work(
                 new Date(startDate.value),
                 new Date(endDate.value+' 23:59:59'))
-                
-                
-            serviceItems.value = await window.serviceItemAPI.all()
         }
 
-        onMounted(getRows)
-        watch([startDate,endDate],getRows)
+        onMounted(async()=>{
+            serviceItems.value = await window.serviceItemAPI.all()
+            await getRows()
+        })
 
+        watch([startDate,endDate],getRows)
 
         const modelToday = computed(()=>startDate.value == dateStr(new Date())?'today':null)
         const modelMonth = computed(()=>{

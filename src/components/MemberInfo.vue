@@ -33,7 +33,9 @@
                                 rows-per-page-label="每页条数"
                                 no-results-label="无数据"
                                 no-data-label="无数据"
-                                loading-label="加载中" :rows="consumeRows" :columns="consumeColumns" flat></q-table>
+                                loading-label="加载中" 
+                                :rows="consumeRows" 
+                                :columns="consumeColumns" flat></q-table>
                         </q-tab-panel>
                     </q-tab-panels>
                 </template>
@@ -78,7 +80,8 @@ export default defineComponent({
             consumeColumns:[
                 { label:'时间',field:'time',
                 format:dateTimeStr},
-                { label:'项目',field:'product',format:(p:Array<{name:string,count:number}>)=>{
+                { label:'项目',field:'product',
+                format:(p:Array<{name:string,count:number}>)=>{
                     let result = ''
                     p.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
                     return result
