@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hhh lpr lFf">
-    <q-header :class="color" elevated>
+    <q-header :class="'bg-'+color" elevated>
       <div class="row">
       <q-toolbar class="col q-pr-none">
         <q-btn
@@ -72,22 +72,21 @@ const linksList = [
     caption: '会员列表',
     icon: 'school',
     link: '/member',
-    color:'#1976d2',
-    bgColor:'bg-primary'
+    color:'primary',
   },
   {
     title: '工作量',
     caption: '工作量统计',
     icon: 'code',
     link: '/work',
-    color:'#26a69a',
-    bgColor:'bg-secondary',
+    color:'secondary',
   },
   
 ];
 
 import { defineComponent, ref,watch,onMounted } from 'vue'
 import NewMember from '../components/NewMember.vue'
+import { getCssVar } from 'quasar'
 export default defineComponent({
   name: 'MainLayout',
 
@@ -117,10 +116,15 @@ export default defineComponent({
       if(link)
       {
         title.value = link.title
-        color.value = link.bgColor
+        color.value = link.color
         const themeColors = document.getElementsByName('theme-color')
-        if(themeColors.length>0)
-          themeColors[0].setAttribute('content',link.color)
+        if(themeColors.length>0 )
+        {
+            const setColor = getCssVar( link.color)!
+            console.log(setColor)
+            themeColors[0].setAttribute('content',setColor)
+        }
+          
       }
         
       else

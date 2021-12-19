@@ -83,7 +83,7 @@ module.exports = configure(function (ctx) {
       server:{
         type:'https',
         options:{
-          pfx:'C:/Users/zwb/sources/MemberManages/192.168.2.138.pfx'
+          pfx:'./192.168.2.138.pfx'
         }
       }
       // https: false,
