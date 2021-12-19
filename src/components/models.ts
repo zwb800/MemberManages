@@ -3,7 +3,7 @@ import axios from 'axios'
 import { MemberAPI } from './memberApi'
 import {ConsumeAPI} from './consumeApi'
 
-axios.defaults.baseURL = 'http://localhost:3000'
+axios.defaults.baseURL = 'https://'+location.hostname+':3000'
 export interface Todo {
   id: number;
   content: string;

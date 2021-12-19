@@ -80,9 +80,15 @@ module.exports = configure(function (ctx) {
 
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
-      port: 8080,
-      open: true // opens browser window automatically
+      server:{
+        type:'https',
+        options:{
+          pfx:'C:/Users/zwb/sources/MemberManages/192.168.2.138.pfx'
+        }
+      }
+      // https: false,
+      // port: 8080,
+      // open: true // opens browser window automatically
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
@@ -142,13 +148,13 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: 'Quasar App',
-        short_name: 'Quasar App',
-        description: 'A Quasar Framework app',
+        name: '聚能会员系统',
+        short_name: '聚能会员',
+        description: '聚能科技工作室出品',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
-        theme_color: '#027be3',
+        theme_color: '#1976d2',
         icons: [
           {
             src: 'icons/icon-128x128.png',

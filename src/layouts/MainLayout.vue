@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hhh lpr lFf">
     <q-header :class="color" elevated>
       <div class="row">
       <q-toolbar class="col q-pr-none">
@@ -33,15 +33,19 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
-      show-if-above
-      bordered
+      overlay
+      :width="200"
+      behavior="desktop"
+
+      elevated
     >
+    
       <q-list>
-        <q-item-label
+        <!-- <q-item-label
           header
         >
           菜单
-        </q-item-label>
+        </q-item-label> -->
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -67,15 +71,17 @@ const linksList = [
     title: '会员',
     caption: '会员列表',
     icon: 'school',
-    link: '/',
-    color:'bg-primary',
+    link: '/member',
+    color:'#1976d2',
+    bgColor:'bg-primary'
   },
   {
     title: '工作量',
     caption: '工作量统计',
     icon: 'code',
     link: '/work',
-    color:'bg-teal',
+    color:'#26a69a',
+    bgColor:'bg-secondary',
   },
   
 ];
@@ -93,6 +99,7 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const leftDrawerOpen = ref(false)
+    const miniState = ref(true)
     const text = ref('')
 
     const search = async(s=text.value)=>{
@@ -110,7 +117,10 @@ export default defineComponent({
       if(link)
       {
         title.value = link.title
-        color.value = link.color
+        color.value = link.bgColor
+        const themeColors = document.getElementsByName('theme-color')
+        if(themeColors.length>0)
+          themeColors[0].setAttribute('content',link.color)
       }
         
       else
@@ -123,6 +133,7 @@ export default defineComponent({
     return {
       text,
       search,
+      miniState,
       async refersh(){
         await search(' ')
         await search('')
@@ -134,6 +145,9 @@ export default defineComponent({
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
+      },
+      toggleMiniState(){
+        miniState.value = !miniState.value
       }
     }
   }

@@ -1,9 +1,9 @@
 {
   "name": "membermanages",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
-  "author": "zwb800 <zwb800@gmail.com>",
+  "description": "聚能科技工作室出品",
+  "productName": "聚能会员系统",
+  "author": "微信:zwb800 <zwb08@qq.com>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
