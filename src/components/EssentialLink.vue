@@ -1,6 +1,5 @@
 <template>
-  <q-item :to="link"
-    >
+  <q-item :to="link">
    
     <q-item-section
       v-if="icon"
@@ -16,6 +15,7 @@
       </q-item-label> -->
     </q-item-section>
   </q-item>
+  <q-separator v-if="separator"></q-separator>
 </template>
 
 <script lang="ts">
@@ -42,6 +42,10 @@ export default defineComponent({
     icon: {
       type: String,
       default: ''
+    },
+    separator:{
+      type:Boolean,
+      default:false
     }
   }
 })

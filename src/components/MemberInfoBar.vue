@@ -1,7 +1,7 @@
 <template>
 <template v-if="m">
   <div class="row q-gutter-md q-mt-none">
-      <q-field class="col-auto q-mt-none" label="姓名" stack-label borderless>
+      <q-field class="col q-mt-none" label="姓名" stack-label borderless>
           <template v-slot:control>
               {{m.member.name}}
           </template>
@@ -16,7 +16,7 @@
               {{dateStr(m.member.newCardTime)}}
           </template>
       </q-field>
-      <q-field class="col-auto q-mt-none" label="余额" stack-label borderless>
+      <q-field class="col q-mt-none" label="余额" stack-label borderless>
           <template v-slot:control>
               ￥{{m.member.balance}}
           </template>
@@ -43,13 +43,13 @@
 </template>
 <script lang='ts'>
 import { defineComponent,onMounted,ref} from 'vue'
-import { MemberView } from './models'
+import { MemberView ,api} from './models'
 export default defineComponent({
    props:{'memberId':{type:String,required:true}},
     setup(props){
         const m = ref<MemberView>()
         onMounted(async ()=>{
-            m.value = await window.memberAPI.get(props.memberId)
+            m.value = await api.memberAPI.get(props.memberId)
         })
         
         return {

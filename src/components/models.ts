@@ -74,16 +74,16 @@ export class ServiceItemAPI{
   }
 }
 
-declare global {
-  interface Window{
-    memberAPI:MemberAPI;
-    cardAPI:CardAPI;
-    employeeAPI:EmployeeAPI;
-    serviceItemAPI:ServiceItemAPI;
-    consumeAPI:ConsumeAPI;
-  }
+// declare global {
+//   interface Window{
+//     memberAPI:MemberAPI;
+//     cardAPI:CardAPI;
+//     employeeAPI:EmployeeAPI;
+//     serviceItemAPI:ServiceItemAPI;
+//     consumeAPI:ConsumeAPI;
+//   }
  
-}
+// }
 
 export interface ChargeItem{
   _id:Uint8Array;
@@ -114,10 +114,11 @@ export class EmployeeAPI{
   }
 }
 
-Object.assign(window,{
+
+export const api =  {
   memberAPI:new MemberAPI(),
   consumeAPI:new ConsumeAPI(),
   serviceItemAPI:new ServiceItemAPI(),
   employeeAPI:new EmployeeAPI(),
   cardAPI:new CardAPI(),
-})
+}

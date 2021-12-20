@@ -1,5 +1,5 @@
 <template>
-<div class="q-pt-md q-pl-md">
+<q-page padding>
 <div class="row q-gutter-sm">
 <q-input stack-label v-model="startDate" label="开始时间" type="date"></q-input>
 <q-input stack-label label="结束时间" v-model="endDate" type="date"></q-input>
@@ -50,13 +50,13 @@
     </template>
     
 </div>
-</div>
+</q-page>
 <member-info v-model="memberinfo" :memberId="memberId"></member-info>
 </template>
 
 
 <script lang="ts">
-import { ServiceItem, WorkView } from 'src/components/models'
+import { ServiceItem, WorkView,api } from 'src/components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
 import MemberInfo from 'src/components/MemberInfo.vue'
 import {dateStr} from 'src/components/utils'
@@ -72,13 +72,13 @@ export default defineComponent({
         const serviceItems = ref(Array<ServiceItem>())
 
         const getRows = async()=>{
-            rows.value = await window.employeeAPI.work(
+            rows.value = await api.employeeAPI.work(
                 new Date(startDate.value),
                 new Date(endDate.value+' 23:59:59'))
         }
 
         onMounted(async()=>{
-            serviceItems.value = await window.serviceItemAPI.all()
+            serviceItems.value = await api.serviceItemAPI.all()
             await getRows()
         })
 

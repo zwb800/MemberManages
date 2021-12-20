@@ -47,7 +47,7 @@
 <script lang='ts'>
 import EmployeeOptions from './EmployeeOptions.vue'
 import { defineComponent,ref,watch,onMounted } from 'vue'
-import { Employee, PrepaidCard } from './models'
+import { Employee, PrepaidCard,api } from './models'
 export default defineComponent({
     components:{
         EmployeeOptions,
@@ -83,7 +83,7 @@ export default defineComponent({
       var cardoptions2 = ref<{label:string,value:PrepaidCard}[]>([])
       var cardoptions3 = ref<{label:string,value:PrepaidCard}[]>([])
       onMounted(async ()=>{
-        const cards = await window.cardAPI.all()
+        const cards = await api.cardAPI.all()
         cardoptions.value = cards.filter((it)=>it.gift).map((c)=>{
             return {
               value : c,

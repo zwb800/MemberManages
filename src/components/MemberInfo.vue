@@ -54,7 +54,7 @@
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
 import { defineComponent,ref } from 'vue'
-import { ConsumeView,ChargeView } from './models'
+import { ConsumeView,ChargeView,api } from './models'
 import { dateTimeStr } from './utils'
 export default defineComponent({
     components:{
@@ -71,9 +71,9 @@ export default defineComponent({
             show:async ()=>{
                 
                 tab.value = 'info'
-                consumeRows.value = await window.consumeAPI.getConsumeList(props.memberId)
+                consumeRows.value = await api.consumeAPI.getConsumeList(props.memberId)
                 
-                chargeRows.value = await window.memberAPI.getChargeList(props.memberId)
+                chargeRows.value = await api.memberAPI.getChargeList(props.memberId)
             },
             tab,
             consumeRows,

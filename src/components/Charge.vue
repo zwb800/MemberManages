@@ -30,7 +30,7 @@
 import ChargeForm from './ChargeForm.vue'
 import MemberInfoBar from './MemberInfoBar.vue'
 import {defineComponent,watch,ref,toRaw} from 'vue'
-import { PrepaidCard,Employee} from './models'
+import { PrepaidCard,Employee,api} from './models'
 import { QDialog,useQuasar } from 'quasar'
 
 
@@ -70,7 +70,7 @@ export default defineComponent({
         if(amount.value)
           amountV = parseInt(amount.value.toString())
           
-        const result = await window.memberAPI.charge(
+        const result = await api.memberAPI.charge(
           props.memberId,
           amountV,
           toRaw(card.value),

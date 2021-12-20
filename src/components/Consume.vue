@@ -74,6 +74,7 @@ import MemberInfoBar from './MemberInfoBar.vue'
 import {defineComponent,ref,onMounted,computed} from 'vue'
 import { useQuasar,QDialog,QForm} from 'quasar'
 import BtnToggle  from './BtnToggle.vue'
+import {api} from './models'
 
 
 interface EmployeeOption{
@@ -108,7 +109,7 @@ export default defineComponent( {
         }
 
         onMounted(async ()=>{
-             initRow = (await window.serviceItemAPI.all())
+             initRow = (await api.serviceItemAPI.all())
                 .map(((e)=>{
                     return {
                         label:e.name,
@@ -125,7 +126,7 @@ export default defineComponent( {
                 }
             })
 
-            initEmployee = (await window.employeeAPI.all()).map((e)=>{
+            initEmployee = (await api.employeeAPI.all()).map((e)=>{
                             return {
                                 value:e,
                                 label:e.name,
@@ -163,7 +164,7 @@ export default defineComponent( {
                         es = []
 
                     const selectedItems = (serviceItems.value.filter(p=>p.count>0))
-                    const result = await window.consumeAPI.consume(props.memberId,
+                    const result = await api.consumeAPI.consume(props.memberId,
                     selectedItems.map((p)=>{
                         return {
                             serviceItemId:p.value.serviceItemId,

@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hhh lpr lFf">
+  <q-layout view="hHh Lpr fFf">
     <q-header :class="'bg-'+color" reveal elevated>
       <div class="row">
       <q-toolbar class="col q-pr-none">
@@ -11,16 +11,13 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
         <q-toolbar-title>
           {{title}}
         </q-toolbar-title>
       </q-toolbar>
       <q-toolbar class="col-auto">
-        <q-separator dark vertical inset />
           <q-btn stretch flat icon="add" @click="newmember = true">开卡</q-btn>
-          <q-separator dark vertical inset class="q-mr-sm" />
-         <q-input dark dense standout v-model="text" placeholder="姓名/手机号" input-class="text-right">
+         <q-input style="width:150px" dark dense standout v-model="text" placeholder="姓名/手机号" input-class="text-right">
           <template v-slot:append>
             <q-icon v-if="text === ''" name="search" />
             <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
@@ -32,20 +29,14 @@
     </q-header>
 
     <q-drawer
+    show-if-above
       v-model="leftDrawerOpen"
-      overlay
-      :width="200"
-      behavior="desktop"
-
-      elevated
+      :width="180"
+      bordered
+      class="bg-grey-3"
     >
     <q-scroll-area class="fit">
       <q-list>
-        <!-- <q-item-label
-          header
-        >
-          菜单
-        </q-item-label> -->
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
@@ -58,6 +49,31 @@
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-footer reveal >
+      <q-bar class="justify-center text-caption" :class="'bg-'+color">
+        
+        <span>总 10</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>新 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>眼 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>面 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>姜 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>冰 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>发 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>头皮 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>办卡 2</span>
+        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+        <span>销售额 213</span> 
+        
+        </q-bar>
+    </q-footer>
   </q-layout>
    <new-member v-model="newmember" @finished="refersh"></new-member>
 </template>
@@ -71,16 +87,59 @@ const linksList = [
   {
     title: '会员',
     caption: '会员列表',
-    icon: 'school',
+    icon: 'supervisor_account',
     link: '/member',
     color:'primary',
+    separator:false,
   },
   {
     title: '工作量',
     caption: '工作量统计',
-    icon: 'code',
+    icon: 'pending_actions',
     link: '/work',
     color:'secondary',
+    separator:false,
+  },
+    {
+    title: '消费',
+    caption: '消费',
+    icon: 'credit_card',
+    link: '/consume',
+    color:'primary',
+    separator:false,
+  },
+    {
+    title: '充值',
+    caption: '充值',
+    icon: 'paid',
+    link: '/charge',
+    color:'primary',
+    separator:false,
+  },
+  {
+    title: '库存',
+    caption: '库存',
+    icon: 'upgrade',
+    link: '/stock',
+    color:'primary',
+    separator:true,
+  },
+  
+  {
+    title: '设置',
+    caption: '设置',
+    icon: 'settings',
+    link: '/settings',
+    color:'secondary',
+    separator:false,
+  },
+  {
+    title: '帮助',
+    caption: '帮助',
+    icon: 'help',
+    link: '/help',
+    color:'secondary',
+    separator:false,
   },
   
 ];

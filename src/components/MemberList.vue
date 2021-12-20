@@ -1,17 +1,5 @@
 <template>
-
-    <!-- <q-table flat grid class="full-height"
-    :rows="rows"
-    :rows-per-page-options="[10, 20,50,100]"
-    rows-per-page-label="每页条数"
-    no-results-label="无数据"
-    no-data-label="无数据"
-    loading-label="加载中"
-    row-key="no">
-        <template v-slot:item="props"> -->
-          
-                
-            <q-infinite-scroll ref="scroller" class="full-width" @load="onLoad">
+<q-infinite-scroll ref="scroller" class="full-width" @load="onLoad">
                 <div class="row justify-center q-gutter-md">
         <q-card class="" :key="row" v-for="row of rows">
             <q-card-section 
@@ -46,26 +34,19 @@
       </template>
             </q-infinite-scroll>
            
-        <!-- </template>
-    </q-table> -->
-   
-   
-
-
-<consume v-model="consume" :memberId="memberId" @finished="getMembers"></consume>
+<consume v-model="consume" :memberId="memberId" @finished="getData"></consume>
 <member-info v-model="memberinfo" :memberId="memberId"></member-info>
-<charge v-model="charge" :memberId="memberId" @finished="getMembers"></charge>
+<charge v-model="charge" :memberId="memberId" @finished="getData"></charge>
 </template>
 
 <script lang="ts">
 import { QInfiniteScroll } from 'quasar'
-import { defineComponent,ref,onMounted,watch } from 'vue'
+import { defineComponent,ref,watch } from 'vue'
 import Charge from './Charge.vue'
 import Consume from './Consume.vue'
 import MemberInfo from './MemberInfo.vue'
 
-import './models'
-import { Member } from './models'
+import { Member ,api} from './models'
 
 
 export default defineComponent({
@@ -83,7 +64,7 @@ export default defineComponent({
         const pageSize = 20
 
         const get = async(index:number)=>{
-            return await window.memberAPI.all(
+            return await api.memberAPI.all(
                 props.search,index,pageSize)
         }
 
@@ -99,7 +80,8 @@ export default defineComponent({
         const scroller = ref<QInfiniteScroll>()
         
         // onMounted(onLoad)
-        watch(props,async ()=>{
+
+        const getData = async ()=>{
             const newArr =await get(1)
             members.value = newArr
 
@@ -109,9 +91,11 @@ export default defineComponent({
             //     scroller.value.reset()
             //     scroller.value.poll()
             // }
-        })
+        }
+        watch(props,getData)
         return {
             member,
+            getData,
             scroller,
             memberId:ref(''),
             rows:members,

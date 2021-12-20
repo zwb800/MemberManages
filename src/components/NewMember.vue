@@ -37,7 +37,7 @@
 import ChargeForm from './ChargeForm.vue'
 import {defineComponent,ref,toRaw,watch } from 'vue'
 import { QDialog,useQuasar } from 'quasar'
-import {Member, PrepaidCard,Employee} from './models'
+import {Member, PrepaidCard,Employee,api} from './models'
 
 export default defineComponent({
     components:{ ChargeForm},
@@ -82,7 +82,7 @@ export default defineComponent({
         if(amount.value)
           member.value.balance = parseInt(amount.value.toString())
         
-        const result = await window.memberAPI.add(
+        const result = await api.memberAPI.add(
           toRaw(member.value),
           toRaw(card.value),
           toRaw(employees.value))

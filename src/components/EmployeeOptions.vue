@@ -10,7 +10,7 @@
 
 <script lang='ts'>
 import {defineComponent,ref,onMounted,toRaw} from 'vue'
-import { Employee } from './models'
+import { Employee,api } from './models'
 
 interface option{
     value:Employee;
@@ -25,7 +25,7 @@ export default defineComponent({
         
         const rows = ref<Array<option>>()
         onMounted(async ()=>{
-            rows.value = (await window.employeeAPI.all()).map((e)=>{
+            rows.value = (await api.employeeAPI.all()).map((e)=>{
                 return {
                     value:e,
                     label:e.name,
