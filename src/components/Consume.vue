@@ -21,10 +21,11 @@
                 color='primary' 
                 :label='row.label+"("+row.count+")"'
                 @click.left='row.count++'
-                 @click.right='row.count--'></q-btn>
+                 @contextmenu='row.count--;$event.preventDefault()'></q-btn>
                 <q-btn v-else
                 :label='row.label'
-                @click.left='row.count++'></q-btn>
+                @click.left='row.count++'
+                @contextmenu='$event.preventDefault()'></q-btn>
                 </template>
         </q-btn-group>
                 </template>

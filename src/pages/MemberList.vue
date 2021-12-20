@@ -1,11 +1,10 @@
 <template>
-  <q-page class="row justify-evenly">
+  <q-page padding>
     <member-list :search="search"></member-list>
+    <q-page-scroller position="bottom-right" :offset="[18, 18]">
+            <q-btn fab icon="keyboard_arrow_up" />
+    </q-page-scroller>
   </q-page>
-   <!-- <q-page-sticky position="bottom-right" :offset="[18, 18]">
-            <q-btn fab icon="add" color="primary" @click="newmember = true" />
-          </q-page-sticky> -->
-         
 </template>
 
 <script lang="ts">
@@ -20,9 +19,6 @@ export default defineComponent({
   setup() {
 
     return { 
-      getMembers:()=>{
-        console.log('刷新列表')
-      },
             
             }
   }

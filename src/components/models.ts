@@ -19,6 +19,7 @@ export interface Member {
   no: number;
   name: string;
   balance:number;
+  consume:number;
   newCardTime:Date;
 }
 

@@ -56,6 +56,7 @@ export default defineComponent({
         name:'',
         no:0,
         balance:0,
+        consume:0,
         newCardTime:new Date()
       })
 
@@ -102,6 +103,7 @@ export default defineComponent({
                 name:'',
                 no:0,
                 balance:0,
+                consume:0,
                 newCardTime:new Date()
               }
 

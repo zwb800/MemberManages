@@ -19,10 +19,10 @@ export class MemberAPI{
       r.member.newCardTime = new Date(r.member.newCardTime)
       return r
   }
-  async all(keyword:string):Promise<Array<Member>>{
+  async all(keyword:string,index:number,pageSize:number):Promise<Array<Member>>{
     const result =  await axios.get(
       '/member/',
-      { params:{search:keyword} })
+      { params:{search:keyword,index,pageSize} })
       const r =  result.data as Array<Member>
       r.forEach(e=> e.newCardTime = new Date(e.newCardTime))
       

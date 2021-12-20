@@ -10,23 +10,24 @@
 <q-btn label="后一天" @click="nextDay()"></q-btn>
 </q-btn-group>
 </div>
-<q-table class="q-mt-md" hide-pagination grid :rows="rows">
-    <template  v-slot:item="table">
-        <q-card class="q-mr-md q-mb-md">
+
+<div class="row q-gutter-md q-mt-sm">
+    <template  :key="row" v-for="row of rows">
+        <q-card v-if="row.consumers.length>0 || row.charges.length>0">
             <q-card-section>
                 <div class="row">
-                <div class="col text-h6">{{table.row.employee}}</div> 
+                <div class="col text-h6">{{row.employee}}</div> 
                 <div class="text-caption q-pt-sm">
                     <template :key="s" v-for="s of serviceItems">
-                        {{headNumber(table.row,s.shortName)}}
+                        {{headNumber(row,s.shortName)}}
                     </template>
                     </div>
                 </div>
             </q-card-section>
-            <template v-if="table.row.consumers.length>0">
+            <template v-if="row.consumers.length>0">
             <q-separator></q-separator>
              <q-card-section>
-                 <div :key="c" v-for="c of table.row.consumers">
+                 <div :key="c" v-for="c of row.consumers">
                     <q-btn flat @click="memberId = c._id;memberinfo = true">
                         {{c.name}}<template :key="i" v-for="i of c.items">+{{i}}</template>
                     </q-btn>
@@ -34,19 +35,21 @@
             </q-card-section>
             </template>
 
-            <template v-if="table.row.charges.length>0">
+            <template v-if="row.charges.length>0">
             <q-separator></q-separator>
              <q-card-section>
-                 <div :key="c" v-for="c of table.row.charges">
+                 <div :key="c" v-for="c of row.charges">
                     <q-btn flat @click="memberId = c._id;memberinfo = true">
-                        {{c.name}} {{c.card.label}} {{c.commission}}
+                        {{c.name}} 
+                        {{c.card.label}} {{c.commission}}
                     </q-btn>
                  </div>
             </q-card-section>
             </template>
         </q-card>
     </template>
-</q-table>
+    
+</div>
 </div>
 <member-info v-model="memberinfo" :memberId="memberId"></member-info>
 </template>

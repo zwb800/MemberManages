@@ -1,6 +1,6 @@
 <template>
   <q-layout view="hhh lpr lFf">
-    <q-header :class="'bg-'+color" elevated>
+    <q-header :class="'bg-'+color" reveal elevated>
       <div class="row">
       <q-toolbar class="col q-pr-none">
         <q-btn
@@ -15,11 +15,11 @@
         <q-toolbar-title>
           {{title}}
         </q-toolbar-title>
+      </q-toolbar>
+      <q-toolbar class="col-auto">
         <q-separator dark vertical inset />
           <q-btn stretch flat icon="add" @click="newmember = true">开卡</q-btn>
-          <q-separator dark vertical inset />
-      </q-toolbar>
-      <q-toolbar class="col-3">
+          <q-separator dark vertical inset class="q-mr-sm" />
          <q-input dark dense standout v-model="text" placeholder="姓名/手机号" input-class="text-right">
           <template v-slot:append>
             <q-icon v-if="text === ''" name="search" />
@@ -39,7 +39,7 @@
 
       elevated
     >
-    
+    <q-scroll-area class="fit">
       <q-list>
         <!-- <q-item-label
           header
@@ -52,6 +52,7 @@
           v-bind="link"
         />
       </q-list>
+    </q-scroll-area>
     </q-drawer>
 
     <q-page-container>
@@ -118,9 +119,9 @@ export default defineComponent({
         title.value = link.title
         color.value = link.color
         const themeColors = document.getElementsByName('theme-color')
-        if(themeColors.length>0 )
+        const setColor = getCssVar( link.color)
+        if(themeColors.length>0  && setColor)
         {
-            const setColor = getCssVar( link.color)!
             console.log(setColor)
             themeColors[0].setAttribute('content',setColor)
         }

@@ -1,7 +1,7 @@
 <template>
 <template v-if="m">
   <div class="row q-gutter-md q-mt-none">
-      <q-field class="col-2 q-mt-none" label="姓名" stack-label borderless>
+      <q-field class="col-auto q-mt-none" label="姓名" stack-label borderless>
           <template v-slot:control>
               {{m.member.name}}
           </template>
@@ -16,9 +16,14 @@
               {{dateStr(m.member.newCardTime)}}
           </template>
       </q-field>
-      <q-field class="col q-mt-none" label="余额" stack-label borderless>
+      <q-field class="col-auto q-mt-none" label="余额" stack-label borderless>
           <template v-slot:control>
               ￥{{m.member.balance}}
+          </template>
+      </q-field>
+      <q-field class="col q-mt-none" label="累计消费" stack-label borderless>
+          <template v-slot:control>
+              ￥{{m.member.consume}}
           </template>
       </q-field>
   </div>

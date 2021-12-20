@@ -1,6 +1,6 @@
 <template>
-<div class="full-width full-height q-pl-md q-pt-md">
-    <q-table flat grid class="full-height"
+
+    <!-- <q-table flat grid class="full-height"
     :rows="rows"
     :rows-per-page-options="[10, 20,50,100]"
     rows-per-page-label="每页条数"
@@ -8,38 +8,49 @@
     no-data-label="无数据"
     loading-label="加载中"
     row-key="no">
-        <template v-slot:item="props">
-        <q-card class="q-mr-md q-mb-md">
-            <q-card-section class="bg-primary text-white q-pb-sm q-pt-sm">
+        <template v-slot:item="props"> -->
+          
+                
+            <q-infinite-scroll ref="scroller" class="full-width" @load="onLoad">
+                <div class="row justify-center q-gutter-md">
+        <q-card class="" :key="row" v-for="row of rows">
+            <q-card-section 
+            @click="memberId = row._id;memberinfo = true" 
+            class="cursor-pointer bg-primary text-white q-pb-sm q-pt-sm">
                 <div class="row">
-                    <div class="col-md-auto text-h6 q-pr-xs">{{props.row.name}} </div>
-                    <div class="col q-pt-xs"> {{props.row.phone}}</div>
+                    <div class="col-md-auto text-h6 q-pr-xs">{{row.name}} </div>
+                    <div class="col q-pt-xs"> {{row.phone}}</div>
                 </div>
             </q-card-section>
-            <q-card-section class="q-gutter-sm">
-                <div>卡号:{{props.row.no}}</div>
-                <div>余额:{{props.row.balance}}</div>
-                <div>开卡时间:{{dateStr(props.row.newCardTime)}}</div>
+            <q-card-section @click="memberId = row._id;memberinfo = true" class="cursor-pointer q-gutter-sm">
+                <div>卡号:{{row.no}}</div>
+                <div>余额:{{row.balance}}</div>
+                <div>开卡时间:{{dateStr(row.newCardTime)}}</div>
             </q-card-section>
             <q-separator></q-separator>
             <q-card-actions align="evenly" class="bg-grey-2 q-pa-none">
                 <q-btn-group flat>
-                <q-btn padding="md" @click="memberId = props.row._id;consume = true">
+                <q-btn padding="md" @click="memberId = row._id;consume = true">
                     <q-icon name="credit_card"></q-icon> &nbsp;划卡</q-btn>
-                <q-btn padding="md" @click="memberId = props.row._id;charge = true">
+                <q-btn padding="md" @click="memberId = row._id;charge = true">
                     <q-icon name="paid"></q-icon> &nbsp;充值
                 </q-btn>
-                <!-- <q-btn size="sm"   @click="memberId = props.row._id;memberinfo = true">
-                    <q-icon name="list"></q-icon> &nbsp;详情
-                </q-btn> -->
                 </q-btn-group>
             </q-card-actions>
         </q-card>    
-        </template>
-    </q-table>
+        </div>
+        <template v-slot:loading>
+        <div class="row justify-center q-my-md">
+          <q-spinner-dots color="primary" size="40px" />
+        </div>
+      </template>
+            </q-infinite-scroll>
+           
+        <!-- </template>
+    </q-table> -->
    
    
-</div>
+
 
 <consume v-model="consume" :memberId="memberId" @finished="getMembers"></consume>
 <member-info v-model="memberinfo" :memberId="memberId"></member-info>
@@ -47,6 +58,7 @@
 </template>
 
 <script lang="ts">
+import { QInfiniteScroll } from 'quasar'
 import { defineComponent,ref,onMounted,watch } from 'vue'
 import Charge from './Charge.vue'
 import Consume from './Consume.vue'
@@ -68,17 +80,42 @@ export default defineComponent({
      setup(props){
         const member = ref<Member|undefined>()
         const members = ref(Array<Member>())
-        const getMembers =  async () =>{
-            members.value = await window.memberAPI.all(props.search)
+        const pageSize = 20
+
+        const get = async(index:number)=>{
+            return await window.memberAPI.all(
+                props.search,index,pageSize)
         }
+
+        const onLoad =  async (
+            index=1,
+            done:((stop:boolean)=>void)|undefined=undefined) =>{
+            const newArr = await get(index)
+            members.value = members.value.concat(newArr)
+            if(done)
+                done(newArr.length < pageSize)
+        }
+
+        const scroller = ref<QInfiniteScroll>()
         
-        onMounted(getMembers)
-        watch(props,getMembers)
+        // onMounted(onLoad)
+        watch(props,async ()=>{
+            const newArr =await get(1)
+            members.value = newArr
+
+            // members.value = []
+            // if(scroller.value)
+            // {
+            //     scroller.value.reset()
+            //     scroller.value.poll()
+            // }
+        })
         return {
             member,
+            scroller,
             memberId:ref(''),
             rows:members,
-            getMembers, 
+            onLoad, 
             consume:ref(false),
             memberinfo:ref(false),
             charge:ref(false),
