@@ -10,6 +10,7 @@ import {
 
 
 export class MemberAPI{
+
   async get(id:string):Promise<MemberView>{
     const result = await axios.get(
       '/member/get',

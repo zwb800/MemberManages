@@ -49,28 +49,20 @@
     <q-page-container>
       <router-view />
     </q-page-container>
-    <q-footer reveal >
+    <q-footer reveal v-if="footer">
       <q-bar class="justify-center text-caption" :class="'bg-'+color">
         
-        <span>总 10</span>
+        <span>总 {{ footer.sum}}</span>
         <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>新 2</span>
+        <span>新 {{footer.new}}</span>
+        <template :key="f" v-for="f of footer.items">
+          <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
+          <span>{{f.label}} {{f.count}}</span>
+        </template>
         <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>眼 2</span>
+        <span>办卡 0</span>
         <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>面 2</span>
-        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>姜 2</span>
-        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>冰 2</span>
-        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>发 2</span>
-        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>头皮 2</span>
-        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>办卡 2</span>
-        <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
-        <span>销售额 213</span> 
+        <span>销售额 {{footer.sale}}</span> 
         
         </q-bar>
     </q-footer>
@@ -147,6 +139,7 @@ const linksList = [
 import { defineComponent, ref,watch,onMounted } from 'vue'
 import NewMember from '../components/NewMember.vue'
 import { getCssVar } from 'quasar'
+import { api, FooterView } from 'src/components/models';
 export default defineComponent({
   name: 'MainLayout',
 
@@ -184,17 +177,26 @@ export default defineComponent({
             console.log(setColor)
             themeColors[0].setAttribute('content',setColor)
         }
-          
       }
-        
       else
           title.value = ''
-
     }
-    onMounted(getTitle)
+
+    const footer = ref<FooterView>()
+    onMounted(async()=>{
+      getTitle()
+
+      const today = new Date()
+      const todayStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
+      const startDate = todayStr
+      const endDate = todayStr+' 23:59:59'
+
+      footer.value = await api.employeeAPI.footer(new Date(startDate),new Date(endDate))
+    })
     watch(route,getTitle)
 
     return {
+      footer,
       text,
       search,
       miniState,

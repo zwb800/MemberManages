@@ -122,7 +122,7 @@ export default defineComponent( {
                 return {
                     value:e.value.serviceItemId,
                     label:e.value.shortName,
-                    selected:false,
+                    selected:e.value.shortName == '头',
                 }
             })
 

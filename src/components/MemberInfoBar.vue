@@ -1,19 +1,19 @@
 <template>
 <template v-if="m">
-  <div class="row q-gutter-md q-mt-none">
-      <q-field class="col q-mt-none" label="姓名" stack-label borderless>
+  <div class="row q-gutter-md q-mt-none justify-between text-no-wrap ">
+      <q-field class=" q-mt-none" label="姓名" stack-label borderless>
           <template v-slot:control>
               {{m.member.name}}
           </template>
       </q-field>
-      <q-field class="col q-mt-none" label="手机号" stack-label borderless>
+      <q-field class=" q-mt-none" label="手机号" stack-label borderless>
           <template v-slot:control>
               {{m.member.phone}}
           </template>
       </q-field>
-      <q-field class="col q-mt-none" label="开卡时间" stack-label borderless>
+      <q-field class=" q-mt-none" label="开卡时间" stack-label borderless>
           <template v-slot:control>
-              {{dateStr(m.member.newCardTime)}}
+              <div class="">{{dateStr(m.member.newCardTime)}}</div>
           </template>
       </q-field>
       <q-field class="col q-mt-none" label="余额" stack-label borderless>

@@ -10,14 +10,23 @@
 <q-btn label="后一天" @click="nextDay()"></q-btn>
 </q-btn-group>
 </div>
+<div class="q-pt-sm" v-if="footer">
+    <q-chip icon="group" color="primary" text-color="white" class="q-ml-none" square>总 {{ footer.sum}}</q-chip>
+    <q-chip icon="person" color="teal" text-color="white" square>新 {{footer.new}}</q-chip>
+    <template :key="f" v-for="f of footer.items">
+        <q-chip square>{{f.label}} {{f.count}}</q-chip>
+    </template>
+    <q-chip icon="payment" color="orange" text-color="white" square>办卡 0</q-chip>
+    <q-chip icon="trending_up" color="red" text-color="white" square>销售额 {{footer.sale}}</q-chip> 
+</div>
 
-<div class="row q-gutter-md q-mt-sm">
+<div class="row q-gutter-md q-mt-sm items-stretch">
     <template  :key="row" v-for="row of rows">
-        <q-card v-if="row.consumers.length>0 || row.charges.length>0">
+        <q-card class="q-mt-none q-mb-md" v-if="row.consumers.length>0 || row.charges.length>0">
             <q-card-section>
                 <div class="row">
-                <div class="col text-h6">{{row.employee}}</div> 
-                <div class="text-caption q-pt-sm">
+                <div class="text-h6">{{row.employee}}</div> 
+                <div class="text-caption q-pl-sm q-pt-sm">
                     <template :key="s" v-for="s of serviceItems">
                         {{headNumber(row,s.shortName)}}
                     </template>
@@ -41,7 +50,7 @@
                  <div :key="c" v-for="c of row.charges">
                     <q-btn flat @click="memberId = c._id;memberinfo = true">
                         {{c.name}} 
-                        {{c.card.label}} {{c.commission}}
+                        {{c.card?c.card.label:''}} {{c.commission}}
                     </q-btn>
                  </div>
             </q-card-section>
@@ -56,7 +65,7 @@
 
 
 <script lang="ts">
-import { ServiceItem, WorkView,api } from 'src/components/models'
+import { ServiceItem, WorkView,api, FooterView } from 'src/components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
 import MemberInfo from 'src/components/MemberInfo.vue'
 import {dateStr} from 'src/components/utils'
@@ -64,7 +73,7 @@ export default defineComponent({
     components:{MemberInfo},
     setup(){
         const today = new Date()
-
+        const footer = ref<FooterView>()
         const todayStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
         const startDate = ref(todayStr)
         const endDate = ref(todayStr)
@@ -72,9 +81,10 @@ export default defineComponent({
         const serviceItems = ref(Array<ServiceItem>())
 
         const getRows = async()=>{
-            rows.value = await api.employeeAPI.work(
-                new Date(startDate.value),
-                new Date(endDate.value+' 23:59:59'))
+            const sDate = new Date(startDate.value)
+            const eDate = new Date(endDate.value+' 23:59:59')
+            rows.value = await api.employeeAPI.work(sDate,eDate)
+            footer.value = await api.employeeAPI.footer(sDate,eDate)
         }
 
         onMounted(async()=>{
@@ -98,9 +108,11 @@ export default defineComponent({
             }
             return null
         })
+
         return {
             startDate,
             endDate,
+            footer,
             rows,
             serviceItems,
             modelToday,

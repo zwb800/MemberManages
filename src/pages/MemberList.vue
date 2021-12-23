@@ -1,7 +1,7 @@
 <template>
   <q-page padding>
     <q-infinite-scroll ref="scroller" class="full-width" transition="scale" @load="onLoad">
-                <div class="row q-gutter-md">
+                <div class="row q-gutter-md justify-center">
         <q-card :key="row" v-for="row of rows">
             <q-card-section 
             @click="memberId = row._id;memberinfo = true" 

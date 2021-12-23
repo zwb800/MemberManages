@@ -101,7 +101,19 @@ export interface WorkView{
   charges:Array<{_id:string,name:string,card:PrepaidCard,commission:number}>
 }
 
+export interface FooterView{
+  sum:number;
+  new:number;
+  items:Array<{label:string,count:number}>;
+}
+
 export class EmployeeAPI{
+  async footer(startDate: Date, endDate: Date) {
+    const result =  await axios.get(
+      '/employee/footer',
+      { params:{startDate,endDate} })
+      return result.data as FooterView
+  }
   async all():Promise<Array<Employee>>{
     const result =  await axios.get('/employee')
       return result.data as Array<Employee>
@@ -112,6 +124,7 @@ export class EmployeeAPI{
       { params:{startDate,endDate} })
       return result.data as Array<WorkView>
   }
+  
 }
 
 
