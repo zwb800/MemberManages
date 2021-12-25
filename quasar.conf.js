@@ -85,10 +85,10 @@ module.exports = configure(function (ctx) {
         options:{
           pfx:'./192.168.2.138.pfx'
         }
-      }
-      // https: false,
-      // port: 8080,
-      // open: true // opens browser window automatically
+      },
+      https: false,
+      port: 8080,
+      open: true // opens browser window automatically
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
