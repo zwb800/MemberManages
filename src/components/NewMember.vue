@@ -1,14 +1,17 @@
 <template>
+
 <q-dialog ref="dialog" persistent>
+
     <q-card style="min-width:600px">
+        
         <q-card-section class="row q-pb-none">
+          
           <div class="text-h6">开卡</div>
           <q-space />
           <q-btn round flat icon="close" v-close-popup></q-btn>
         </q-card-section>
         <q-form @submit="add" greedy autofocus>
         <q-card-section class="q-pt-none">
-      
           <div class="row ">
             <q-input class="col" label="姓名" v-model="member.name"
              :rules="[ val => val && val.length > 0 || '请填写姓名'] "></q-input>
@@ -25,7 +28,7 @@
         <q-separator></q-separator>
         <q-card-actions align="right" class="">
           <span>{{text?'应付金额:':''}}</span><span class="text-negative text-bold">{{text}}</span>&nbsp;
-            <q-btn label="开卡" type="submit" color="primary"></q-btn>
+            <q-btn :loading="submitting" label="开卡" type="submit" color="primary"></q-btn>
               <q-btn label="重置" type="reset"></q-btn>
         </q-card-actions>
         </q-form>
@@ -36,7 +39,7 @@
 <script lang='ts'>
 import ChargeForm from './ChargeForm.vue'
 import {defineComponent,ref,toRaw,watch } from 'vue'
-import { QDialog,useQuasar } from 'quasar'
+import {  QDialog,useQuasar } from 'quasar'
 import {Member, PrepaidCard,Employee,api} from './models'
 
 export default defineComponent({
@@ -61,6 +64,7 @@ export default defineComponent({
       })
 
       const text = ref('')
+      const submitting = ref(false)
       watch([amount,card],()=>{
         text.value = ''
         if(amount.value && amount.value>0)
@@ -79,6 +83,9 @@ export default defineComponent({
       
       const add =  async()=>{
 
+        if(submitting.value)
+        return
+        submitting.value = true
         if(amount.value)
           member.value.balance = parseInt(amount.value.toString())
         
@@ -88,6 +95,7 @@ export default defineComponent({
           toRaw(employees.value))
       
 
+        submitting.value = false
         if(result)
           {
 
@@ -128,6 +136,7 @@ export default defineComponent({
       const dialog = ref<QDialog>()
 
       return {
+        submitting,
         amount,
         employees,
         text,

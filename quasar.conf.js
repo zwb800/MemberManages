@@ -86,7 +86,7 @@ module.exports = configure(function (ctx) {
           pfx:'./192.168.2.138.pfx'
         }
       },
-      https: false,
+      https: true,
       port: 8080,
       open: true // opens browser window automatically
     },
@@ -96,7 +96,7 @@ module.exports = configure(function (ctx) {
       config: {},
 
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      lang: 'zh-CN', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

@@ -8,7 +8,8 @@ const routes: RouteRecordRaw[] = [
       {path:'/',redirect:'/member'},
       { path: '/member', name:'memberlist', 
       component: () => import('pages/MemberList.vue'),props:true },
-      { path: '/work', component: () => import('pages/Work.vue') }
+      { path: '/work', component: () => import('pages/Work.vue') },
+      { path:'/consume',component:()=>import('pages/ConsumeList.vue')}
   ],
   },
 

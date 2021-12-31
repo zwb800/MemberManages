@@ -61,7 +61,7 @@
         </q-card-section>
         <q-separator></q-separator>
         <q-card-actions align="right">
-            <q-btn label="保存" type="submit" color="primary"></q-btn>
+            <q-btn label="保存" :loading="submitting" type="submit" color="primary"></q-btn>
               <q-btn label="重置" type="reset"></q-btn>
         </q-card-actions>
          </q-form>
@@ -144,6 +144,7 @@ export default defineComponent( {
         const form = ref<QForm>()
         const $q = useQuasar()
 
+        const submitting = ref(false)
         return {
             form,
             employee,
@@ -151,8 +152,10 @@ export default defineComponent( {
                 init()
             },
             submit:async ()=>{
-                if(serviceItems.value!=undefined)
+                if(serviceItems.value!=undefined &&
+                    !(submitting.value))
                 {
+                    submitting.value = true
                     let es = employee.value?.filter(p=>p.selected).map(p=>{
                         return {
                             employeeId:p.value._id,
@@ -172,6 +175,7 @@ export default defineComponent( {
                         }
                     }),es)
                     
+                    submitting.value = false
                     if(result)
                     {
                         dialog.value?.hide()
@@ -196,6 +200,7 @@ export default defineComponent( {
                     }
                 }
             },
+            submitting,
             dialog,
             isServiceItemValid:computed(()=>{
                 if(serviceItems.value)

@@ -18,7 +18,7 @@
         <q-separator></q-separator>
         <q-card-actions align="right">
                     <span>{{text?'应付金额:':''}}</span><span class="text-negative text-bold">{{text}}</span>&nbsp;
-            <q-btn label="充值" type="submit" color="primary"></q-btn>
+            <q-btn :loading="submitting" label="充值" type="submit" color="primary"></q-btn>
               <q-btn label="重置" type="reset"></q-btn>
         </q-card-actions>
 </q-form>
@@ -63,9 +63,12 @@ export default defineComponent({
           text.value += `=${sum}`
         }
       })
+      const submitting = ref(false)
 
         const submit =  async()=>{
-
+          if(submitting.value)
+            return
+            submitting.value = true
            let amountV = 0
         if(amount.value)
           amountV = parseInt(amount.value.toString())
@@ -75,7 +78,7 @@ export default defineComponent({
           amountV,
           toRaw(card.value),
           toRaw(employees.value))
-        
+        submitting.value = false
           if(result)
           {
               dialog.value?.hide()
@@ -109,6 +112,7 @@ export default defineComponent({
         
         }
       return {
+        submitting,
         amount,
         text,
         employees,

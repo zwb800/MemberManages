@@ -16,7 +16,7 @@
     <template :key="f" v-for="f of footer.items">
         <q-chip square>{{f.label}} {{f.count}}</q-chip>
     </template>
-    <q-chip icon="payment" color="orange" text-color="white" square>办卡 0</q-chip>
+    <q-chip icon="payment" color="orange" text-color="white" square>办卡 {{footer.cardCount}}</q-chip>
     <q-chip icon="trending_up" color="red" text-color="white" square>销售额 {{footer.sale}}</q-chip> 
 </div>
 

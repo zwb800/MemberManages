@@ -22,18 +22,13 @@
                         </q-tab-panel>
                         <q-tab-panel name="charge" class="q-pa-none">
                             <q-table 
-                                rows-per-page-label="每页条数"
-                                no-results-label="无数据"
-                                no-data-label="无数据"
-                                loading-label="加载中" :rows="chargeRows" :columns="chargeColumns" flat></q-table>
+                          
+                                :rows="chargeRows" :columns="chargeColumns" flat></q-table>
                         </q-tab-panel>
                         <q-tab-panel
                             name="consume" class="q-pa-none">
                             <q-table
-                                rows-per-page-label="每页条数"
-                                no-results-label="无数据"
-                                no-data-label="无数据"
-                                loading-label="加载中" 
+                          
                                 :rows="consumeRows" 
                                 :columns="consumeColumns" flat></q-table>
                         </q-tab-panel>

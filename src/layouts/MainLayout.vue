@@ -1,4 +1,5 @@
 <template>
+<q-ajax-bar color="warning" />
   <q-layout view="hHh Lpr fFf">
     <q-header :class="'bg-'+color" reveal elevated>
       <div class="row">

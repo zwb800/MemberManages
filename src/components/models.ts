@@ -3,7 +3,7 @@ import axios from 'axios'
 import { MemberAPI } from './memberApi'
 import {ConsumeAPI} from './consumeApi'
 
-axios.defaults.baseURL = 'https://'+location.hostname+':3000'
+axios.defaults.baseURL = location.protocol+'//'+location.hostname+':3000'
 export interface Todo {
   id: number;
   content: string;
@@ -105,6 +105,7 @@ export interface FooterView{
   sum:number;
   new:number;
   items:Array<{label:string,count:number}>;
+  cardCount:number;
 }
 
 export class EmployeeAPI{

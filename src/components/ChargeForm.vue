@@ -53,7 +53,7 @@ export default defineComponent({
         EmployeeOptions,
     },
     props:['amount','card','pay','employees'],
-    emits:['update:amount','update:card','update:pay','update:employees'],
+    emits:['update:amount','update:card','update:pay','update:employees','loaded'],
 
     setup(props,context){
       const cardtype = ref<PrepaidCard|undefined>(props.card)
@@ -102,7 +102,8 @@ export default defineComponent({
               value : c,
               label:c.label}
           })
- 
+
+          context.emit('loaded')
       })
 
       const employeesC = ref(Array<Employee>())
