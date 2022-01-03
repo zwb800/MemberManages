@@ -6,6 +6,7 @@
   "author": "微信:zwb800 <zwb08@qq.com>",
   "private": true,
   "scripts": {
+    "deploy":"cd dist/spa && serverless deploy",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"
   },

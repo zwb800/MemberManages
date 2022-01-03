@@ -3,7 +3,10 @@ import axios from 'axios'
 import { MemberAPI } from './memberApi'
 import {ConsumeAPI} from './consumeApi'
 
-axios.defaults.baseURL = location.protocol+'//'+location.hostname+':3000'
+if(window.hasOwnProperty("env"))
+  axios.defaults.baseURL = eval(`window.env.API_URL`) as string
+else
+  axios.defaults.baseURL = location.protocol+'//'+location.hostname+':3000'
 export interface Todo {
   id: number;
   content: string;
