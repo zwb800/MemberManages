@@ -3,13 +3,13 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('../layouts/MainLayout.vue'),
     children: [
       {path:'/',redirect:'/member'},
       { path: '/member', name:'memberlist', 
-      component: () => import('pages/MemberList.vue'),props:true },
-      { path: '/work', component: () => import('pages/Work.vue') },
-      { path:'/consume',component:()=>import('pages/ConsumeList.vue')}
+      component: () => import('../pages/MemberList.vue'),props:true },
+      { path: '/work', component: () => import('../pages/Work.vue') },
+      { path:'/consume',component:()=>import('../pages/ConsumeList.vue')}
   ],
   },
 
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/Error404.vue'),
+    component: () => import('../pages/Error404.vue'),
   },
 ];
 

@@ -72,7 +72,7 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from 'components/EssentialLink.vue'
+import EssentialLink from '../components/EssentialLink.vue'
 import { useRouter,useRoute } from 'vue-router'
 
 
@@ -140,7 +140,7 @@ const linksList = [
 import { defineComponent, ref,watch,onMounted } from 'vue'
 import NewMember from '../components/NewMember.vue'
 import { getCssVar } from 'quasar'
-import { api, FooterView } from 'src/components/models';
+import { api, FooterView } from '../components/models';
 export default defineComponent({
   name: 'MainLayout',
 

@@ -10,7 +10,7 @@
 <q-btn label="后一天" @click="nextDay()"></q-btn>
 </q-btn-group>
 </div>
-  <q-table row-key="_id" class="q-mt-sm" flat bordered rows-per-page-options="0" :rows='rows' :columns="columns">
+  <q-table row-key="_id" class="q-mt-sm" flat bordered :rows-per-page-options="[0]" :rows='rows' :columns="columns">
   <template v-slot:body-cell-id="props">
         <q-td :props="props">
             <q-btn flat color="primary" @click="cancel(props.value)" 
@@ -23,7 +23,7 @@
 </template>
 
 <script lang='ts'>
-import {api } from 'src/components/models'
+import {api } from '../components/models'
 
 import { defineComponent,ref,watch,computed,onMounted } from 'vue'
 import { dateTimeStr,dateStr } from '../components/utils'
@@ -95,16 +95,15 @@ export default defineComponent({
                 endDate.value = nextStr
             },
             columns:[
-                { label:'时间',field:'time',
-                format:dateTimeStr},
-                {label:'会员',field:'member'},
-                { label:'项目',field:'product',
+                { label:'时间',name:'time',field:'time',format:dateTimeStr},
+                {label:'会员',name:'member',field:'member'},
+                { label:'项目',name:'product',field:'product',
                 format:(p:Array<{name:string,count:number}>)=>{
                     let result = ''
                     p.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
                     return result
                 }},
-                { label:'金额',field:'price'},
+                { label:'金额',name:'price',field:'price'},
                 {name:'id', label:'操作',field:'_id'},
             ], 
             cancel:async (id:string)=>{

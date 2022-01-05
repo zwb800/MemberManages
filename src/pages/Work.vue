@@ -65,10 +65,10 @@
 
 
 <script lang="ts">
-import { ServiceItem, WorkView,api, FooterView } from 'src/components/models'
+import { ServiceItem, WorkView,api, FooterView } from '../components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
-import MemberInfo from 'src/components/MemberInfo.vue'
-import {dateStr} from 'src/components/utils'
+import MemberInfo from '../components/MemberInfo.vue'
+import {dateStr} from '../components/utils'
 export default defineComponent({
     components:{MemberInfo},
     setup(){

@@ -6,7 +6,7 @@ import {ConsumeAPI} from './consumeApi'
 if(window.hasOwnProperty("env"))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string
 else
-  axios.defaults.baseURL = location.protocol+'//'+location.hostname+':3000'
+  axios.defaults.baseURL = location.protocol+'//'+location.hostname+':9000'
 export interface Todo {
   id: number;
   content: string;
@@ -109,6 +109,7 @@ export interface FooterView{
   new:number;
   items:Array<{label:string,count:number}>;
   cardCount:number;
+  sale:number;
 }
 
 export class EmployeeAPI{
