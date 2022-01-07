@@ -1,5 +1,5 @@
 <template>
-<q-dialog full-width ref="dialog" @before-show="show" persistent>
+<q-dialog ref="dialog" @before-show="show" persistent>
     <q-card class="full-width">
          <q-card-section class="row q-pb-none">
           <div class="text-h6">会员详情</div>

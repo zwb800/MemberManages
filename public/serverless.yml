@@ -11,17 +11,17 @@ inputs:
       - .env
     index: index.html
     error: index.html
-  cors:
-    - allowedOrigins:
-        - '*'
-      allowedMethods:
-        - GET
-        - PUT
-        - POST
-        - DELETE
-        - HEAD
-      allowedHeaders: '*'
-      maxAgeSeconds: 0
+  # cors:
+  #   - allowedOrigins:
+  #       - '*'
+  #     allowedMethods:
+  #       - GET
+  #       - PUT
+  #       - POST
+  #       - DELETE
+  #       - HEAD
+  #     allowedHeaders: '*'
+  #     maxAgeSeconds: 0
   bucketName: member-manages-web
   env: # 配置前端环境变量
-    API_URL: https://service-8rv3mkbr-1305763203.bj.apigw.tencentcs.com/release/
+    API_URL: https://service-ogx365fv-1305763203.sh.apigw.tencentcs.com/release/

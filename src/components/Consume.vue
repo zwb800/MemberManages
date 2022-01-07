@@ -1,6 +1,6 @@
 <template>
-<q-dialog full-width ref="dialog" @before-show="show" persistent>
-    <q-card >
+<q-dialog ref="dialog" @before-show="show" persistent>
+    <q-card style="min-width:600px;">
        <q-card-section class="row q-pb-none">
           <div class="text-h6">划卡</div>
           <q-space />
@@ -12,20 +12,23 @@
         <member-info-bar :member="member"></member-info-bar>
         
         <p class="q-mb-none">消费项目</p>
-        <div style="min-width:400px" class="q-mt-none">
+        <div class="q-mt-none">
             <q-field class="q-pb-none" v-model="serviceItems" :rules="[value=>value.some(p=>p.count>0)||'请选择消费项目']" borderless>
                 <template v-slot:control>
-        <q-btn-group>
+        <q-btn-group class="">
         <template :key="row.label" v-for="row in serviceItems">
         <q-btn v-if='row.count>0'
                 color='primary' 
-                :label='row.label+"("+row.count+")"'
                 @click.left='row.count++'
-                 @contextmenu='row.count--;$event.preventDefault()'></q-btn>
-                <q-btn v-else
-                :label='row.label'
+                 @contextmenu='row.count--;$event.preventDefault()'>
+                  <span class="text-no-wrap">{{row.label}}</span>
+                {{row.count}}
+                 </q-btn>
+                <q-btn class="q-pt-md q-pb-md" v-else
                 @click.left='row.count++'
-                @contextmenu='$event.preventDefault()'></q-btn>
+                @contextmenu='$event.preventDefault()'>
+                <span class="text-no-wrap">{{row.label}}</span>
+                </q-btn>
                 </template>
         </q-btn-group>
                 </template>
@@ -38,7 +41,7 @@
          :rules="[value=>value.some(p=>p.selected)||'请选择头疗师']"
           borderless>
         <template v-slot:control>
-            <btn-toggle class="q-mt-none" :options="employee"></btn-toggle>
+            <btn-toggle @contextmenu='$event.preventDefault()' class="q-mt-none" :options="employee"></btn-toggle>
               </template>
         </q-field>
         
@@ -47,7 +50,7 @@
             <div>
             <p class="q-mb-sm">{{e.label}}</p>
             <div>
-                <btn-toggle
+                <btn-toggle @contextmenu='$event.preventDefault()'
                 :options="e.items"></btn-toggle>
             </div>
             </div>

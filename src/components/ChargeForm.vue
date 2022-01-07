@@ -2,35 +2,32 @@
 <div class="q-gutter-sm">
   
   <div class="row">
-    <div class="col-2 q-mr-md">
+    <div class="col-2">
       <q-input standout="bg-teal text-white" 
       label="单付金额" mask="####" 
       v-model="amountValue"></q-input>
     </div>
-          
           </div>
-          <div class="row">
-              <div class="col">
+          <div class="row q-gutter-md q-pa-sm">
+              <div class="">
               <p class="q-mb-sm">储值卡</p>
               <q-btn-toggle clearable
               toggle-color="primary"
               v-model="cardtype" :options="cardoptions"></q-btn-toggle>
             </div>
-          </div>
-          <div class="row">
-            <div class="col">
+            <div class="">
               <p class="q-mb-sm">次卡</p>
               <q-btn-toggle clearable
               toggle-color="primary"
               v-model="cardtype" :options="cardoptions2"></q-btn-toggle>
             </div>
-            <div class="col">
+            <div class="">
           <p class="q-mb-sm">套盒</p>
           <q-btn-toggle clearable
            toggle-color="primary"
            v-model="cardtype" :options="cardoptions3"></q-btn-toggle>
             </div>
-          </div>
+            </div>
         <p class="q-mb-none">支付方式</p>
           <q-btn-toggle
            v-model="paytype" :options="[

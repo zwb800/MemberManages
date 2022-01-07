@@ -1,6 +1,6 @@
 <template>
-<q-dialog full-width ref="dialog" persistent>
-    <q-card style="min-width:600px">
+<q-dialog ref="dialog" persistent>
+    <q-card style="min-width:700px">
          <q-card-section class="row q-pb-none">
           <div class="text-h6">充值</div>
           <q-space />
