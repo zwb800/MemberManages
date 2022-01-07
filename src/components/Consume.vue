@@ -1,5 +1,5 @@
 <template>
-<q-dialog ref="dialog" @before-show="show" persistent>
+<q-dialog full-width ref="dialog" @before-show="show" persistent>
     <q-card >
        <q-card-section class="row q-pb-none">
           <div class="text-h6">划卡</div>
@@ -9,7 +9,7 @@
         <q-form ref="form" @submit="submit" greedy>
         <q-card-section class="q-pt-none">
 <div>
-        <member-info-bar :memberId="memberId"></member-info-bar>
+        <member-info-bar :member="member"></member-info-bar>
         
         <p class="q-mb-none">消费项目</p>
         <div style="min-width:400px" class="q-mt-none">
@@ -71,10 +71,10 @@
 
 <script lang="ts">
 import MemberInfoBar from './MemberInfoBar.vue'
-import {defineComponent,ref,onMounted,computed} from 'vue'
+import {defineComponent,ref,onMounted,computed, watch} from 'vue'
 import { useQuasar,QDialog,QForm} from 'quasar'
 import BtnToggle  from './BtnToggle.vue'
-import {api} from './models'
+import {api, MemberView} from './models'
 
 
 interface EmployeeOption{
@@ -107,6 +107,10 @@ export default defineComponent( {
             serviceItems.value = JSON.parse(JSON.stringify(initRow)) as 
             Array<ServiceItemOption>
         }
+        const member = ref<MemberView>()
+         watch(props,async ()=>{
+            member.value = await api.memberAPI.get(props.memberId)
+        })
 
         onMounted(async ()=>{
              initRow = (await api.serviceItemAPI.all())
@@ -146,6 +150,7 @@ export default defineComponent( {
 
         const submitting = ref(false)
         return {
+            member,
             form,
             employee,
             show: ()=>{

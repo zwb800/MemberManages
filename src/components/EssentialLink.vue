@@ -46,6 +46,9 @@ export default defineComponent({
     separator:{
       type:Boolean,
       default:false
+    },
+    color:{
+      type:String,
     }
   }
 })

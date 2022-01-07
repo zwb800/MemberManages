@@ -8,7 +8,7 @@ import {
 } from './models'
 
 
-
+  
 export class MemberAPI{
 
   async get(id:string):Promise<MemberView>{

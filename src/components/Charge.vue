@@ -1,5 +1,5 @@
 <template>
-<q-dialog ref="dialog" persistent>
+<q-dialog full-width ref="dialog" persistent>
     <q-card style="min-width:600px">
          <q-card-section class="row q-pb-none">
           <div class="text-h6">充值</div>
@@ -8,7 +8,7 @@
         </q-card-section>
 <q-form @submit="submit">
         <q-card-section class="q-pt-none">
-        <member-info-bar :memberId="memberId"></member-info-bar>
+        <member-info-bar :member="member"></member-info-bar>
             <charge-form 
               v-model:amount="amount"
                 v-model:card="card" 
@@ -30,7 +30,7 @@
 import ChargeForm from './ChargeForm.vue'
 import MemberInfoBar from './MemberInfoBar.vue'
 import {defineComponent,watch,ref,toRaw} from 'vue'
-import { PrepaidCard,Employee,api} from './models'
+import { PrepaidCard,Employee,api, MemberView} from './models'
 import { QDialog,useQuasar } from 'quasar'
 
 
@@ -39,7 +39,8 @@ export default defineComponent({
    props:{'memberId':{type:String,required:true}},
    emits:['finished'],
     setup(props,context){
-      const $q = useQuasar()
+        const $q = useQuasar()
+        const member = ref<MemberView>()
         const card = ref<PrepaidCard>()
         const paytype = ref(0)
         const amount = ref<number|undefined>()
@@ -48,6 +49,11 @@ export default defineComponent({
         const dialog = ref<QDialog>()
 
         const text = ref('')
+
+      watch(props,async ()=>{
+        member.value = await api.memberAPI.get(props.memberId)
+      })
+
       watch([amount,card],()=>{
         text.value = ''
         if(amount.value && amount.value>0)
@@ -112,6 +118,7 @@ export default defineComponent({
         
         }
       return {
+        member,
         submitting,
         amount,
         text,

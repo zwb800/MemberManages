@@ -99,12 +99,7 @@ export default defineComponent({
         if(result)
           {
 
-              $q.notify({
-                  message:'开卡成功',
-                  type:'positive',
-                  position:'center',
-                  timeout:1000
-              })
+              $q.notify('开卡成功')
 
               member.value = {
                 _id:null,
@@ -128,7 +123,6 @@ export default defineComponent({
                 $q.notify({
                     message:'开卡失败',
                     type:'negative',
-                    position:'center',
                     timeout:2000
                 })
             }

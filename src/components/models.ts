@@ -24,6 +24,7 @@ export interface Member {
   balance:number;
   consume:number;
   newCardTime:Date;
+  phone:string;
 }
 
 export interface ConsumeView{
@@ -33,8 +34,8 @@ export interface ConsumeView{
 }
 
 export interface MemberView{
-  member:Member;
-  balances:Array<{serviceItemName:string,balance:number}>;
+  member: Member
+  balances: Array<{ serviceItemName: string; balance: number} >
 }
 
 export interface ChargeView{

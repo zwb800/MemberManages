@@ -68,13 +68,13 @@
 import { ServiceItem, WorkView,api, FooterView } from '../components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
 import MemberInfo from '../components/MemberInfo.vue'
-import {dateStr} from '../components/utils'
+import {dateStr, padStr} from '../components/utils'
 export default defineComponent({
     components:{MemberInfo},
     setup(){
         const today = new Date()
         const footer = ref<FooterView>()
-        const todayStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
+        const todayStr = dateStr(today)
         const startDate = ref(todayStr)
         const endDate = ref(todayStr)
         const rows = ref()

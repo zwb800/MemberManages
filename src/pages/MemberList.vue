@@ -11,7 +11,7 @@
                     <div class="col q-pt-xs"> {{row.phone}}</div>
                 </div>
             </q-card-section>
-            <q-card-section @click="memberId = row._id;memberinfo = true" class="cursor-pointer q-gutter-sm">
+            <q-card-section @click="viewMemberId = row._id;memberinfo = true" class="cursor-pointer q-gutter-sm">
                 <div>卡号:{{row.no}}</div>
                 <div>余额:{{row.balance}}</div>
                 <div>开卡时间:{{dateStr(row.newCardTime)}}</div>
@@ -19,9 +19,9 @@
             <q-separator></q-separator>
             <q-card-actions align="evenly" class="bg-grey-2 q-pa-none">
                 <q-btn-group flat>
-                <q-btn padding="md" @click="memberId = row._id;consume = true">
+                <q-btn padding="md" @click="consumeMemberId = row._id;consume = true">
                     <q-icon name="credit_card"></q-icon> &nbsp;划卡</q-btn>
-                <q-btn padding="md" @click="memberId = row._id;charge = true">
+                <q-btn padding="md" @click="chargeMemberId = row._id;charge = true">
                     <q-icon name="paid"></q-icon> &nbsp;充值
                 </q-btn>
                 </q-btn-group>
@@ -35,9 +35,9 @@
       </template>
             </q-infinite-scroll>
            
-<consume v-model="consume" :memberId="memberId" @finished="getData"></consume>
-<member-info v-model="memberinfo" :memberId="memberId"></member-info>
-<charge v-model="charge" :memberId="memberId" @finished="getData"></charge>
+<consume :memberId="consumeMemberId" v-model="consume" @finished="getData"></consume>
+<member-info :memberId="viewMemberId" v-model="memberinfo"></member-info>
+<charge :memberId="chargeMemberId" v-model="charge" @finished="getData"></charge>
     <q-page-scroller position="bottom-right" :offset="[18, 18]">
             <q-btn fab icon="keyboard_arrow_up" />
     </q-page-scroller>
@@ -51,18 +51,13 @@ import { defineComponent,ref,watch } from 'vue'
 import Charge from '../components/Charge.vue'
 import Consume from '../components/Consume.vue'
 import MemberInfo from '../components/MemberInfo.vue'
-
-
-
+import { dateStr } from '../components/utils'
 
 export default defineComponent({
   components: {  Consume,MemberInfo, Charge },
  props:{search:{type:String,default:''}},
    methods:{
-        dateStr (d:Date)
-        {
-            return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`
-        },
+        dateStr
     },
      setup(props){
         const member = ref<Member|undefined>()
@@ -103,7 +98,9 @@ export default defineComponent({
             member,
             getData,
             scroller,
-            memberId:ref(''),
+            consumeMemberId:'',
+            viewMemberId:'',
+            chargeMemberId:'',
             rows:members,
             onLoad, 
             consume:ref(false),

@@ -1,5 +1,5 @@
 <template>
-<q-dialog ref="dialog" @before-show="show" persistent>
+<q-dialog full-width ref="dialog" @before-show="show" persistent>
     <q-card class="full-width">
          <q-card-section class="row q-pb-none">
           <div class="text-h6">会员详情</div>
@@ -18,7 +18,7 @@
                 <template v-slot:after>
                     <q-tab-panels v-model="tab" class="q-pl-sm" style="min-height:320px">
                         <q-tab-panel name="info">
-                            <member-info-bar :memberId="memberId"></member-info-bar>
+                            <member-info-bar :member="member"></member-info-bar>
                         </q-tab-panel>
                         <q-tab-panel name="charge" class="q-pa-none">
                             <q-table 
@@ -48,8 +48,8 @@
 
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
-import { defineComponent,ref } from 'vue'
-import { ConsumeView,ChargeView,api } from './models'
+import { defineComponent,ref, watch } from 'vue'
+import { ConsumeView,ChargeView,api, MemberView } from './models'
 import { dateTimeStr } from './utils'
 export default defineComponent({
     components:{
@@ -57,42 +57,44 @@ export default defineComponent({
     },
    props:{'memberId':{type:String,required:true}},
     setup(props){
-
         const consumeRows = ref<Array<ConsumeView>>()
         const chargeRows = ref<Array<ChargeView>>()
+        const member = ref<MemberView>()
         const tab = ref('info')
+        watch(props,async ()=>{
+            member.value = await api.memberAPI.get(props.memberId)
+            consumeRows.value = await api.consumeAPI.getConsumeList(props.memberId)
+            chargeRows.value = await api.memberAPI.getChargeList(props.memberId)
+        })
         return {
+            member,
             splitterModel:ref(80),
             show:async ()=>{
-                
                 tab.value = 'info'
-                consumeRows.value = await api.consumeAPI.getConsumeList(props.memberId)
-                
-                chargeRows.value = await api.memberAPI.getChargeList(props.memberId)
             },
             tab,
             consumeRows,
             consumeColumns:[
-                { label:'时间',field:'time',
+                { label:'时间',field:'time',name:'time',
                 format:dateTimeStr},
-                { label:'项目',field:'product',
+                { label:'项目',field:'product',name:'product',
                 format:(p:Array<{name:string,count:number}>)=>{
                     let result = ''
                     p.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
                     return result
                 }},
-                { label:'金额',field:'price'},
+                { label:'金额',field:'price',name:'price'},
             ],
             chargeRows,
             chargeColumns:[
-                { label:'时间',field:'time',
-                format:dateTimeStr},
-                { label:'项目',field:'card',format:(v:string,row:ChargeView)=>{
-                    return (row.card?row.card:'') + (row.amount?` 单充${row.amount}元`:'')
+                { label:'时间',field:'time',name:'time',format:dateTimeStr},
+                { label:'项目',field:'card',name:'card',
+                format:(v:string,row:Object)=>{
+                    const c = row as ChargeView
+                    return (c.card?c.card:'') + (c.amount?` 单充${c.amount}元`:'')
                 }
-                
                 },
-                {label:'支付',field:'pay'}
+                {label:'支付',field:'pay',name:'pay'}
             ]
         }
     }
