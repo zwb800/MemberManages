@@ -1,5 +1,5 @@
 <template>
-<q-ajax-bar color="warning" />
+<q-ajax-bar size="1px" color="white" />
   <q-layout view="hHh Lpr fFf">
     <q-header :class="'bg-'+color" reveal elevated>
       <div class="row">
@@ -158,14 +158,12 @@ export default defineComponent({
     const search = async(s=text.value)=>{
       const result = await router.replace({name:'memberlist',
       params:{search:s}})
-      console.log(result)
     }
 
     watch(text,search)
     const title = ref('')
     const color = ref('')
     const getTitle = ()=>{
-      console.log(route.path)
       const link = linksList.find(l=>l.link==route.path)
       if(link)
       {
@@ -175,7 +173,6 @@ export default defineComponent({
         const setColor = getCssVar( link.color)
         if(themeColors.length>0  && setColor)
         {
-            console.log(setColor)
             themeColors[0].setAttribute('content',setColor)
         }
       }

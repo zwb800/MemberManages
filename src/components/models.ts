@@ -2,6 +2,7 @@
 import axios from 'axios'
 import { MemberAPI } from './memberApi'
 import {ConsumeAPI} from './consumeApi'
+import { cache } from './utils'
 
 if(window.hasOwnProperty("env"))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string
@@ -55,10 +56,7 @@ export interface PrepaidCard{
 
 export class CardAPI{
   async all():Promise<Array<PrepaidCard>> {
-    const result =  await axios.get(
-      '/prepaidcard',
-      { params:{} })
-      return result.data as Array<PrepaidCard>
+      return cache<Array<PrepaidCard>>('/prepaidcard')
   }
 }
 
@@ -71,10 +69,7 @@ export interface ServiceItem{
 
 export class ServiceItemAPI{
   async all():Promise<Array<ServiceItem>>{
-    const result =  await axios.get(
-      '/serviceitem',
-      { params:{} })
-      return result.data as Array<ServiceItem>
+      return cache<Array<ServiceItem>>('/serviceitem')
   }
 }
 
@@ -121,8 +116,7 @@ export class EmployeeAPI{
       return result.data as FooterView
   }
   async all():Promise<Array<Employee>>{
-    const result =  await axios.get('/employee')
-      return result.data as Array<Employee>
+      return cache<Array<Employee>>('/employee')
   }
   async work(startDate:Date,endDate:Date):Promise<Array<WorkView>>{
     const result =  await axios.get(

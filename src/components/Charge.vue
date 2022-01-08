@@ -1,5 +1,5 @@
 <template>
-<q-dialog ref="dialog" persistent>
+<q-dialog @before-show="show" ref="dialog" persistent>
     <q-card style="min-width:700px">
          <q-card-section class="row q-pb-none">
           <div class="text-h6">充值</div>
@@ -49,10 +49,6 @@ export default defineComponent({
         const dialog = ref<QDialog>()
 
         const text = ref('')
-
-      watch(props,async ()=>{
-        member.value = await api.memberAPI.get(props.memberId)
-      })
 
       watch([amount,card],()=>{
         text.value = ''
@@ -118,6 +114,9 @@ export default defineComponent({
         
         }
       return {
+        show:async ()=>{
+          member.value = await api.memberAPI.get(props.memberId)
+        },
         member,
         submitting,
         amount,

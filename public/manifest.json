@@ -1,0 +1,37 @@
+{
+    "name": "聚能会员管理系统",
+    "short_name": "聚能会员",
+    "description": "聚能科技工作室出品",
+    "icons": [
+    
+        {
+            "src": "icons/icon-128x128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/icon-256x256.png",
+            "sizes": "256x256",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/icon-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#1976D2",
+    "display": "fullscreen",
+    ​​"orientation": "landscape"
+}

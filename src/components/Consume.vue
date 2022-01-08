@@ -111,9 +111,6 @@ export default defineComponent( {
             Array<ServiceItemOption>
         }
         const member = ref<MemberView>()
-         watch(props,async ()=>{
-            member.value = await api.memberAPI.get(props.memberId)
-        })
 
         onMounted(async ()=>{
              initRow = (await api.serviceItemAPI.all())
@@ -156,7 +153,8 @@ export default defineComponent( {
             member,
             form,
             employee,
-            show: ()=>{
+            show: async ()=>{
+                member.value = await api.memberAPI.get(props.memberId)
                 init()
             },
             submit:async ()=>{

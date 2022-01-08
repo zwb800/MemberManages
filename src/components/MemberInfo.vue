@@ -61,16 +61,14 @@ export default defineComponent({
         const chargeRows = ref<Array<ChargeView>>()
         const member = ref<MemberView>()
         const tab = ref('info')
-        watch(props,async ()=>{
-            member.value = await api.memberAPI.get(props.memberId)
-            consumeRows.value = await api.consumeAPI.getConsumeList(props.memberId)
-            chargeRows.value = await api.memberAPI.getChargeList(props.memberId)
-        })
         return {
             member,
             splitterModel:ref(80),
             show:async ()=>{
                 tab.value = 'info'
+                member.value = await api.memberAPI.get(props.memberId)
+                consumeRows.value = await api.consumeAPI.getConsumeList(props.memberId)
+                chargeRows.value = await api.memberAPI.getChargeList(props.memberId)
             },
             tab,
             consumeRows,
