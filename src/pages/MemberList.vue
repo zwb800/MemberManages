@@ -2,9 +2,9 @@
   <q-page padding>
     <q-infinite-scroll ref="scroller" class="full-width" transition="scale" @load="onLoad">
                 <div class="row q-gutter-md justify-center">
-        <q-card :key="row" v-for="row of rows">
+        <q-card :key="row._id" v-for="row of rows">
             <q-card-section 
-            @click="memberId = row._id;memberinfo = true" 
+            @click="viewMemberId = row._id;memberinfo = true" 
             class="cursor-pointer bg-primary text-white q-pb-sm q-pt-sm">
                 <div class="row">
                     <div class="col-md-auto text-h6 q-pr-xs">{{row.name}} </div>

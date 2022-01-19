@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { Quasar,Notify } from 'quasar'
+import { Quasar,Notify,Dialog,Loading } from 'quasar'
 import quasarLang from 'quasar/lang/zh-CN'
 import {
   createMemoryHistory,
@@ -27,7 +27,7 @@ const router = createRouter({
 const myApp = createApp(App)
 myApp.use(router)
 myApp.use(Quasar, {
-  plugins: {Notify}, // import Quasar plugins and add here
+  plugins: {Notify,Dialog,Loading}, // import Quasar plugins and add here
   lang: quasarLang,
   
   config: {

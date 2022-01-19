@@ -13,7 +13,7 @@
   <q-table row-key="_id" class="q-mt-sm" flat bordered :rows-per-page-options="[0]" :rows='rows' :columns="columns">
   <template v-slot:body-cell-id="props">
         <q-td :props="props">
-            <q-btn flat color="primary" @click="cancel(props.value)" 
+            <q-btn flat color="primary" @click="refund(props.value)" 
              label="撤单" ></q-btn>
         </q-td>
       </template>
@@ -27,10 +27,12 @@ import {api } from '../components/models'
 
 import { defineComponent,ref,watch,computed,onMounted } from 'vue'
 import { dateTimeStr,dateStr } from '../components/utils'
+import { useQuasar } from 'quasar'
 export default defineComponent({
     setup(){
+        const $q = useQuasar()
         const today = new Date()
-        const todayStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
+        const todayStr = dateStr(today)
         const startDate = ref(todayStr)
         const endDate = ref(todayStr)
         const rows = ref()
@@ -106,8 +108,19 @@ export default defineComponent({
                 { label:'金额',name:'price',field:'price'},
                 {name:'id', label:'操作',field:'_id'},
             ], 
-            cancel:async (id:string)=>{
-                await api.consumeAPI.cancel(id)
+            refund:async (id:string)=>{
+                $q.dialog({
+                    title:"确认",
+                    message:"确认撤销吗？",
+                    cancel:true
+                })
+                .onOk(async ()=>{
+                    $q.loading.show()
+                    await api.consumeAPI.refund(id)
+                    await getRows()
+                    $q.loading.hide()
+                })
+                
             }
         }
     }

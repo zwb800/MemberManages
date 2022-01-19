@@ -55,12 +55,13 @@ export default defineComponent({
       const amount = ref<number|undefined>()
       const employees = ref(Array<Employee>())
       const member = ref<Member>({
-        _id:null,
+        _id:'',
         name:'',
         no:0,
         balance:0,
         consume:0,
-        newCardTime:new Date()
+        newCardTime:new Date(),
+        phone:'',
       })
 
       const text = ref('')
@@ -102,12 +103,13 @@ export default defineComponent({
               $q.notify('开卡成功')
 
               member.value = {
-                _id:null,
+                _id:'',
                 name:'',
                 no:0,
                 balance:0,
                 consume:0,
-                newCardTime:new Date()
+                newCardTime:new Date(),
+                phone:''
               }
 
               amount.value = undefined

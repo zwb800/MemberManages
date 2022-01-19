@@ -38,7 +38,7 @@
           
         <p class="q-mb-none">头疗师</p>
         <q-field class="q-mt-none q-pb-none" v-model="employee"
-         :rules="[value=>value.some(p=>p.selected)||'请选择头疗师']"
+ 
           borderless>
         <template v-slot:control>
             <btn-toggle @contextmenu='$event.preventDefault()' class="q-mt-none" :options="employee"></btn-toggle>

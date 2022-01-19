@@ -19,7 +19,7 @@ export interface Meta {
 
 
 export interface Member {
-  _id:string|null;
+  _id:string;
   no: number;
   name: string;
   balance:number;
@@ -127,6 +127,36 @@ export class EmployeeAPI{
   
 }
 
+export interface Stock{
+  _id:string;
+  name:string;
+  count:number;
+  unit:string;
+}
+
+export class StockAPI{
+  async in(id:string,num:number) {
+    return this.inOrOut(true,id,num)
+  }
+  async out(id:string,num:number) {
+    return this.inOrOut(false,id,num)
+  }
+
+  async inOrOut(inS:boolean,id:string,num:number){
+    const result =  await axios.post(
+      `/stock/${inS?'in':'out'}`,
+      {id,num })
+      return result.data
+  }
+
+  async getAll():Promise<Stock[]>{
+    const result =  await axios.get(
+      `/stock`,
+      {  })
+      return result.data
+  }
+}
+
 
 export const api =  {
   memberAPI:new MemberAPI(),
@@ -134,4 +164,5 @@ export const api =  {
   serviceItemAPI:new ServiceItemAPI(),
   employeeAPI:new EmployeeAPI(),
   cardAPI:new CardAPI(),
+  stockAPI:new StockAPI()
 }

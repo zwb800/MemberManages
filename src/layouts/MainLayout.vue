@@ -18,7 +18,7 @@
       </q-toolbar>
       <q-toolbar class="col-auto">
           <q-btn stretch flat icon="add" @click="newmember = true">开卡</q-btn>
-         <q-input style="width:150px" dark dense standout v-model="text" placeholder="姓名/手机号" input-class="text-right">
+         <q-input debounce="500" style="width:150px" dark dense standout v-model="text" placeholder="姓名/手机号" input-class="text-right">
           <template v-slot:append>
             <q-icon v-if="text === ''" name="search" />
             <q-icon v-else name="clear" class="cursor-pointer" @click="text = ''" />
@@ -52,7 +52,6 @@
     </q-page-container>
     <q-footer reveal v-if="footer">
       <q-bar class="justify-center text-caption" :class="'bg-'+color">
-        
         <span>总 {{ footer.sum}}</span>
         <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
         <span>新 {{footer.new}}</span>
@@ -64,7 +63,6 @@
         <span>办卡 0</span>
         <q-separator vertical dark inset class="q-ml-sm q-mr-sm"></q-separator>
         <span>销售额 {{footer.sale}}</span> 
-        
         </q-bar>
     </q-footer>
   </q-layout>

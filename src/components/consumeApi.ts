@@ -2,9 +2,9 @@
 import axios from 'axios'
 import {ConsumeView} from './models'
 export class ConsumeAPI{
-  async cancel(id: string) {
+  async refund(id: string) {
     const result =  await axios.post(
-      '/consume/cancel',
+      '/consume/refund',
       { id })
     
     return result.data as boolean
