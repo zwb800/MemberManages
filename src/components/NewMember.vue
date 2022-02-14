@@ -3,9 +3,7 @@
 <q-dialog ref="dialog" persistent>
 
     <q-card style="min-width:600px">
-        
         <q-card-section class="row q-pb-none">
-          
           <div class="text-h6">开卡</div>
           <q-space />
           <q-btn round flat icon="close" v-close-popup></q-btn>
@@ -13,12 +11,11 @@
         <q-form @submit="add" greedy autofocus>
         <q-card-section class="q-pt-none">
           <div class="row ">
-            <q-input class="col" label="姓名" v-model="member.name"
+            <q-input @paste="paste()" class="col" label="姓名" v-model="member.name"
              :rules="[ val => val && val.length > 0 || '请填写姓名'] "></q-input>
             <q-input class="col q-ml-md" label="手机号" v-model="member.phone"
             :rules="[ val => val && val.length >0 || '请输入手机号'] "></q-input>
           </div>
-      
       <charge-form 
       v-model:amount="amount"
       v-model:card="card" 
@@ -140,7 +137,30 @@ export default defineComponent({
         member,
         add,
         card,
-        paytype
+        paytype,
+        paste:()=>{
+          setTimeout(()=>{
+
+            let input = member.value.name//.replace(/[\s\,\n]*/g,'')
+            console.log(input)
+            let g = RegExp(/\d{11}/).exec(input)
+            
+            if(g)
+            {
+              member.value.phone = g[0]
+            }
+
+
+            if(input.includes(':'))//微信中多行复制含:
+              g = RegExp(/:\s*([\u4e00-\u9fa5]{2,3})/).exec(input)
+            else
+              g = RegExp(/([\u4e00-\u9fa5]{2,3})/).exec(input)
+            if(g)
+            {
+              member.value.name = g[1]
+            }
+          },0)
+        }
       }
     }
 })

@@ -41,6 +41,17 @@ export class MemberAPI{
       { memberId,amount,card,employees })
       return result.data as Uint8Array
   }
+
+  async getAllChargeList(startDate:Date,endDate:Date):Promise<Array<ChargeView>>{
+    const result =  await axios.get(
+      '/member/all-charge-list/',
+      { params:{startDate,endDate} })
+
+      const r = result.data as Array<ChargeView>
+      r.forEach(e=> e.time = new Date(e.time))
+      return r
+  }
+
   async getChargeList(memberId:string):Promise<Array<ChargeView>>{
     const result =  await axios.get(
       '/member/charge-list/',
@@ -49,5 +60,13 @@ export class MemberAPI{
       const r = result.data as Array<ChargeView>
       r.forEach(e=> e.time = new Date(e.time))
       return r
+  }
+
+  async refund(id: string) {
+    const result =  await axios.post(
+      '/member/refund',
+      { id })
+    
+    return result.data as boolean
   }
 }

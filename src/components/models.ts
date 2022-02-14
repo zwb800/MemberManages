@@ -134,17 +134,25 @@ export interface Stock{
   unit:string;
 }
 
+export interface StockLog{
+  time:Date;
+  count:number;
+  stockId:string;
+}
+
 export class StockAPI{
-  async in(id:string,num:number) {
-    return this.inOrOut(true,id,num)
-  }
-  async out(id:string,num:number) {
-    return this.inOrOut(false,id,num)
+  async getLogs(_id: string): Promise<StockLog[]> {
+    const result =  await axios.get(
+      `/stock/logs`,
+      { params:{id:_id }})
+      const r = result.data as StockLog[]
+      r.forEach(e=> e.time = new Date(e.time))
+      return r
   }
 
-  async inOrOut(inS:boolean,id:string,num:number){
+  async update(id:string,num:number){
     const result =  await axios.post(
-      `/stock/${inS?'in':'out'}`,
+      `/stock`,
       {id,num })
       return result.data
   }
@@ -153,6 +161,13 @@ export class StockAPI{
     const result =  await axios.get(
       `/stock`,
       {  })
+      return result.data
+  }
+
+  async add(name:string,unit:string){
+    const result =  await axios.post(
+      `/stock/add`,
+      {  name,unit })
       return result.data
   }
 }
