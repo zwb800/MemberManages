@@ -13,7 +13,7 @@
       </q-field>
       <q-field class=" q-mt-none" label="开卡时间" stack-label borderless>
           <template v-slot:control>
-              <div class="">{{dateStr(member.member.newCardTime)}}</div>
+              <div :title='dateTimeStr(member.member.newCardTime)'>{{dateStr(member.member.newCardTime)}}</div>
           </template>
       </q-field>
       <q-field class="col-2 q-mt-none" label="余额" stack-label borderless>
@@ -42,13 +42,13 @@
 </template>
 </template>
 <script lang='ts'>
-import { defineComponent,onMounted,ref} from 'vue'
-import { dateStr } from './utils'
+import { defineComponent} from 'vue'
+import { dateStr, dateTimeStr } from './utils'
 export default defineComponent({
    props:{member:{type:Object, required:false}},
     setup(){
         return {
-             dateStr
+             dateStr,dateTimeStr
         }
     },
    

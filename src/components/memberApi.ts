@@ -35,6 +35,14 @@ export class MemberAPI{
       { member,card,employees })
       return result.data as Uint8Array
   }
+
+  async import(members:Member[]):Promise<Uint8Array>{
+    const result =  await axios.post(
+      '/member/import',
+      { members })
+      return result.data as Uint8Array
+  }
+
   async charge(memberId:string,amount:number,card:PrepaidCard|undefined,employees:Employee[]):Promise<Uint8Array>{
     const result =  await axios.post(
       '/member/charge',

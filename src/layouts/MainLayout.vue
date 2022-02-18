@@ -75,20 +75,21 @@ import { useRouter,useRoute } from 'vue-router'
 
 
 const linksList = [
-  {
-    title: '会员',
-    caption: '会员列表',
-    icon: 'supervisor_account',
-    link: '/member',
-    color:'primary',
-    separator:false,
-  },
+  
   {
     title: '工作量',
     caption: '工作量统计',
     icon: 'pending_actions',
     link: '/work',
     color:'secondary',
+    separator:false,
+  },
+  {
+    title: '会员',
+    caption: '会员列表',
+    icon: 'supervisor_account',
+    link: '/member',
+    color:'primary',
     separator:false,
   },
     {
