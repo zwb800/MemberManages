@@ -1,6 +1,6 @@
 <template>
 <q-dialog ref="dialog" @before-show="show" persistent>
-    <q-card style="min-width:600px;">
+    <q-card style="min-width:700px;">
        <q-card-section class="row q-pb-none">
           <div class="text-h6">划卡</div>
           <q-space />
@@ -22,7 +22,7 @@
                 @click.left='row.count++'
                  @contextmenu='row.count--;$event.preventDefault()'>
                   <span class="text-no-wrap">{{row.label}}</span>
-                {{row.count}}
+                 &nbsp;{{row.count}}
                  </q-btn>
                 <q-btn class="q-pt-md q-pb-md" v-else
                 @click.left='row.count++'

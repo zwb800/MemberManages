@@ -1,6 +1,6 @@
 <template>
 
-<q-dialog ref="dialog" persistent>
+<q-dialog ref="dialog" persistent @show="show">
 
     <q-card style="min-width:600px">
         <q-card-section class="row q-pb-none">
@@ -98,21 +98,6 @@ export default defineComponent({
           {
 
               $q.notify('开卡成功')
-
-              member.value = {
-                _id:'',
-                name:'',
-                no:0,
-                balance:0,
-                consume:0,
-                newCardTime:new Date(),
-                phone:''
-              }
-
-              amount.value = undefined
-              paytype.value = 0
-              text.value = ''
-              card.value = undefined
               dialog.value?.hide()
               context.emit.call(null,'finished')
             }
@@ -138,6 +123,22 @@ export default defineComponent({
         add,
         card,
         paytype,
+        show:()=>{
+           member.value = {
+              _id:'',
+              name:'',
+              no:0,
+              balance:0,
+              consume:0,
+              newCardTime:new Date(),
+              phone:''
+            }
+
+            amount.value = undefined
+            paytype.value = 0
+            text.value = ''
+            card.value = undefined
+        },
         paste:()=>{
           setTimeout(()=>{
 

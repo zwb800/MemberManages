@@ -1,6 +1,6 @@
 <template>
 <template v-if="member">
-  <div class="row q-gutter-md q-mt-none justify-between text-no-wrap ">
+  <div class="row q-gutter-lg q-mt-none text-no-wrap ">
       <q-field class=" q-mt-none" label="姓名" stack-label borderless>
           <template v-slot:control>
               {{member.member.name}}
@@ -16,22 +16,19 @@
               <div :title='dateTimeStr(member.member.newCardTime)'>{{dateStr(member.member.newCardTime)}}</div>
           </template>
       </q-field>
-      <q-field class="col-2 q-mt-none" label="余额" stack-label borderless>
+      <q-field class="q-mt-none" style="min-width:50px" label="余额" stack-label borderless>
           <template v-slot:control>
               ￥{{member.member.balance}}
           </template>
       </q-field>
-      <q-field class="col-2 q-mt-none" label="累计消费" stack-label borderless>
+      <q-field class="q-mt-none" style="min-width:50px" label="累计消费" stack-label borderless>
           <template v-slot:control>
               ￥{{member.member.consume}}
           </template>
       </q-field>
-  </div>
-  <div  class="row q-gutter-md q-mt-none">
-      
       <template v-if="member">
       <template :key="b.serviceItemName" v-for="b in member.balances">
-      <q-field class="col q-mt-none" :label='b.serviceItemName' stack-label borderless>
+      <q-field class="q-mt-none" style="min-width:50px" :label='b.serviceItemName' stack-label borderless>
           <template v-slot:control>
               {{b.balance}}
           </template>
