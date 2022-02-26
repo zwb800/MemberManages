@@ -1,14 +1,16 @@
 <template>
 <q-page padding>
-<div class="row q-gutter-sm">
+<div class="row items-center q-gutter-sm">
 <q-input stack-label v-model="startDate" label="开始时间" type="date"></q-input>
 <q-input stack-label label="结束时间" v-model="endDate" type="date"></q-input>
-<q-btn-group class="q-mt-lg">
+<q-btn-group>
 <q-btn-toggle  toggle-color="teal"  v-model="modelMonth" :options="[{label: '本月', value: 'month'}]" @click="month()"></q-btn-toggle>
 <q-btn-toggle  toggle-color="teal" v-model="modelToday" :options="[{label: '今天', value: 'today'}]" @click="today()"></q-btn-toggle>
 <q-btn label="前一天" @click="prevDay()"></q-btn>
 <q-btn label="后一天" @click="nextDay()"></q-btn>
 </q-btn-group>
+
+<q-btn label="导出到微信" @click="exportDialog = true"></q-btn>
 </div>
 <div class="q-pt-sm" v-if="footer">
     <q-chip icon="group" color="primary" text-color="white" class="q-ml-none" square>总 {{ footer.sum}}</q-chip>
@@ -16,7 +18,11 @@
     <template :key="f" v-for="f of footer.items">
         <q-chip square>{{f.label}} {{f.count}}</q-chip>
     </template>
-    <q-chip icon="payment" color="orange" text-color="white" square>办卡 {{footer.cardCount}}</q-chip>
+    <br>
+    <q-chip class="q-ml-none" icon="card_membership" color="orange" text-color="white" square>办卡 {{footer.cardCount}}</q-chip>
+    <q-chip icon="payment" square>办卡业绩 {{footer.cardPrice}}</q-chip>
+    <q-chip icon="currency_yen" square>其它业绩 {{footer.otherPrice}}</q-chip>
+    <q-chip icon="account_balance_wallet" color="pink" text-color="white" square>总业绩 {{footer.cardPrice+footer.otherPrice}}</q-chip>
     <q-chip icon="trending_up" color="red" text-color="white" square>销售额 {{footer.sale}}</q-chip> 
 </div>
 
@@ -56,11 +62,13 @@
             </q-card-section>
             </template>
         </q-card>
+        
     </template>
     
 </div>
 </q-page>
 <member-info v-model="memberinfo" :memberId="memberId"></member-info>
+<export-dialog :data="footer" v-model="exportDialog"></export-dialog>
 </template>
 
 
@@ -69,8 +77,9 @@ import { ServiceItem, WorkView,api, FooterView } from '../components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
 import MemberInfo from '../components/MemberInfo.vue'
 import {dateStr, padStr} from '../components/utils'
+import ExportDialog from '../components/Export.vue'
 export default defineComponent({
-    components:{MemberInfo},
+    components:{ MemberInfo,  ExportDialog },
     setup(){
         const today = new Date()
         const footer = ref<FooterView>()
@@ -83,8 +92,9 @@ export default defineComponent({
         const getRows = async()=>{
             const sDate = new Date(startDate.value)
             const eDate = new Date(endDate.value+' 23:59:59')
-            rows.value = await api.employeeAPI.work(sDate,eDate)
-            footer.value = await api.employeeAPI.footer(sDate,eDate)
+            const result = await api.employeeAPI.work(sDate,eDate)
+            rows.value = result.rows
+            footer.value = result.footer
         }
 
         onMounted(async()=>{
@@ -110,6 +120,7 @@ export default defineComponent({
         })
 
         return {
+            exportDialog:ref(false),
             startDate,
             endDate,
             footer,

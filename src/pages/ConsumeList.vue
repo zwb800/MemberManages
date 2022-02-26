@@ -116,9 +116,23 @@ export default defineComponent({
                 })
                 .onOk(async ()=>{
                     $q.loading.show()
-                    await api.consumeAPI.refund(id)
-                    await getRows()
-                    $q.loading.hide()
+                    const result = await api.consumeAPI.refund(id)
+                    if(result == ''){
+                        await getRows()
+                        $q.notify('操作成功')
+                    }
+                    else
+                    {
+                        $q.notify({
+                            message:result,
+                            type:'negative',
+                            position:'center',
+                            timeout:2000
+                        })
+                    }
+
+                     $q.loading.hide()
+                    
                 })
                 
             }

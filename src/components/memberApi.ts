@@ -43,6 +43,13 @@ export class MemberAPI{
       return result.data as Uint8Array
   }
 
+  async gift(memberId:string,gifts:Array<{serviceItemId:string,count:number}>):Promise<Uint8Array>{
+    const result =  await axios.post(
+      '/member/gift',
+      { memberId,gifts })
+      return result.data as Uint8Array
+  }
+
   async charge(memberId:string,amount:number,card:PrepaidCard|undefined,employees:Employee[]):Promise<Uint8Array>{
     const result =  await axios.post(
       '/member/charge',
@@ -75,6 +82,6 @@ export class MemberAPI{
       '/member/refund',
       { id })
     
-    return result.data as boolean
+    return result.data as string
   }
 }

@@ -106,6 +106,9 @@ export interface FooterView{
   items:Array<{label:string,count:number}>;
   cardCount:number;
   sale:number;
+  cardPrice:number;
+  otherPrice:number;
+  cards:Array<number>;
 }
 
 export class EmployeeAPI{
@@ -118,11 +121,11 @@ export class EmployeeAPI{
   async all():Promise<Array<Employee>>{
       return cache<Array<Employee>>('/employee')
   }
-  async work(startDate:Date,endDate:Date):Promise<Array<WorkView>>{
+  async work(startDate:Date,endDate:Date):Promise<{rows:Array<WorkView>,footer:FooterView}>{
     const result =  await axios.get(
       '/employee/work',
       { params:{startDate,endDate} })
-      return result.data as Array<WorkView>
+      return result.data as {rows:Array<WorkView>,footer:FooterView}
   }
   
 }

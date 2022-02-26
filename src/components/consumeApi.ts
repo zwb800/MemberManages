@@ -7,12 +7,12 @@ export class ConsumeAPI{
       '/consume/refund',
       { id })
     
-    return result.data as boolean
+    return result.data as string
   }
   async consume(
     memberId:string,
     serviceItems:Array<{serviceItemId:string,count:number}>,
-    employees:Array<{employeeId:string,items:Array<string>}>):Promise<boolean>{
+    employees:Array<{employeeId:string,items:Array<string>}>):Promise<string>{
       const result =  await axios.post(
         '/consume',
         { 
@@ -22,7 +22,7 @@ export class ConsumeAPI{
           employees
         
       })
-        return result.data as boolean
+        return result.data as string
     }
     async getConsumeList(memberId:string):Promise<Array<ConsumeView>>{
       const result =  await axios.get(

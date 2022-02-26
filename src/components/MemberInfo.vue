@@ -1,10 +1,11 @@
 <template>
-<q-dialog ref="dialog" @before-show="show" persistent>
+<div>
+<q-dialog v-model="modelValue" ref="dialog" @before-show="show" persistent>
     <q-card class="full-width">
          <q-card-section class="row q-pb-none">
           <div class="text-h6">会员详情</div>
           <q-space />
-          <q-btn round flat icon="close" v-close-popup></q-btn>
+          <q-btn round flat icon="close" @click="$emit('update:modelValue', false)"></q-btn>
         </q-card-section>
         <q-card-section class="q-pb-none q-pt-none">
             <q-splitter v-model="splitterModel" unit="px">
@@ -36,26 +37,31 @@
                 </template>
             </q-splitter>
   </q-card-section>
-        <!-- <q-separator></q-separator> 
+        <q-separator></q-separator> 
          <q-card-actions align="right">
-            
-            <q-btn label="划卡" color="primary"></q-btn>
-              <q-btn label="充值" color="secondary" ></q-btn>
-        </q-card-actions> -->
+            <!-- <q-btn label="划卡" color="primary"></q-btn>
+              <q-btn label="充值" color="secondary" ></q-btn> -->
+              <q-btn label="赠送" color="secondary" @click="gfDialog = true" ></q-btn>
+        </q-card-actions>
     </q-card>
 </q-dialog>
+<gift-dialog :memberId="memberId" @finished="show" v-model="gfDialog"></gift-dialog>
+</div>
 </template>
 
 <script lang='ts'>
 import MemberInfoBar from './MemberInfoBar.vue'
-import { defineComponent,ref, watch } from 'vue'
+import { defineComponent,ref } from 'vue'
 import { ConsumeView,ChargeView,api, MemberView } from './models'
 import { dateTimeStr } from './utils'
+import GiftDialog  from './Gift.vue'
 export default defineComponent({
     components:{
-        MemberInfoBar
+        MemberInfoBar,
+        GiftDialog
     },
-   props:{'memberId':{type:String,required:true}},
+    emits:['update:modelValue'],
+   props:{'memberId':{type:String,required:true},'modelValue':{type:Boolean}},
     setup(props){
         const consumeRows = ref<Array<ConsumeView>>()
         const chargeRows = ref<Array<ChargeView>>()
@@ -63,6 +69,7 @@ export default defineComponent({
         const tab = ref('info')
         return {
             member,
+            gfDialog:ref(false),
             splitterModel:ref(80),
             show:async ()=>{
                 tab.value = 'info'
