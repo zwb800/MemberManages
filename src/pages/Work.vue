@@ -68,7 +68,7 @@
 </div>
 </q-page>
 <member-info v-model="memberinfo" :memberId="memberId"></member-info>
-<export-dialog :data="footer" v-model="exportDialog"></export-dialog>
+<export-dialog :data="footer" :work="rows" v-model="exportDialog"></export-dialog>
 </template>
 
 

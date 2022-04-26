@@ -100,8 +100,19 @@ export default defineComponent({
                 { label:'时间',name:'time',field:'time',format:dateTimeStr},
                 {label:'会员',name:'member',field:'member'},
                  { label:'卡',field:'card',name:'card',format:(v:string,row:Object)=>{
-                    const c = row as ChargeView
-                    return (c.card?c.card:'') + (c.amount?` 单充${c.amount}元`:'')
+                     const c = row as ChargeView
+
+                    let result = ''
+                    if(c.product && c.product.length>0){
+                        result = '赠送:'
+                        c.product.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
+                    }
+                    else
+                    {
+                        result = (c.card?c.card:'') + (c.amount?` 单充${c.amount}元`:'')
+                    }
+                    
+                    return result
                 }},
                 {label:'支付',field:'pay',name:'pay'},
                 {name:'id', label:'操作',field:'_id'},

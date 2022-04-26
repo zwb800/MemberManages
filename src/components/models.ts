@@ -8,6 +8,16 @@ if(window.hasOwnProperty("env"))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string
 else
   axios.defaults.baseURL = location.protocol+'//'+location.hostname+':9000'
+
+
+let shopId = localStorage.getItem('shopId')
+if(shopId == null)
+{
+  shopId = '1'
+}
+
+axios.defaults.headers.common['shopId'] = shopId
+
 export interface Todo {
   id: number;
   content: string;
@@ -45,6 +55,7 @@ export interface ChargeView{
   balance:number;
   pay:number;
   amount:number;
+  product:Array<{name:string,count:number}>;
 }
 
 export interface PrepaidCard{

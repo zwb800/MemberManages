@@ -10,10 +10,10 @@
 </template>
 <script lang="ts">
 import { defineComponent,ref } from 'vue'
-import { FooterView } from './models'
+import { FooterView, WorkView } from './models'
 
 export default defineComponent({
-    props:{'data':{required:false}},
+    props:{'data':{required:false},'work':{required:false}},
     setup(props) {
         const date = new Date()
         
@@ -25,10 +25,27 @@ export default defineComponent({
             show:()=>{
                 const d = props.data as FooterView
 
+                const w = props.work as WorkView[]
+
                 const count = (label:string)=>{
                     let c = d.items.find(p=>p.label == label)?.count
                     return emptyStr(c)
                 }
+
+                const count78 = ()=>{
+                    let count = 0
+                   for (const item of w) {
+                        for (const c of item.consumers) {
+                            if(c.items.length == 2 && c.items[0] == '头' && 
+                            (c.items[1] == '眼'||c.items[1] == '面')){
+                                count ++
+                            }
+                        }
+                   }
+                   return count
+                }
+
+
 
                 const emptyStr = (n:number|undefined)=>{
                     return n!=null&&n>0?n?.toString():''
@@ -41,20 +58,14 @@ export default defineComponent({
                     return ''
                 }
 
-                let count78 = 0
-                const countFacemask = count('面')
-                const countEye = count('眼')
-
-                if(countFacemask!='')
-                    count78+= parseInt(countFacemask)
-                if(countEye!='')
-                    count78+= parseInt(countEye)
-
-                text.value =  `头部码头 张家口店 ${date.getMonth()+1}月${date.getDate()}日
+                let shopId = localStorage.getItem('shopId')
+                if(shopId == null)
+                    shopId = '1'
+                text.value =  `头部码头 张家口${shopId}店 ${date.getMonth()+1}月${date.getDate()}日
 进店总人数:${emptyStr(d.sum)}
 新顾客人数:${emptyStr(d.new)}
 48元服务人数:${count('头')}
-78元服务人数:${emptyStr(count78)}
+78元服务人数:${emptyStr(count78())}
 220元服务人数:
 88元体验服务人数:
 面膜服务人数:${count('面')}

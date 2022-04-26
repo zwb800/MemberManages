@@ -96,7 +96,18 @@ export default defineComponent({
                 { label:'项目',field:'card',name:'card',
                 format:(v:string,row:Object)=>{
                     const c = row as ChargeView
-                    return (c.card?c.card:'') + (c.amount?` 单充${c.amount}元`:'')
+
+                    let result = ''
+                    if(c.product && c.product.length>0){
+                        result = '赠送:'
+                        c.product.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
+                    }
+                    else
+                    {
+                        result = (c.card?c.card:'') + (c.amount?` 单充${c.amount}元`:'')
+                    }
+                    
+                    return result
                 }
                 },
                 {label:'支付',field:'pay',name:'pay'}

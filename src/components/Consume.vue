@@ -1,6 +1,6 @@
 <template>
 <q-dialog ref="dialog" @before-show="show" persistent>
-    <q-card style="min-width:700px;">
+    <q-card style="min-width:800px;">
        <q-card-section class="row q-pb-none">
           <div class="text-h6">划卡</div>
           <q-space />
