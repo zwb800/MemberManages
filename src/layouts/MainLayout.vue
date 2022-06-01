@@ -84,6 +84,14 @@ const linksList = [
     color:'secondary',
     separator:false,
   },
+    {
+    title: '预约',
+    caption: '预约',
+    icon: 'schedule',
+    link: '/reservation',
+    color:'primary',
+    separator:false,
+  },
   {
     title: '会员',
     caption: '会员列表',
@@ -114,9 +122,16 @@ const linksList = [
     icon: 'upgrade',
     link: '/stock',
     color:'primary',
-    separator:true,
+    separator:false,
   },
-  
+  // {
+  //   title: '统计',
+  //   caption: '统计',
+  //   icon: 'data_exploration',
+  //   link: '/statistics',
+  //   color:'primary',
+  //   separator:true,
+  // },
   {
     title: '设置',
     caption: '设置',

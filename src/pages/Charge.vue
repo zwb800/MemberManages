@@ -9,6 +9,8 @@
 <q-btn label="前一天" @click="prevDay()"></q-btn>
 <q-btn label="后一天" @click="nextDay()"></q-btn>
 </q-btn-group>
+<q-checkbox color="teal" v-model="showCharge">只看充卡</q-checkbox>
+
 </div>
   <q-table row-key="_id" class="q-mt-sm" flat bordered :rows-per-page-options="[0]" :rows='rows' :columns="columns">
   <template v-slot:body-cell-id="props">
@@ -23,7 +25,7 @@
 </template>
 
 <script lang='ts'>
-import {api, ChargeView } from '../components/models'
+import {api, ChargeView, Employee, ServiceItem } from '../components/models'
 
 import { defineComponent,ref,watch,computed,onMounted } from 'vue'
 import { dateTimeStr,dateStr } from '../components/utils'
@@ -31,20 +33,26 @@ import { useQuasar } from 'quasar'
 export default defineComponent({
     setup(){
         const $q = useQuasar()
+        const employees = ref(Array<Employee>())
+        const serviceItems = ref(Array<ServiceItem>())
         const today = new Date()
         const todayStr = dateStr(today)
         const startDate = ref(todayStr)
         const endDate = ref(todayStr)
         const rows = ref()
+        const showCharge = ref(false)
         const getRows = async()=>{
+                employees.value = await api.employeeAPI.all()
+
+            serviceItems.value = await api.serviceItemAPI.all()
             const sDate = new Date(startDate.value)
             const eDate = new Date(endDate.value+' 23:59:59')
-            rows.value = await api.memberAPI.getAllChargeList(sDate,eDate)
+            rows.value = await api.memberAPI.getAllChargeList(sDate,eDate,!showCharge.value,!showCharge.value)
         }
 
         onMounted(getRows)
 
-        watch([startDate,endDate],getRows)
+        watch([startDate,endDate,showCharge],getRows)
 
         const modelToday = computed(()=>startDate.value == dateStr(new Date())?'today':null)
         const modelMonth = computed(()=>{
@@ -68,6 +76,7 @@ export default defineComponent({
             modelToday,
             modelMonth,
             rows,
+            showCharge,
              today:()=>{
                 const todayStr = dateStr(new Date())
                 startDate.value = todayStr
@@ -99,13 +108,17 @@ export default defineComponent({
             columns:[
                 { label:'时间',name:'time',field:'time',format:dateTimeStr},
                 {label:'会员',name:'member',field:'member'},
-                 { label:'卡',field:'card',name:'card',format:(v:string,row:Object)=>{
-                     const c = row as ChargeView
+                 { label:'卡',field:'card',name:'card',format:(v:string,row:ChargeView)=>{
+                     const c = row
 
                     let result = ''
-                    if(c.product && c.product.length>0){
+                    if(c.serviceItems && c.serviceItems.length>0){
                         result = '赠送:'
-                        c.product.forEach((pv)=>{ result += `${pv.name}x${pv.count} `})
+                        c.serviceItems.forEach((pv)=>{ 
+                            const si = serviceItems.value.find(asi=>asi._id == pv.serviceItemId)
+                            if(si)
+                                result += `${si.name}x${pv.count} `
+                        })
                     }
                     else
                     {
@@ -115,32 +128,50 @@ export default defineComponent({
                     return result
                 }},
                 {label:'支付',field:'pay',name:'pay'},
+                {label:'头疗师',field:'employee',name:'employee',format:(v:string,row:ChargeView)=>{
+                    let result = ''
+                    if(row.employees&&row.employees.length>0){
+                        for (const eId of row.employees) {
+                            const e = employees.value.find(e=>e._id == eId)
+                            if(e)
+                                result += `${e.name} `
+                        }
+                    }
+                    else if(row.card){
+                        result = '店内平分'
+                    }
+                   
+                    return result
+                }},
                 {name:'id', label:'操作',field:'_id'},
             ], 
-            refund:async (id:string)=>{
+            refund:(id:string)=>{
+        
                 $q.dialog({
-                    title:"确认",
-                    message:"确认撤销吗？",
+                    title:'确认',
+                    message:'确认撤销吗？',
                     cancel:true
                 })
-                .onOk(async ()=>{
+                .onOk(()=>{
                     $q.loading.show()
-                    const result = await api.memberAPI.refund(id)
-                    if(result == ''){
-                        await getRows()
-                        $q.notify('操作成功')
-                    }
-                    else
-                    {
-                        $q.notify({
-                            message:result,
-                            type:'negative',
-                            position:'center',
-                            timeout:2000
-                        })
-                    }
-
-                     $q.loading.hide()
+                    api.memberAPI.refund(id).then(async (result)=>{
+                        if(result == ''){
+                            await getRows()
+                            $q.notify('操作成功')
+                        }
+                        else
+                        {
+                            $q.notify({
+                                message:result,
+                                type:'negative',
+                                position:'center',
+                                timeout:2000
+                            })
+                        }
+                    }).finally(()=>{
+                        $q.loading.hide()
+                    })
+                    
                     
                 })
                 

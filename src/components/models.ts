@@ -3,6 +3,7 @@ import axios from 'axios'
 import { MemberAPI } from './memberApi'
 import {ConsumeAPI} from './consumeApi'
 import { cache } from './utils'
+import { ReservationAPI } from './reservationApi'
 
 if(window.hasOwnProperty("env"))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string
@@ -55,7 +56,8 @@ export interface ChargeView{
   balance:number;
   pay:number;
   amount:number;
-  product:Array<{name:string,count:number}>;
+  serviceItems:Array<{serviceItemId:string,count:number}>;
+  employees:Array<string>;
 }
 
 export interface PrepaidCard{
@@ -103,12 +105,17 @@ export interface ChargeItem{
 export interface Employee{
   _id:string;
   name:string;
+  shopId:string;
 }
 
 export interface WorkView{
   employee:string;
   consumers:Array<{_id:string,name:string,items:Array<string>}>
   charges:Array<{_id:string,name:string,card:PrepaidCard,commission:number}>
+}
+export interface StatisticsView{
+  consumes:Array<{time:string,employees:Array<{employeeId:string,items:Array<string>}>}>
+  charges:Array<{time:string,pay:number,employees:Array<string>,shopId:string}>
 }
 
 export interface FooterView{
@@ -138,6 +145,11 @@ export class EmployeeAPI{
       { params:{startDate,endDate} })
       return result.data as {rows:Array<WorkView>,footer:FooterView}
   }
+
+  async statictics(year:number,month:number):Promise<StatisticsView>{
+    const result = await axios.get('/employee/statistics',{params:{year,month}})
+    return result.data as StatisticsView
+  }
   
 }
 
@@ -157,7 +169,7 @@ export interface StockLog{
 export class StockAPI{
   async getLogs(_id: string): Promise<StockLog[]> {
     const result =  await axios.get(
-      `/stock/logs`,
+      '/stock/logs',
       { params:{id:_id }})
       const r = result.data as StockLog[]
       r.forEach(e=> e.time = new Date(e.time))
@@ -166,16 +178,16 @@ export class StockAPI{
 
   async update(id:string,num:number){
     const result =  await axios.post(
-      `/stock`,
+      '/stock',
       {id,num })
       return result.data
   }
 
   async getAll():Promise<Stock[]>{
     const result =  await axios.get(
-      `/stock`,
+      '/stock',
       {  })
-      return result.data
+      return result.data as Promise<Stock[]>
   }
 
   async add(name:string,unit:string){
@@ -192,6 +204,7 @@ export const api =  {
   consumeAPI:new ConsumeAPI(),
   serviceItemAPI:new ServiceItemAPI(),
   employeeAPI:new EmployeeAPI(),
+  reservation:new ReservationAPI(),
   cardAPI:new CardAPI(),
   stockAPI:new StockAPI()
 }

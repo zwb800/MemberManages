@@ -96,8 +96,8 @@ export default defineComponent({
 其他业绩:${emptyStr(d.otherPrice)}
 总业绩 : ${emptyStr(d.otherPrice+d.cardPrice)}
 销售额 :${emptyStr(d.sale)}
-当日考勤 应到:6人
-                实到:6人`
+当日考勤 应到:4人
+                实到:4人`
             },
         }
     },

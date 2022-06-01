@@ -57,10 +57,10 @@ export class MemberAPI{
       return result.data as Uint8Array
   }
 
-  async getAllChargeList(startDate:Date,endDate:Date):Promise<Array<ChargeView>>{
+  async getAllChargeList(startDate:Date,endDate:Date,showGift:boolean,showPayOnce:boolean):Promise<Array<ChargeView>>{
     const result =  await axios.get(
       '/member/all-charge-list/',
-      { params:{startDate,endDate} })
+      { params:{startDate,endDate,showGift,showPayOnce} })
 
       const r = result.data as Array<ChargeView>
       r.forEach(e=> e.time = new Date(e.time))
