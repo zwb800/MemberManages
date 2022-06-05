@@ -65,6 +65,7 @@ export interface PrepaidCard{
   price:number;
   gift:number;
   label:string;
+  discount:number;
 }
 
 export class CardAPI{

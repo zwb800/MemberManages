@@ -11,12 +11,12 @@
 </q-btn-group>
 </div>
   <q-table row-key="_id" class="q-mt-sm" flat bordered :rows-per-page-options="[0]" :rows='rows' :columns="columns">
-  <template v-slot:body-cell-id="props">
+  <!-- <template v-slot:body-cell-id="props">
         <q-td :props="props">
             <q-btn flat color="primary" @click="refund(props.value)" 
              label="撤单" ></q-btn>
         </q-td>
-      </template>
+      </template> -->
   </q-table>
 
 </q-page>
@@ -108,31 +108,32 @@ export default defineComponent({
                 { label:'金额',name:'price',field:'price'},
                 {name:'id', label:'操作',field:'_id'},
             ], 
-            refund:async (id:string)=>{
+            refund: (id:string)=>{
                 $q.dialog({
-                    title:"确认",
-                    message:"确认撤销吗？",
+                    title:'确认',
+                    message:'确认撤销吗？',
                     cancel:true
                 })
-                .onOk(async ()=>{
-                    $q.loading.show()
-                    const result = await api.consumeAPI.refund(id)
-                    if(result == ''){
-                        await getRows()
-                        $q.notify('操作成功')
-                    }
-                    else
-                    {
-                        $q.notify({
-                            message:result,
-                            type:'negative',
-                            position:'center',
-                            timeout:2000
-                        })
-                    }
-
-                     $q.loading.hide()
-                    
+                .onOk(()=>{
+                        $q.loading.show()
+                        api.consumeAPI.refund(id).then(async (result)=>{
+                        if(result == ''){
+                            await getRows()
+                            $q.notify('操作成功')
+                        }
+                        else
+                        {
+                            $q.notify({
+                                message:result,
+                                type:'negative',
+                                position:'center',
+                                timeout:2000
+                            })
+                        }
+                    }).finally(()=>{
+                        $q.loading.hide()
+                    })
+                  
                 })
                 
             }

@@ -81,7 +81,7 @@ export default defineComponent({
       var cardoptions3 = ref<{label:string,value:PrepaidCard}[]>([])
       onMounted(async ()=>{
         const cards = await api.cardAPI.all()
-        cardoptions.value = cards.filter((it)=>it.gift).map((c)=>{
+        cardoptions.value = cards.filter((it)=>it.gift||it.discount).map((c)=>{
             return {
               value : c,
               label:c.label}

@@ -72,7 +72,7 @@
 <script lang="ts">
 import EssentialLink from '../components/EssentialLink.vue'
 import { useRouter,useRoute } from 'vue-router'
-
+import { io } from 'socket.io-client'
 
 const linksList = [
   
@@ -155,6 +155,7 @@ import { defineComponent, ref,watch,onMounted } from 'vue'
 import NewMember from '../components/NewMember.vue'
 import { getCssVar } from 'quasar'
 import { api, FooterView } from '../components/models';
+
 export default defineComponent({
   name: 'MainLayout',
 
@@ -195,15 +196,22 @@ export default defineComponent({
     }
 
     const footer = ref<FooterView>()
-    onMounted(async()=>{
+    onMounted(()=>{
       getTitle()
 
-      const today = new Date()
-      const todayStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
-      const startDate = todayStr
-      const endDate = todayStr+' 23:59:59'
+      let url = 'ws://'+location.hostname+':9000'
+      if(window.hasOwnProperty("env"))
+        url = (eval(`window.env.API_URL`) as string).replace('http','ws')
+      // const socket = io(url)
+      // socket.on('newReservation',(args)=>{
+      //   console.log(args)
+      // })
+      // const today = new Date()
+      // const todayStr = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`
+      // const startDate = todayStr
+      // const endDate = todayStr+' 23:59:59'
 
-      footer.value = await api.employeeAPI.footer(new Date(startDate),new Date(endDate))
+      // footer.value = await api.employeeAPI.footer(new Date(startDate),new Date(endDate))
     })
     watch(route,getTitle)
 
