@@ -29,7 +29,9 @@
                         <q-tab-panel
                             name="consume" class="q-pa-none">
                             <q-table
-                          
+                                :loading="consumeLoading"
+                                v-model:pagination="consumePagination"
+                                @request="onConsumeRequest"
                                 :rows="consumeRows" 
                                 :columns="consumeColumns" flat></q-table>
                         </q-tab-panel>
@@ -63,22 +65,44 @@ export default defineComponent({
     emits:['update:modelValue'],
    props:{'memberId':{type:String,required:true},'modelValue':{type:Boolean}},
     setup(props){
-        const consumeRows = ref<Array<ConsumeView>>()
+        const consumeRows = ref<Array<ConsumeView>>([])
         const chargeRows = ref<Array<ChargeView>>()
         const member = ref<MemberView>()
         const tab = ref('info')
+        const consumeLoading = ref(false)
+         const consumePagination = ref({
+      page: 1,
+      rowsPerPage: 5,
+      rowsNumber: 0
+    })
+
+      const onConsumeRequest = async (p:{pagination:{page:number}})=>{
+        consumeLoading.value = true
+                const result = await api.consumeAPI.getConsumeList(props.memberId,
+                    (p.pagination.page-1)*consumePagination.value.rowsPerPage,consumePagination.value.rowsPerPage)
+                    consumePagination.value.page = p.pagination.page
+            consumeRows.value?.splice(0,consumeRows.value.length,...result)
+            consumeLoading.value = false
+}
         return {
             member,
+            consumePagination,
             gfDialog:ref(false),
             splitterModel:ref(80),
             show:async ()=>{
                 tab.value = 'info'
                 member.value = await api.memberAPI.get(props.memberId)
-                consumeRows.value = await api.consumeAPI.getConsumeList(props.memberId)
                 chargeRows.value = await api.memberAPI.getChargeList(props.memberId)
+                consumePagination.value.page = 1
+                consumePagination.value.rowsNumber = await api.consumeAPI.getConsumeListCount(props.memberId)
+                await onConsumeRequest({
+                    pagination: consumePagination.value,
+                })
             },
+          onConsumeRequest,
             tab,
             consumeRows,
+            consumeLoading,
             consumeColumns:[
                 { label:'时间',field:'time',name:'time',
                 format:dateTimeStr},

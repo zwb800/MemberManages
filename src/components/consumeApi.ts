@@ -24,12 +24,21 @@ export class ConsumeAPI{
       })
         return result.data as string
     }
-    async getConsumeList(memberId:string):Promise<Array<ConsumeView>>{
+    async getConsumeList(memberId:string,start:number,count:number):Promise<Array<ConsumeView>>{
       const result =  await axios.get(
         '/consume',
-        { params:{memberId} })
+        { params:{memberId,start,count} })
       const r = result.data as Array<ConsumeView>
       r.forEach(e=> e.time = new Date(e.time))
+      
+      return r
+    }
+
+    async getConsumeListCount(memberId:string):Promise<number>{
+      const result =  await axios.get(
+        '/consume/list_count',
+        { params:{memberId} })
+      const r = parseInt(result.data) 
       
       return r
     }

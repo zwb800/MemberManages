@@ -11,12 +11,12 @@
 </q-btn-group>
 </div>
   <q-table row-key="_id" class="q-mt-sm" flat bordered :rows-per-page-options="[0]" :rows='rows' :columns="columns">
-  <!-- <template v-slot:body-cell-id="props">
+  <template v-slot:body-cell-id="props">
         <q-td :props="props">
             <q-btn flat color="primary" @click="refund(props.value)" 
              label="撤单" ></q-btn>
         </q-td>
-      </template> -->
+      </template>
   </q-table>
 
 </q-page>
