@@ -143,7 +143,7 @@ export default defineComponent({
                    
                     return result
                 }},
-                {name:'id', label:'操作',field:'_id'},
+                // {name:'id', label:'操作',field:'_id'},
             ], 
             refund:(id:string)=>{
         

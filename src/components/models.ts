@@ -8,7 +8,8 @@ import { ReservationAPI } from './reservationApi'
 if(window.hasOwnProperty("env"))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string
 else
-  axios.defaults.baseURL = location.protocol+'//'+location.hostname+':9000'
+  axios.defaults.baseURL = 'https://service-908mprqb-1305763203.sh.apigw.tencentcs.com/release/'
+  // axios.defaults.baseURL = location.protocol+'//'+location.hostname+':9000'
 
 
 let shopId = localStorage.getItem('shopId')
