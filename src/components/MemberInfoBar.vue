@@ -16,7 +16,7 @@
               <div :title='dateTimeStr(member.member.newCardTime)'>{{dateStr(member.member.newCardTime)}}</div>
           </template>
       </q-field>
-      <q-field class="q-mt-none" style="min-width:50px" label="余额" stack-label borderless>
+      <q-field class="q-mt-none" style="min-width:100px" label="储值卡余额" stack-label borderless>
           <template v-slot:control>
               ￥{{member.member.balance}}
           </template>
@@ -30,7 +30,7 @@
       <template :key="b.serviceItemName" v-for="b in member.balances">
       <q-field class="q-mt-none" style="min-width:50px" :label='b.serviceItemName' stack-label borderless>
           <template v-slot:control>
-              {{b.balance}}
+              {{(b.serviceItemName.includes('折')?'￥':'')+b.balance}}
           </template>
       </q-field>
       </template>
