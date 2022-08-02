@@ -118,8 +118,8 @@ export default defineComponent({
             chargeColumns:[
                 { label:'时间',field:'time',name:'time',format:dateTimeStr},
                 { label:'项目',field:'card',name:'card',
-                format:(v:string,row:Object)=>{
-                    const c = row as ChargeView
+                format:(v:string,row:ChargeView)=>{
+                    const c = row
 
                     let result = ''
                     if(c.product && c.product.length>0){

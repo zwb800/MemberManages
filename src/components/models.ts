@@ -54,6 +54,7 @@ export interface MemberView{
 export interface ChargeView{
   time:Date;
   card:string;
+  product:Array<{name:string,count:number}>;
   balance:number;
   pay:number;
   amount:number;
