@@ -1,5 +1,10 @@
 <template>
 <q-page padding>
+    <div class="row q-gutter-sm">
+        <q-btn icon="refresh" title="刷新" @click="getRows" rounded></q-btn>
+        <q-btn icon="add" title="新增预约" @click="showR = true" color="primary" rounded></q-btn>
+        
+</div>
   <q-table row-key="_id" class="q-mt-sm" flat bordered :rows-per-page-options="[0]" :rows='rows' :columns="columns">
   <template v-slot:body-cell-id="props">
         <q-td :props="props">
@@ -8,6 +13,29 @@
         </q-td>
       </template>
   </q-table>
+  <q-dialog v-model="showR">
+   <q-card style="min-width:200px">
+         <q-card-section  class="bg-primary text-white">
+            <div class="text-h6">预约</div>
+        </q-card-section>
+        <q-form  @submit="newR()" autofocus greedy>
+        <q-card-section>
+            <q-select label="预约时间" v-model="time" :options="timeOptions" stack-label></q-select>
+            <q-field label="人数" stack-label borderless>
+                <template v-slot:control>
+            <q-btn-toggle class="q-mt-md" :options="[{label:'1',value:1},{label:'2',value:2},{label:'3',value:3},{label:'4',value:4}]" v-model="num"></q-btn-toggle>
+                </template>
+            </q-field>
+            <q-input v-model="remark" label="备注"></q-input>
+        </q-card-section>
+         <q-separator></q-separator>
+        <q-card-actions align="right">
+            <q-btn icon="close" v-close-popup round flat></q-btn>
+            <q-btn type="submit" :loading="loading" icon="done" color="teal" round flat></q-btn>
+        </q-card-actions>
+        </q-form>
+    </q-card>
+  </q-dialog>
 
 </q-page>
 </template>
@@ -16,11 +44,17 @@
 import {api, Member } from '../components/models'
 
 import { ref,onMounted } from 'vue'
-import { dateTimeStr } from '../components/utils'
-import { useQuasar } from 'quasar'
+import { dateStr, dateTimeStr, timeStr } from '../components/utils'
+import { QDialog, useQuasar } from 'quasar'
 
 const $q = useQuasar()
 const rows = ref()
+const showR = ref(false)
+const num = ref(1)
+const time = ref('')
+const timeOptions = ref(Array<string>())
+const remark = ref('')
+
 const getRows = async()=>{
 
     rows.value = await api.reservation.all()
@@ -28,13 +62,24 @@ const getRows = async()=>{
     setTimeout(()=>{getRows().then(null,null)},15*60*1000)
 }
 
-onMounted(getRows)
+onMounted(async ()=>{
+    await getRows()
+    const result = await api.reservation.available()
+    const now = new Date()
+    for (const r of result) {
+        if(new Date(dateStr(now)+' '+r.time)>=now)
+        timeOptions.value.push(r.time)
+    }
+    time.value = timeOptions.value[0]
+})
 
 const columns = ref([
-    { label:'时间',name:'time',field:'time',format:dateTimeStr},
-    {label:'会员',name:'member',field:'member',format:(m:Member)=>m.name},
-    {label:'手机号',name:'phone',field:'member',format:(m:Member)=>m.phone},
+    { label:'预定时间',name:'time',field:'time',format:timeStr},
+    {label:'会员',name:'member',field:'member',format:(m:Member)=>m==null?'':m.name},
+    {label:'手机号',name:'phone',field:'member',format:(m:Member)=>m==null?'':m.phone},
+    {label:'备注',name:'remark',field:'remark'},
     {label:'人数',name:'num', field:'num'},
+    {label:'下单时间',name:'create_time', field:'create_time',format:timeStr},
     {name:'id', label:'操作',field:'_id'},
 ])
 
@@ -68,6 +113,29 @@ const cancel = (id:string)=>{
         
     })
     
+}
+
+const newR = ()=>{
+     $q.loading.show()
+        api.reservation.add(new Date(dateStr(new Date())+' '+time.value),num.value,remark.value).then(async (result)=>{
+            if(result){
+                await getRows()
+                $q.notify('操作成功')
+                showR.value = false
+                num.value = 1
+            }
+            else
+            {
+                $q.notify({
+                    message:'操作失败',
+                    type:'negative',
+                    position:'center',
+                    timeout:2000
+                })
+            }
+        }).finally(()=>{
+            $q.loading.hide()
+        })
 }
 </script>
 

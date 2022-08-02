@@ -13,7 +13,7 @@
             </q-card-section>
             <q-card-section @click="viewMemberId = row._id;memberinfo = true" class="cursor-pointer q-gutter-sm">
                 <div>卡号:{{row.no}}</div>
-                <div>余额:{{row.balance}}</div>
+                <!-- <div>余额:{{row.balance}}</div> -->
                 <div>开卡时间:{{dateStr(row.newCardTime)}}</div>
             </q-card-section>
             <q-separator></q-separator>

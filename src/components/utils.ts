@@ -8,14 +8,18 @@ export const dateStr = (date:Date)=>{
 }
 
 export const dateTimeStr = (d:Date)=>{
-    return `${dateStr(d)} ${padStr(d.getHours())}:${padStr(d.getMinutes())}`
+    return `${dateStr(d)} ${timeStr(d)}`
+}
+
+export const timeStr = (d:Date)=>{
+    return `${padStr(d.getHours())}:${padStr(d.getMinutes())}`
 }
 
 export const cache = async function<T>(url:string):Promise<T>{
     const cacheResult = sessionStorage.getItem(url)
     if(cacheResult)
     {
-        return JSON.parse(cacheResult)
+        return JSON.parse(cacheResult) as T
     }
     else
     {

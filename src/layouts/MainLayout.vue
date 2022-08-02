@@ -72,7 +72,6 @@
 <script lang="ts">
 import EssentialLink from '../components/EssentialLink.vue'
 import { useRouter,useRoute } from 'vue-router'
-import { io } from 'socket.io-client'
 
 const linksList = [
   
