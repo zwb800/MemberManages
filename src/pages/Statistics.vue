@@ -42,6 +42,18 @@
       </tr>
     </tbody>
   </q-markup-table>
+  <q-markup-table dense separator="cell" class="sumtable">
+    <thead>
+      <th>卡数</th>
+      <th>总办卡金额</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{cardCount}}</td>
+        <td>{{sumCharge}}</td>
+      </tr>
+    </tbody>
+  </q-markup-table>
 </template>
 
 <script lang="ts" setup>
@@ -54,7 +66,10 @@ const serviceItems = ref(Array<ServiceItem>())
 const rowsRef = ref(Array<Array<number|string>>())
 const sumRowsRef = ref(Array<Array<number|string>>())
 const priceServiceItems = ref([5,2,2,2,2,3,5,3,2,5])
+// const priceServiceItems = ref([5,5,5,5,5,5,5,5,5,5])
 const dateRef = ref(dateStr(new Date()))
+const sumCharge = ref(0)
+const cardCount = ref(0)
 
  const mapServiceItems = new Map<string,number>()
     const mapEmployees = new Map<string,number>()
@@ -104,7 +119,7 @@ const loadData = async ()=>{
 
   const date = new Date(dateRef.value)
   const result = await api.employeeAPI.statictics(date.getFullYear(),date.getMonth()+1)
-  employees.value = await api.employeeAPI.all()
+  employees.value = await api.employeeAPI.all(true)
   serviceItems.value = (await api.serviceItemAPI.all()).filter(v=>v.shortName!='面护体验'&&v.shortName!='CC')
   initMap()
 
@@ -162,6 +177,7 @@ const rows = initRow(new Date(lastConsume.time).getDate())
     const profitColumn = new Array<number>(employees.value.length)
     profitColumn.fill(0)
     const lastColumnIndex = sumRows[0].length-1
+    sumCharge.value = 0
     for (const c of result.charges) {
       let es = new Array<string>()
       if(c.employees.length>0){
@@ -182,12 +198,15 @@ const rows = initRow(new Date(lastConsume.time).getDate())
           }
         }
       }
+
+      sumCharge.value += c.pay 
     }
+    cardCount.value = result.charges.length
 
     for (const c of sumRows) {
       const v = c[lastColumnIndex]
       if(typeof(v) == 'number')
-        c[lastColumnIndex] = Math.round(v)
+        c[lastColumnIndex] = Math.round(v*10)/10
     }
 
     sumRowsRef.value = sumRows

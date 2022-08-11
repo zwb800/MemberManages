@@ -109,6 +109,7 @@ export interface Employee{
   _id:string;
   name:string;
   shopId:string;
+  deleted:boolean;
 }
 
 export interface WorkView{
@@ -139,8 +140,12 @@ export class EmployeeAPI{
       { params:{startDate,endDate} })
       return result.data as FooterView
   }
-  async all():Promise<Array<Employee>>{
-      return cache<Array<Employee>>('/employee')
+  async all(includeDeleted = false):Promise<Array<Employee>>{
+      const result = (await cache<Array<Employee>>('/employee'))
+      if(includeDeleted)
+        return result
+      else
+        return result.filter(e=>e.deleted == null || e.deleted == false)
   }
   async work(startDate:Date,endDate:Date):Promise<{rows:Array<WorkView>,footer:FooterView}>{
     const result =  await axios.get(
