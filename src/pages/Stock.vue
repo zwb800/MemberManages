@@ -1,7 +1,7 @@
 <template>
 <q-page padding>
     <div class="row q-gutter-md">
-        <q-card :key="row._id" v-for="row of rows">
+        <q-card :key="row.id" v-for="row of rows">
             <q-card-section @click="showDetail(row)" class="cursor-pointer row items-baseline">
                 <div class="text-h6">{{row.name}}</div>
                 <div class="q-ml-xs">{{row.count}} {{row.unit}}</div>
@@ -98,7 +98,7 @@ export default defineComponent({
         const $q = useQuasar()
         const showDialog = ref(false)
         const title = ref('')
-        const row = ref<Stock>({_id:'',name:'',unit:'',count:0})
+        const row = ref<Stock>({id:'',name:'',unit:'',count:0})
         const number = ref(1)
         const submit = ref()
         const rows = ref<Stock[]>()
@@ -131,8 +131,8 @@ export default defineComponent({
 
         const updateStock = async (n:number)=>{
             loading.value = true
-            if(row.value?._id)
-                await api.stockAPI.update(row.value._id,n)
+            if(row.value?.id)
+                await api.stockAPI.update(row.value.id,n)
             await load()
             showDialog.value = false
             loading.value = false
@@ -170,7 +170,7 @@ export default defineComponent({
 
            
             showDetail:async (r:Stock)=>{
-                const logsData = await api.stockAPI.getLogs(r._id)
+                const logsData = await api.stockAPI.getLogs(r.id)
                 inLogs.value = logsData.filter(l=>l.count>0)
                 outLogs.value = logsData.filter(l=>l.count<0)
                 detailDialog.value = true
