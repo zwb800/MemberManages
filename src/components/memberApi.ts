@@ -14,7 +14,7 @@ export class MemberAPI{
   async get(id:string):Promise<MemberView>{
     const result = await axios.get(
       '/member/get',
-      { params:{id:id} })
+      { params:{id} })
 
       const r =  result.data as MemberView
       r.member.newCardTime = new Date(r.member.newCardTime)

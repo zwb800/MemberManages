@@ -2,16 +2,16 @@
   <q-page padding>
     <q-infinite-scroll ref="scroller" class="full-width" transition="scale" @load="onLoad">
                 <div class="row q-gutter-md justify-center">
-        <q-card :key="row._id" v-for="row of rows">
+        <q-card :key="row.id" v-for="row of rows">
             <q-card-section 
-            @click="viewMemberId = row._id;memberinfo = true" 
+            @click="viewMemberId = row.id;memberinfo = true" 
             class="cursor-pointer bg-primary text-white q-pb-sm q-pt-sm">
                 <div class="row">
                     <div class="col-md-auto text-h6 q-pr-xs">{{row.name}} </div>
                     <div class="col q-pt-xs"> {{row.phone}}</div>
                 </div>
             </q-card-section>
-            <q-card-section @click="viewMemberId = row._id;memberinfo = true" class="cursor-pointer q-gutter-sm">
+            <q-card-section @click="viewMemberId = row.id;memberinfo = true" class="cursor-pointer q-gutter-sm">
                 <div>卡号:{{row.no}}</div>
                 <!-- <div>余额:{{row.balance}}</div> -->
                 <div>开卡时间:{{dateStr(row.newCardTime)}}</div>
@@ -19,9 +19,9 @@
             <q-separator></q-separator>
             <q-card-actions align="evenly" class="bg-grey-2 q-pa-none">
                 <q-btn-group flat>
-                <q-btn padding="md" @click="consumeMemberId = row._id;consume = true">
+                <q-btn padding="md" @click="consumeMemberId = row.id;consume = true">
                     <q-icon name="credit_card"></q-icon> &nbsp;划卡</q-btn>
-                <q-btn padding="md" @click="chargeMemberId = row._id;charge = true">
+                <q-btn padding="md" @click="chargeMemberId = row.id;charge = true">
                     <q-icon name="paid"></q-icon> &nbsp;充值
                 </q-btn>
                 </q-btn-group>

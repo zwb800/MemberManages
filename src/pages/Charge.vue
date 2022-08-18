@@ -176,7 +176,7 @@ export default defineComponent({
             let result = '';
             if (row.employees && row.employees.length > 0) {
               for (const eId of row.employees) {
-                const e = employees.value.find((e) => e._id == eId);
+                const e = employees.value.find((e) => e.id == eId);
                 if (e) result += `${e.name} `;
               }
             } else if (row.card) {
