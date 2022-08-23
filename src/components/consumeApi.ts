@@ -11,8 +11,8 @@ export class ConsumeAPI{
   }
   async consume(
     memberId:string,
-    serviceItems:Array<{serviceItemId:string,count:number}>,
-    employees:Array<{employeeId:string,items:Array<string>}>):Promise<string>{
+    serviceItems:Array<{serviceItemId:number,count:number}>,
+    employees:Array<{employeeId:number,items:Array<number>}>):Promise<string>{
       const result =  await axios.post(
         '/consume',
         { 

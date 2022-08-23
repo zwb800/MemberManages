@@ -128,7 +128,7 @@ export default defineComponent({
                     }
                     else
                     {
-                        result = (c.card?c.card:'') + (c.amount?` 单充${c.amount}元`:'')
+                        result = (c.card?c.card:'') + (c.amount>0?` 单充${c.amount}元`:'')
                     }
                     
                     return result

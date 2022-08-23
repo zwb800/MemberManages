@@ -60,7 +60,7 @@ export interface ChargeView {
 }
 
 export interface PrepaidCard {
-  _id: string;
+  id: number;
   price: number;
   gift: number;
   label: string;
@@ -74,7 +74,7 @@ export class CardAPI {
 }
 
 export interface ServiceItem {
-  _id: string;
+  id: number;
   name: string;
   shortName: string;
   price: number;
@@ -102,7 +102,7 @@ export interface ChargeItem {
 }
 
 export interface Employee {
-  id: string;
+  id: number;
   name: string;
   shopId: string;
   deleted: boolean;

@@ -89,8 +89,8 @@ export default defineComponent({
         
         const result = await api.memberAPI.add(
           toRaw(member.value),
-          toRaw(card.value),
-          toRaw(employees.value))
+        card.value ? card.value?.id : null,
+          employees.value.map(e=>e.id))
       
 
         submitting.value = false

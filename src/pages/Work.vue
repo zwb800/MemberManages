@@ -43,7 +43,7 @@
             <q-separator></q-separator>
              <q-card-section>
                  <div :key="c" v-for="c of row.consumers">
-                    <q-btn flat @click="memberId = c._id;memberinfo = true">
+                    <q-btn flat @click="memberId = c.id;memberinfo = true">
                         {{c.name}}<template :key="i" v-for="i of c.items">+{{i}}</template>
                     </q-btn>
                  </div>
@@ -54,7 +54,7 @@
             <q-separator></q-separator>
              <q-card-section>
                  <div :key="c" v-for="c of row.charges">
-                    <q-btn flat @click="memberId = c._id;memberinfo = true">
+                    <q-btn flat @click="memberId = c.id;memberinfo = true">
                         {{c.name}} 
                         {{c.card?c.card.label:''}} {{c.commission}}
                     </q-btn>

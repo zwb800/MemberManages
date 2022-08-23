@@ -22,11 +22,12 @@ export interface AddResponse {
 }
 
 export class ReservationAPI {
-  async cancel(id: string): Promise<boolean> {
-    const result = await axios.post('/reservation/cancelById', { id });
+  async cancel(id: number): Promise<boolean> {
+    const result = await axios.post<boolean>('/reservation/cancelById', {
+      id,
+    });
 
-    const r = result.data as Response;
-    return r.updated > 0;
+    return result.data;
   }
 
   async add(time: Date, num: number, remark: string): Promise<boolean> {
