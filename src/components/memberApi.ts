@@ -44,7 +44,7 @@ export class MemberAPI {
 
   async gift(
     memberId: string,
-    gifts: Array<{ serviceItemId: string; count: number }>
+    gifts: Array<{ serviceItemId: number; count: number }>
   ): Promise<Uint8Array> {
     const result = await axios.post('/member/gift', { memberId, gifts });
     return result.data as Uint8Array;

@@ -8,8 +8,9 @@ if (window.hasOwnProperty('env'))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string;
 // axios.defaults.baseURL = 'https://service-908mprqb-1305763203.sh.apigw.tencentcs.com/release/'
 else
-  axios.defaults.baseURL =
-    location.protocol + '//' + location.hostname + ':9000';
+  // axios.defaults.baseURL =
+  //   location.protocol + '//' + location.hostname + ':9000';
+  axios.defaults.baseURL = 'http://winpad:9000'
 
 let shopId = localStorage.getItem('shopId');
 if (shopId == null) {
@@ -55,7 +56,7 @@ export interface ChargeView {
   balance: number;
   pay: number;
   amount: number;
-  serviceItems: Array<{ serviceItemId: string; count: number }>;
+  serviceItems: Array<{ name: string; count: number }>;
   employees: Array<string>;
 }
 

@@ -47,7 +47,7 @@
         </q-td>
       </template> -->
       <template v-slot:pagination="scope">
-        {{ rows.length }}张 合计{{ rows.reduce((p, c) => p + c.pay,0) }}元
+        {{ rows.length }}张 合计{{ rows.reduce((p, c) => p + c.pay, 0) }}元
       </template>
     </q-table>
   </q-page>
@@ -56,7 +56,7 @@
 <script lang='ts'>
 import { api, ChargeView, Employee, ServiceItem } from '../components/models';
 
-import { defineComponent, ref,unref, watch, computed, onMounted } from 'vue';
+import { defineComponent, ref, unref, watch, computed, onMounted } from 'vue';
 import { dateTimeStr, dateStr } from '../components/utils';
 import { useQuasar } from 'quasar';
 export default defineComponent({
@@ -82,7 +82,7 @@ export default defineComponent({
         !showCharge.value,
         !showCharge.value
       );
-      rows.value = result
+      rows.value = result;
     };
 
     onMounted(getRows);
@@ -154,10 +154,7 @@ export default defineComponent({
             if (c.serviceItems && c.serviceItems.length > 0) {
               result = '赠送:';
               c.serviceItems.forEach((pv) => {
-                const si = serviceItems.value.find(
-                  (asi) => asi._id == pv.serviceItemId
-                );
-                if (si) result += `${si.name}x${pv.count} `;
+                result += `${pv.name}x${pv.count} `;
               });
             } else {
               result =

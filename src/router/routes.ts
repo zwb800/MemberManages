@@ -5,7 +5,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('../layouts/MainLayout.vue'),
     children: [
-      {path:'/',redirect:'/work'},
+      {path:'/',redirect:'/work',name:'work'},
       { path:'/reservation',component:()=>import('../pages/Reservation.vue')},
       { path: '/member', name:'memberlist', 
       component: () => import('../pages/MemberList.vue'),props:true },
@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
       { path:'/stock',component:()=>import('../pages/Stock.vue')},
 
       { path:'/settings',component:()=>import('../pages/Settings.vue')},
-      { path:'/help',component:()=>import('../pages/Help.vue')}
+      { path:'/help',name:'help',component:()=>import('../pages/Help.vue')}
   ],
   },
 

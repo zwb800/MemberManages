@@ -46,28 +46,18 @@
 </template>
 
 <script lang="ts">
-import MemberInfoBar from './MemberInfoBar.vue'
-import {defineComponent,ref,onMounted,computed} from 'vue'
+import {defineComponent,ref,onMounted} from 'vue'
 import { useQuasar,QDialog,QForm} from 'quasar'
-import BtnToggle  from './BtnToggle.vue'
 import {api, MemberView} from './models'
 
-
-interface EmployeeOption{
-    value:{_id:string};
-    label:string;
-    selected:boolean;
-    items:Array<{value:string,label:string,selected:boolean}>;
-}
 
 interface ServiceItemOption{
     label:string,
     count:number,
-    value:{serviceItemId:string,shortName:string}
+    value:{serviceItemId:number,shortName:string}
 }
 
 export default defineComponent( {
-  components: { MemberInfoBar,BtnToggle },
   props:{'memberId':{type:String,required:true}},
    emits:['finished'],
     setup(props,context){
@@ -88,7 +78,7 @@ export default defineComponent( {
                     return {
                         label:e.name,
                         count:0,
-                        value:{serviceItemId:e._id,shortName:e.shortName}
+                        value:{serviceItemId:e.id,shortName:e.shortName}
                     }
                 }))
 
