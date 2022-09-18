@@ -8,9 +8,9 @@ if (window.hasOwnProperty('env'))
   axios.defaults.baseURL = eval(`window.env.API_URL`) as string;
 // axios.defaults.baseURL = 'https://service-908mprqb-1305763203.sh.apigw.tencentcs.com/release/'
 else
-  // axios.defaults.baseURL =
-  //   location.protocol + '//' + location.hostname + ':9000';
-  axios.defaults.baseURL = 'http://winpad:9000'
+  axios.defaults.baseURL =
+    location.protocol + '//' + location.hostname + ':9000';
+  // axios.defaults.baseURL = 'http://winpad:9000'
 
 let shopId = localStorage.getItem('shopId');
 if (shopId == null) {
@@ -122,12 +122,12 @@ export interface WorkView {
 export interface StatisticsView {
   consumes: Array<{
     time: string;
-    employees: Array<{ employeeId: string; items: Array<string> }>;
+    employees: Array<{ employeeId: number; items: Array<{serviceItemId:number}> }>;
   }>;
   charges: Array<{
     time: string;
     pay: number;
-    employees: Array<string>;
+    employees: Array<number>;
     shopId: string;
   }>;
 }
