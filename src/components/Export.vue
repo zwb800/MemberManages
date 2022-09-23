@@ -2,7 +2,7 @@
     <q-dialog @show="show">
         <q-card>
             <q-card-section>
-            <q-input input-class="q-mt-none"  style="width:300px" autogrow v-model="text" type="textarea" />
+            <q-input input-class="q-mt-none" input-style="padding-top:0"  style="width:300px" autogrow v-model="text" type="textarea" />
         </q-card-section>
         </q-card>
         
