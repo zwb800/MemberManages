@@ -8,7 +8,7 @@ import {
 } from './models';
 
 export class MemberAPI {
-  async get(id: string): Promise<MemberView> {
+  async get(id: number): Promise<MemberView> {
     const result = await axios.get('/member/get', { params: { id } });
 
     const r = result.data as MemberView;

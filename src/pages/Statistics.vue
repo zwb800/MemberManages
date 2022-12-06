@@ -127,7 +127,7 @@ const loadData = async () => {
   );
   employees.value = await api.employeeAPI.all(false);
   serviceItems.value = (await api.serviceItemAPI.all()).filter(
-    (v) => v.shortName != '面护体验' && v.shortName != 'CC'
+    (v) => v.shortName != '面护体验' && v.shortName != 'CC' && v.shortName != '床单'
   );
   initMap();
 

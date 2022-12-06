@@ -9,7 +9,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "vite build && scp -r -i c:/Users/zwb/.ssh/id_ed25519  dist/* zwb@winpad:/home/zwb/membermanages/",
+    "deploy": "vite build && scp -r  dist/* root@119.45.154.134:/www/wwwroot/membermanages/",
     "deploy2": "vite build && cd dist && serverless deploy",
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0"

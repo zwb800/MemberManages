@@ -76,7 +76,7 @@
 import { ServiceItem, WorkView,api, FooterView } from '../components/models'
 import { defineComponent,ref,onMounted,watch,computed } from 'vue'
 import MemberInfo from '../components/MemberInfo.vue'
-import {dateStr, padStr} from '../components/utils'
+import {dateStr} from '../components/utils'
 import ExportDialog from '../components/Export.vue'
 export default defineComponent({
     components:{ MemberInfo,  ExportDialog },
@@ -128,7 +128,7 @@ export default defineComponent({
             serviceItems,
             modelToday,
             modelMonth,
-            memberId:ref(''),
+            memberId:ref(0),
             memberinfo:ref(false),
             today:()=>{
                 const todayStr = dateStr(new Date())

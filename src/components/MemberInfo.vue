@@ -63,7 +63,7 @@ export default defineComponent({
         GiftDialog
     },
     emits:['update:modelValue'],
-   props:{'memberId':{type:String,required:true},'modelValue':{type:Boolean}},
+   props:{'memberId':{type:Number,required:true},'modelValue':{type:Boolean}},
     setup(props){
         const consumeRows = ref<Array<ConsumeView>>([])
         const chargeRows = ref<Array<ChargeView>>()

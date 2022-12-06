@@ -2,53 +2,13 @@
   <q-dialog ref="dialog" @before-show="show" persistent>
     <q-card style="min-width: 800px">
       <q-card-section class="row q-pb-none">
-        <div class="text-h6">划卡</div>
+        <div class="text-h6">工作量</div>
         <q-space />
         <q-btn round flat icon="close" v-close-popup></q-btn>
       </q-card-section>
       <q-form ref="form" @submit="submit" greedy>
         <q-card-section class="q-pt-none">
           <div>
-            <member-info-bar :member="member"></member-info-bar>
-
-            <p class="q-mb-none">消费项目</p>
-            <div class="q-mt-none">
-              <q-field
-                class="q-pb-none"
-                v-model="serviceItems"
-                :rules="[
-                  (value) => value.some((p) => p.count > 0) || '请选择消费项目',
-                ]"
-                borderless
-              >
-                <template v-slot:control>
-                  <q-btn-group class="">
-                    <template :key="row.label" v-for="row in serviceItems">
-                      <q-btn
-                        v-if="row.count > 0"
-                        color="primary"
-                        @click.left="row.count++"
-                        @contextmenu="
-                          row.count--;
-                          $event.preventDefault();
-                        "
-                      >
-                        <span class="text-no-wrap">{{ row.label }}</span>
-                        &nbsp;{{ row.count }}
-                      </q-btn>
-                      <q-btn
-                        class="q-pt-md q-pb-md"
-                        v-else
-                        @click.left="row.count++"
-                        @contextmenu="$event.preventDefault()"
-                      >
-                        <span class="text-no-wrap">{{ row.label }}</span>
-                      </q-btn>
-                    </template>
-                  </q-btn-group>
-                </template>
-              </q-field>
-            </div>
             <employee-form :employee="employee"></employee-form>
           </div>
         </q-card-section>
@@ -68,11 +28,10 @@
 </template>
 
 <script lang="ts">
-import MemberInfoBar from './MemberInfoBar.vue';
-import { defineComponent, ref, onMounted, computed } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useQuasar, QDialog, QForm } from 'quasar';
 import EmployeeForm from './EmployeeForm.vue';
-import { api, MemberView } from './models';
+import { api } from './models';
 
 interface EmployeeOption {
   value: { id: number };
@@ -88,25 +47,20 @@ interface ServiceItemOption {
 }
 
 export default defineComponent({
-  components: { MemberInfoBar, EmployeeForm },
-  props: { memberId: { type: Number, required: true } },
+  components: { EmployeeForm },
+  props: { consumeId: { type: Number, required: true } },
   emits: ['finished'],
   setup(props, context) {
     const employee = ref<Array<EmployeeOption>>([]);
     let initEmployee = Array<EmployeeOption>();
 
-    const serviceItems = ref<Array<ServiceItemOption>>();
     let initRow = new Array<ServiceItemOption>();
 
     const init = () => {
       employee.value = JSON.parse(
         JSON.stringify(initEmployee)
       ) as Array<EmployeeOption>;
-      serviceItems.value = JSON.parse(
-        JSON.stringify(initRow)
-      ) as Array<ServiceItemOption>;
     };
-    const member = ref<MemberView>();
 
     onMounted(async () => {
       initRow = (await api.serviceItemAPI.all()).map((e) => {
@@ -147,15 +101,13 @@ export default defineComponent({
 
     const submitting = ref(false);
     return {
-      member,
       form,
       employee,
-      show: async () => {
-        member.value = await api.memberAPI.get(props.memberId);
+      show: () => {
         init();
       },
       submit: async () => {
-        if (serviceItems.value != undefined && !submitting.value) {
+        if (!submitting.value) {
           submitting.value = true;
           let es = employee.value
             ?.filter((p) => p.selected)
@@ -170,17 +122,7 @@ export default defineComponent({
 
           if (!es) es = [];
 
-          const selectedItems = serviceItems.value.filter((p) => p.count > 0);
-          const result = await api.consumeAPI.consume(
-            props.memberId,
-            selectedItems.map((p) => {
-              return {
-                serviceItemId: p.value.serviceItemId,
-                count: p.count,
-              };
-            }),
-            es
-          );
+          const result = await api.consumeAPI.work(props.consumeId, es);
 
           submitting.value = false;
           if (result == '') {
@@ -188,7 +130,7 @@ export default defineComponent({
             context.emit.call(null, 'finished');
 
             $q.notify({
-              message: '划卡成功',
+              message: '修改成功',
               type: 'positive',
               position: 'center',
               timeout: 1000,
@@ -206,12 +148,6 @@ export default defineComponent({
       },
       submitting,
       dialog,
-      isServiceItemValid: computed(() => {
-        if (serviceItems.value)
-          return serviceItems.value.some((p) => p.count > 0);
-        else return false;
-      }),
-      serviceItems,
     };
   },
 });

@@ -58,7 +58,7 @@ interface ServiceItemOption{
 }
 
 export default defineComponent( {
-  props:{'memberId':{type:String,required:true}},
+  props:{'memberId':{type:Number,required:true}},
    emits:['finished'],
     setup(props,context){
 

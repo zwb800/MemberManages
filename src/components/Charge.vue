@@ -43,7 +43,7 @@ import { QDialog, useQuasar } from 'quasar';
 
 export default defineComponent({
   components: { ChargeForm, MemberInfoBar },
-  props: { memberId: { type: String, required: true } },
+  props: { memberId: { type: Number, required: true } },
   emits: ['finished'],
   setup(props, context) {
     const $q = useQuasar();
