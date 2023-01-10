@@ -258,7 +258,7 @@ export default defineComponent({
     });
     watch(route, getTitle);
     const sId = localStorage.getItem('shopId');
-    const shopId = ref(sId ? parseInt(sId) : 1);
+    const shopId = ref(sId ? parseInt(sId) : 0);
     axios.defaults.headers.common['shopId'] = shopId.value.toString();
 
     const shopSwitch = async () => {

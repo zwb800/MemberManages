@@ -10,15 +10,15 @@ if (window.hasOwnProperty('env'))
 else
   axios.defaults.baseURL =
     location.protocol + '//' + location.hostname + ':9000';
-  // axios.defaults.baseURL = 'http://winpad:9000'
+// axios.defaults.baseURL = 'http://winpad:9000'
 
-let shopId = localStorage.getItem('shopId');
-if (shopId == null) {
-  shopId = '1';
-}
+const shopId = localStorage.getItem('shopId');
+// if (shopId == null) {
+// shopId = '';
+// }
 
-axios.defaults.headers.common['shopId'] = shopId;
-
+if (shopId != null) axios.defaults.headers.common['shopId'] = shopId;
+// console.log(`shopId:${shopId}`);
 export interface Todo {
   id: number;
   content: string;
@@ -122,7 +122,10 @@ export interface WorkView {
 export interface StatisticsView {
   consumes: Array<{
     time: string;
-    employees: Array<{ employeeId: number; items: Array<{serviceItemId:number}> }>;
+    employees: Array<{
+      employeeId: number;
+      items: Array<{ serviceItemId: number }>;
+    }>;
   }>;
   charges: Array<{
     time: string;
