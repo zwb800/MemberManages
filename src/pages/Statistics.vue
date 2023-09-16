@@ -4,14 +4,14 @@
     <thead>
       <tr>
         <th></th>
-        <th :colspan="serviceItems.length" v-for="e in employees" :key="e">
+        <th :colspan="serviceItems.length" v-for="e in employees" :key="e.id">
           {{ e.name }}
         </th>
       </tr>
       <tr>
         <th></th>
         <template v-for="e in employees" :key="e">
-          <th v-for="s in serviceItems" :key="s">{{ s.shortName }}</th>
+          <th v-for="s in serviceItems" :key="s.id">{{ s.shortName }}</th>
         </template>
       </tr>
     </thead>
@@ -33,7 +33,7 @@
     <thead>
       <tr>
         <th></th>
-        <th v-for="(s, i) in serviceItems" :key="s">
+        <th v-for="(s, i) in serviceItems" :key="s.id">
           {{ s.shortName }}({{ priceServiceItems[i] }})
         </th>
         <th>工作量提成</th>
@@ -74,7 +74,7 @@ const serviceItems = ref(Array<ServiceItem>());
 const rowsRef = ref(Array<Array<number | string>>());
 const sumRowsRef = ref(Array<Array<number | string>>());
 // const priceServiceItems = ref([5, 2, 2, 2, 2, 3, 5, 3, 2, 5]);
-const priceServiceItems = ref([5,5,5,5,5,5,5,5,5,5])
+const priceServiceItems = ref([5,5,5,5,5,5,5,5,5,5,5,5])
 const dateRef = ref(dateStr(new Date()));
 const sumCharge = ref(0);
 const cardCount = ref(0);
